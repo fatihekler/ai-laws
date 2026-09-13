@@ -1,0 +1,90 @@
+schema_version: 1.0.0
+schema_name: AI-LAWS Incident to Legal Analysis Record
+
+record:
+  incident_id: REQUIRED
+  incident_date: UNKNOWN_ALLOWED
+  discovery_date: UNKNOWN_ALLOWED
+  reporting_date: UNKNOWN_ALLOWED
+
+  identity:
+    actor_entities: []
+    affected_entities: []
+    ai_model_or_system: UNKNOWN_ALLOWED
+    model_version_or_snapshot: UNKNOWN_ALLOWED
+    agent_harness_tools: []
+    jurisdictions: []
+
+  factual_state:
+    classification:
+      allowed:
+        - VERIFIED
+        - PARTIALLY_VERIFIED
+        - DISPUTED
+        - ALLEGED
+        - UNKNOWN
+    primary_evidence_refs: []
+    official_statements: []
+    independent_reporting: []
+    conflicting_accounts: []
+
+  technical_event:
+    event_class: UNKNOWN_ALLOWED
+    capability_or_permission: UNKNOWN_ALLOWED
+    unauthorized_action: UNKNOWN_ALLOWED
+    data_or_asset_affected: UNKNOWN_ALLOWED
+    reversibility: UNKNOWN_ALLOWED
+    security_control_state: UNKNOWN_ALLOWED
+    technical_evidence_refs: []
+
+  human_impact:
+    rights_or_interests: []
+    affected_population: UNKNOWN_ALLOWED
+    physical_harm: UNKNOWN_ALLOWED
+    economic_harm: UNKNOWN_ALLOWED
+    privacy_or_data_harm: UNKNOWN_ALLOWED
+    dignity_or_autonomy_harm: UNKNOWN_ALLOWED
+    discrimination_or_opportunity_harm: UNKNOWN_ALLOWED
+    psychological_or_social_harm: UNKNOWN_ALLOWED
+
+  legal_research:
+    potentially_applicable_jurisdictions: []
+    legal_domains: []
+    potential_duties: []
+    potential_prohibitions: []
+    required_facts_not_yet_known: []
+    foreseeability_evidence: []
+    actor_knowledge_evidence: []
+    incident_reporting_duties: []
+    evidence_preservation_duties: []
+
+  liability_hypothesis:
+    state: NOT_A_LEGAL_CONCLUSION
+    actors_to_analyze: []
+    duty: UNKNOWN_ALLOWED
+    breach: UNKNOWN_ALLOWED
+    causation: UNKNOWN_ALLOWED
+    legally_recognized_damage: UNKNOWN_ALLOWED
+    defences_or_immunities: UNKNOWN_ALLOWED
+    allocation: UNKNOWN_ALLOWED
+
+  remedies:
+    current_legal_remedies_to_verify: []
+    compensation_mechanisms_to_verify: []
+    sanctions_to_verify: []
+    injunctive_or_stop_authority_to_verify: []
+
+  cross_repo:
+    owasp_security_evidence_refs: []
+    engineering_os_assurance_refs: []
+    ethical_ai_human_impact_refs: []
+    esma_reminder_refs: []
+    apesteori_challenge_refs: []
+
+  integrity:
+    allegation_is_violation: false
+    incident_is_liability: false
+    public_knowledge_is_actor_knowledge: false
+    technical_finding_is_legal_proof: false
+    canonical: false
+    human_legal_review_state: NOT_REVIEWED
