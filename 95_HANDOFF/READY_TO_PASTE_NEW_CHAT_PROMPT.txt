@@ -56,13 +56,26 @@ Sonra exact sırayla oku:
 17. `80_CROSS_REPO/CROSS_REPO_AUTHORITY_AND_ROUTING.md`
 18. `80_CROSS_REPO/PROJECT_ROUTING_MATRIX.csv`
 19. `85_RESEARCH_ASSISTANTS/LLM_AND_SPECIALIST_RESEARCH_PROTOCOL.md`
-20. `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`
+20. `85_RESEARCH_ASSISTANTS/GROK_CHATGPT_COLLABORATION_PROTOCOL.md`
+21. `85_RESEARCH_ASSISTANTS/MODEL_HANDOFF_CLAIM_SCHEMA.yaml`
+22. `85_RESEARCH_ASSISTANTS/GROK_RESEARCH_QUERY_CATALOG.md`
+23. `86_NOTEBOOKLM/README.md`
+24. `86_NOTEBOOKLM/NOTEBOOKLM_CORPUS_ARCHITECTURE.md`
+25. `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_POLICY.md`
+26. `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv`
+27. `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv`
+28. `86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md`
+29. `86_NOTEBOOKLM/NOTEBOOKLM_UPLOAD_AND_REFRESH_CHECKLIST.md`
+30. `86_NOTEBOOKLM/NOTEBOOKLM_RESEARCH_QUESTION_CATALOG.md`
+31. `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`
 
-Gerekli ise ilgili jurisdiction/case-law/research-run dosyalarını da oku.
+Gerekli ise ilgili jurisdiction/case-law/research dosyalarını ve R001 Grok package'ini de oku.
 
 TEMEL NON-EQUIVALENCE KURALLARI:
 
 MODEL_OUTPUT != LEGAL_AUTHORITY
+MODEL_A_CONFIRMS_MODEL_B != INDEPENDENT_VERIFICATION
+MULTIPLE_MODELS_AGREE != FACT_PROVEN
 RESEARCH_FINDING != LEGAL_CONCLUSION
 ALLEGATION != VIOLATION
 INCIDENT != LIABILITY
@@ -75,45 +88,54 @@ STANDARD != STATUTE
 GUIDANCE != COURT_HOLDING
 SEARCH_FAILURE != NO_CASE
 UNKNOWN != NO_RISK
+NOTEBOOK_OUTPUT != LEGAL_AUTHORITY
+NOTEBOOK_SNAPSHOT != CURRENT_LAW
 
-CURRENT SPECIAL CONTEXT:
+CURRENT COMPLETED UNITS:
 
-YargıGPT üzerinden yapılan:
-- `TR-LAW-01-B001`
-- `TR-LAW-01-B002`
+`AI-LAWS-R001 — IMPORT_AND_CHALLENGE_GROK_FRONTIER_AI_LAW_RESEARCH`
+= COMPLETE_SUPPORTING_RESEARCH_IMPORT
 
-araştırmalarında resmi Yargıtay/Adalet Bakanlığı karar endpoint'i `ClientResponseError` vermiştir.
+`AI-LAWS-R021 — GROK / CHATGPT / NOTEBOOKLM RESEARCH COORDINATION INFRASTRUCTURE`
+= COMPLETE_SUPPORT_INFRASTRUCTURE
 
-Bu kayıtların anlamı:
+Grok çalışma talimatı:
+`85_RESEARCH_ASSISTANTS/GROK_READY_TO_PASTE_MASTER_INSTRUCTION.txt`
+
+Notebook çalışma talimatı:
+`86_NOTEBOOKLM/NOTEBOOKLM_READY_TO_PASTE_MASTER_INSTRUCTION.txt`
+
+Notebook source/download manifest:
+`86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv`
+`86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md`
+
+CURRENT YARGIGPT STATE:
+`TR-LAW-01-B001` ve `TR-LAW-01-B002` resmi karar endpoint `ClientResponseError` nedeniyle interruption evidence'dir.
 
 OFFICIAL_SOURCE_STATE = UNAVAILABLE
 VERIFIED_CASES = 0
 LEGAL_CONCLUSION = NOT_ATTEMPTED
+AI-LAWS-R006 = BLOCKED_BY_OFFICIAL_SOURCE_AVAILABILITY
 
-Bunlar Türkiye'de ilgili karar bulunmadığı anlamına gelmez.
+CURRENT PREFERRED NEXT BOUNDED LEGAL UNIT:
 
-GROK OUTPUT:
-Kullanıcı daha sonra Grok'tan aldığı frontier-AI / hukuk / sorumluluk / human-sovereignty araştırma çıktısını paylaşacaktır.
+`AI-LAWS-R003 — EU AI ACT CURRENT CONSOLIDATED / PHASED-APPLICATION LEGAL MAP`
 
-Bu çıktı geldiğinde otomatik doğru kabul etme.
-Eğer kullanıcı araştırma/import talimatı verirse exact bounded work item:
+STATE = READY FOR EXPLICIT AUTHORIZATION
 
-`AI-LAWS-R001 — IMPORT_AND_CHALLENGE_GROK_FRONTIER_AI_LAW_RESEARCH`
+R003'ü sırf bu prompt okundu diye başlatma.
 
-olarak ele al.
+R019 VERIFIED INCIDENT CORPUS da READY_FOR_EXPLICIT_AUTHORIZATION fakat başlamamıştır.
 
-R001'de:
-- Grok iddialarını satır/sav bazında ayrıştır;
-- WELL_ESTABLISHED / PLAUSIBLE_NOT_PROVEN / POLICY_PROPOSAL / UNKNOWN diye ön sınıflandır;
-- güncel ve maddi iddiaları primary/official kaynaklardan Web ile doğrula;
-- company statement ile independent evidence'i ayır;
-- mevcut hukuk ile reform önerisini ayır;
-- public alignment ile secret collusion iddiasını ayır;
-- incident ile legal liability'yi ayır;
-- hukuk dallarına ve jurisdiction backlog'una route et;
-- gereken cross-repo evidence/candidate bağlantılarını belirt;
-- hukuki suçluluk veya kesin sorumluluk hükmü verme;
-- append-only research/evidence üret;
+GROK / NOTEBOOKLM KULLANIMINDA:
+- current GitHub state'i fresh-read et;
+- source manifest kullan;
+- model çıktısını source-of-truth yapma;
+- circular model confirmation üretme;
+- material claims'i original official source'a geri bağla;
+- currentness/effective dates kontrol et;
+- hakları belirsiz/paywalled standard tam metnini repoya veya Notebook'a otomatik yükleme;
+- privileged/private/secrets/classified material yükleme;
 - bir bounded unit sonunda STOP et.
 
 İlk continuity cevabında mutation yapmadan exact doldur:
@@ -123,9 +145,12 @@ BRANCH
 CURRENT_HEAD
 CURRENT_TREE
 PROJECT_STATE
+R001_STATE
+R021_STATE
 CURRENT_NEXT_BOUNDED_UNIT
 YARGIGPT_TR_LAW_01_STATE
-GROK_IMPORT_STATE
+GROK_PROTOCOL_STATE
+NOTEBOOKLM_PROTOCOL_STATE
 LEGAL_ADVICE_STATE
 AUTO_ADVANCE
 
