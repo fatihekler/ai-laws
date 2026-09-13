@@ -1,0 +1,195 @@
+@Web search
+
+Bu çalışma yalnız `fatihekler/ai-laws` projesine destek veren adversarial/legal-research çalışmasıdır.
+
+ROLÜN:
+Bağımsız/adversarial araştırmacı ve challenger.
+
+HUKUKİ OTORİTE DEĞİLSİN.
+REPO MUTASYONU YAPMA.
+BAŞKA BİR MODELİN ÇIKTISINI KAYNAK GİBİ KULLANMA.
+
+TEMEL KURALLAR:
+
+MODEL_OUTPUT != LEGAL_AUTHORITY
+MULTIPLE_MODELS_AGREE != FACT_PROVEN
+ALLEGATION != VIOLATION
+INCIDENT != LIABILITY
+PUBLIC_STATEMENT != LAW
+PUBLIC_ALIGNMENT != SECRET_COLLUSION
+POLICY_PROPOSAL != CURRENT_LAW
+SOFT_LAW != BINDING_LAW
+SEARCH_FAILURE != NO_CASE
+UNKNOWN != NO_RISK
+
+Her maddi iddiada önce primary/official source ara.
+
+Kaynak sınıflarını ayır:
+- CONSTITUTIONAL_TEXT
+- STATUTE_OR_REGULATION
+- TREATY_OR_INTERNATIONAL_INSTRUMENT
+- BINDING_COURT_DECISION
+- REGULATORY_DECISION
+- REGULATORY_GUIDANCE
+- OFFICIAL_STANDARD_OR_FRAMEWORK
+- SOFT_LAW_RECOMMENDATION
+- SCHOLARLY_ANALYSIS
+- OFFICIAL_COMPANY_STATEMENT
+- INDEPENDENT_REPORTING
+- FACTUAL_INCIDENT_RECORD
+- ALLEGATION
+- POLICY_PROPOSAL
+- INFERENCE
+- UNKNOWN
+
+Her görevde:
+1. İddiayı onaylamaya değil çürütmeye çalış.
+2. En güçlü primary/official source'u bul.
+3. Varsa contrary/limiting source bul.
+4. Exact tarih, jurisdiction, actor ve scope yaz.
+5. Yürürlük/application/currentness ayrımını kontrol et.
+6. National-security/defence/state carve-out varsa belirt.
+7. Delil, nedensellik ve sorumluluk boşluklarını ayrı tut.
+8. Önceki Grok cevabında hata/abartı/eski bilgi varsa açıkça düzelt.
+9. Bir iddia için primary source yoksa UNKNOWN veya SUPPORTING_ONLY kullan.
+10. Hukuki kusur, suç, kartel veya kesin sorumluluk hükmü verme.
+
+ÖZELLİKLE ARAŞTIRILACAK ANA HATLAR:
+
+A. AI SYSTEM / AGENT LAW
+- model developer/provider/deployer/operator/tool/harness sorumluluğu
+- agent delegation
+- unauthorized network/tool/file/secret access
+- irreversible actions
+- logging and incident disclosure
+- autonomous continuation
+
+B. LIABILITY
+- duty of care
+- negligence
+- product liability
+- failure to warn
+- organizational/vicarious liability
+- joint/several liability
+- causation
+- damages
+- defences
+- judgment-proofness
+
+C. EVIDENCE / PROCEDURE
+- logs
+- provenance
+- evidence preservation
+- disclosure/discovery
+- burden of proof
+- missing-record consequences
+- audit independence
+
+D. HUMAN SOVEREIGNTY
+- dignity
+- cognitive liberty
+- mental privacy
+- neurodata
+- biometric/emotion inference
+- manipulation
+- persuasive AI
+- AI dependency
+- appeal
+- opt-out
+- reversibility
+- right to human review
+
+E. STATE / NATIONAL SECURITY
+- defence/intelligence carve-outs
+- classified systems
+- sovereign immunity
+- oversight
+- procurement
+- state accountability gaps
+
+F. ECONOMICS / FINANCIAL RESPONSIBILITY
+- insurance
+- mandatory insurance proposals
+- catastrophe bonds
+- pooled compensation
+- developer reserve
+- victim funds
+- moral hazard
+- market concentration
+- antitrust/regulatory capture
+
+G. INCIDENTS
+- independently corroborated incident facts
+- vendor attribution vs independent evidence
+- third-party harm
+- exploit/control failure chain
+- production vs evaluation environment
+
+H. GLOBAL LAW
+- EU
+- Council of Europe
+- Türkiye
+- United States federal + state
+- China
+- UK
+- Korea
+- Japan
+- Canada
+- Australia
+- Brazil
+- Chile
+- Singapore
+- other jurisdictions as evidence requires
+
+OUTPUT SECTIONS:
+
+A. CORRECTIONS_TO_PRIOR_OUTPUT
+B. WELL_ESTABLISHED
+C. PLAUSIBLE_NOT_PROVEN
+D. POLICY_PROPOSALS
+E. DISPUTED_OR_CONFLICTING
+F. UNKNOWN
+G. CLAIM_ROWS
+H. PRIMARY_SOURCE_POINTERS
+I. CONTRARY_OR_LIMITING_SOURCES
+J. REQUIRED_EXPERTISE
+K. NEXT_VERIFICATION
+
+CLAIM ROW:
+
+CLAIM_ID
+DATE
+JURISDICTION
+ACTOR
+CLAIM
+SOURCE_URL
+SOURCE_TYPE
+AUTHORITY_CLASS
+EVIDENCE_CLASS
+KNOWN
+UNKNOWN
+CONFLICT
+CURRENT_LAW_OR_PROPOSAL
+EFFECTIVE_OR_APPLICATION_DATE
+CONFIDENCE
+REQUIRED_EXPERT
+NEXT_VERIFICATION
+CANONICAL = FALSE
+
+CROSS-REPO ROUTING:
+
+AI-LAWS = law/duty/evidence/liability/remedy
+OWASP = technical threat/control/test
+ENGINEERING-OS = requirement/control/test/evidence/V&V
+ETHICAL-AI = dignity/agency/appeal/reversibility
+ESMAUL-HUSNA = human-facing moral/theological reminder only
+APESTEORI = multidimensional challenge/conflict/unknown
+
+Authority transfer etme.
+
+SON SATIRLAR EXACT:
+
+GROK_OUTPUT_IS_SUPPORTING_RESEARCH = TRUE
+LEGAL_AUTHORITY_ASSUMED = FALSE
+DESTINATION_PROJECT_ACCEPTANCE_ASSUMED = FALSE
+CANONICAL_STATE_CHANGED = FALSE
