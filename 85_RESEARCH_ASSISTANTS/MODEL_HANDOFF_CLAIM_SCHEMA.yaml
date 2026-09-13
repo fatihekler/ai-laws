@@ -1,0 +1,69 @@
+schema_id: AI-LAWS-MODEL-HANDOFF-CLAIM-1.0
+state: RESEARCH_SUPPORT_ONLY
+canonical: false
+
+claim:
+  claim_id: REQUIRED
+  task_id: REQUIRED
+  claim_text: REQUIRED
+  jurisdiction: UNKNOWN
+  actor: UNKNOWN
+  event_or_legal_date: UNKNOWN
+  claim_type: UNKNOWN
+  proposed_authority_class: UNKNOWN
+
+sources:
+  - source_id: REQUIRED
+    url: REQUIRED
+    title: UNKNOWN
+    publisher_or_issuer: UNKNOWN
+    source_type: UNKNOWN
+    authority_class: UNKNOWN
+    publication_date: UNKNOWN
+    effective_or_application_date: UNKNOWN
+    retrieval_date: REQUIRED
+    official_or_primary: UNKNOWN
+    authentic_language_state: UNKNOWN
+    currentness_state: UNKNOWN
+    license_or_use_state: UNKNOWN
+
+classification:
+  evidence_class: UNKNOWN
+  current_law_or_proposal: UNKNOWN
+  known: UNKNOWN
+  unknown: UNKNOWN
+  conflict: UNKNOWN
+  contrary_or_limiting_source: UNKNOWN
+
+model_positions:
+  grok_position: NOT_RUN
+  chatgpt_verification_state: NOT_RUN
+  notebook_support_state: NOT_RUN
+  yargigpt_state: NOT_RUN
+
+legal_elements:
+  duty: NOT_ESTABLISHED
+  breach: NOT_ESTABLISHED
+  causation: NOT_ESTABLISHED
+  damage: NOT_ESTABLISHED
+  liability: NOT_ESTABLISHED
+  regulatory_violation: NOT_ESTABLISHED
+  criminal_responsibility: NOT_ESTABLISHED
+
+cross_repo:
+  primary_owner: AI-LAWS
+  secondary_consumers: []
+  authority_transfer: false
+
+review:
+  human_legal_review_required: false
+  human_reviewer: UNKNOWN
+  human_review_state: NOT_RUN
+  next_verification: UNKNOWN
+
+invariants:
+  model_agreement_is_independent_verification: false
+  allegation_is_violation: false
+  incident_is_liability: false
+  policy_proposal_is_current_law: false
+  canonical: false
