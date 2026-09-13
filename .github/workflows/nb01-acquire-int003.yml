@@ -1,16 +1,17 @@
 name: AI-LAWS NB01 acquire INT-003
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize]
     paths:
-      - '.github/workflows/nb01-acquire-int003.yml'
+      - '86_NOTEBOOKLM/.acquisition-trigger-nb01-int003'
 
 permissions:
   contents: write
 
 jobs:
   acquire:
-    if: ${{ !contains(github.event.head_commit.message, '[acq-skip]') }}
+    if: ${{ github.event.pull_request.head.ref == 'acq/nb01-int003' }}
     runs-on: ubuntu-latest
     env:
       BATCH_ID: NB-BATCH-NB01-20260913-001
@@ -19,9 +20,10 @@ jobs:
       OUT_FILE: INT-003__UNESCO__41C_RECOMMENDATION_2021__2022.pdf
       SOURCE_URL: https://unesdoc.unesco.org/in/rest/annotationSVC/DownloadWatermarkedAttachment/attach_import_e86c4b5d-5af9-4e15-be60-82f1a09956fd?_=381137eng.pdf
     steps:
-      - name: Checkout triggering commit
+      - name: Checkout current main
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Download official UNESCO PDF
@@ -126,7 +128,7 @@ jobs:
           )
           PY
 
-      - name: Commit acquired source and ledger
+      - name: Commit acquired source and ledger to main
         shell: bash
         run: |
           set -euo pipefail
