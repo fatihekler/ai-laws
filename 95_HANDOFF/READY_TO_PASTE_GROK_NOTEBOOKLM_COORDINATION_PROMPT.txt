@@ -1,0 +1,96 @@
+@GitHub @Web search
+
+Bu sohbet `fatihekler/ai-laws` repository'sinde Grok + ChatGPT + NotebookLM/Gemini Notebook araştırma koordinasyonu içindir.
+
+ÖNCE HİÇBİR MUTATION YAPMA.
+
+Repository:
+`fatihekler/ai-laws`
+
+Branch:
+`main`
+
+İlk olarak current HEAD/TREE'yi fresh-read et.
+
+Sonra exact oku:
+
+1. `00_CONTROL/NEW_CHAT_BOOTSTRAP.md`
+2. `00_CONTROL/SOURCE_OF_TRUTH_AND_AUTHORITY.md`
+3. `00_CONTROL/RESEARCH_MUTATION_AND_ACCEPTANCE_GATE.md`
+4. `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`
+5. `85_RESEARCH_ASSISTANTS/GROK_CHATGPT_COLLABORATION_PROTOCOL.md`
+6. `85_RESEARCH_ASSISTANTS/GROK_READY_TO_PASTE_MASTER_INSTRUCTION.txt`
+7. `85_RESEARCH_ASSISTANTS/GROK_RESEARCH_QUERY_CATALOG.md`
+8. `85_RESEARCH_ASSISTANTS/MODEL_HANDOFF_CLAIM_SCHEMA.yaml`
+9. `86_NOTEBOOKLM/README.md`
+10. `86_NOTEBOOKLM/NOTEBOOKLM_CORPUS_ARCHITECTURE.md`
+11. `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_POLICY.md`
+12. `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv`
+13. `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv`
+14. `86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md`
+15. `86_NOTEBOOKLM/NOTEBOOKLM_UPLOAD_AND_REFRESH_CHECKLIST.md`
+16. `86_NOTEBOOKLM/NOTEBOOKLM_RESEARCH_QUESTION_CATALOG.md`
+17. `86_NOTEBOOKLM/NOTEBOOKLM_READY_TO_PASTE_MASTER_INSTRUCTION.txt`
+18. `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`
+
+TEMEL KURAL:
+
+MODEL_A_CONFIRMS_MODEL_B != INDEPENDENT_VERIFICATION
+
+GROK = adversarial supporting researcher.
+CHATGPT = repository steward/reconciler when authorized.
+NOTEBOOK = source-grounded synthesis workspace.
+YARGIGPT = specialist source-discovery tool only.
+HUMAN LEGAL REVIEW = material legal conclusions/action decisions için ayrıca gerekir.
+
+Doğru evidence chain:
+
+MODEL_OUTPUT
+→ SOURCE_POINTERS
+→ PRIMARY/OFFICIAL/INDEPENDENT_SOURCE
+→ VERIFIED_AI_LAWS_CLAIM
+
+Grok çıktısı geldiğinde:
+- claim bazında ayrıştır;
+- current official sources ile doğrula;
+- contrary/limiting sources ara;
+- current law / guidance / soft law / proposal / allegation / incident ayrımını koru;
+- circular model citation üretme;
+- legal guilt/liability finding üretme;
+- append-only research olarak kaydet;
+- explicit bounded unit sonunda STOP et.
+
+Notebook kurulacaksa:
+- tek dev notebook yerine NB00–NB09 source packs kullan;
+- source manifestte `UPLOAD NOW`, `AFTER SOURCE PIN`, `METADATA ONLY` ayrımını koru;
+- local download yaptıysan SHA-256 ve retrieval metadata kaydet;
+- primary-law notebook'a model-generated answer'ı primary authority gibi yükleme;
+- privileged/private/secrets/classified/paywalled-unlicensed full text yükleme;
+- currentness/effective date kontrol et.
+
+Current preferred legal-research next unit:
+`AI-LAWS-R003 — EU AI ACT CURRENT CONSOLIDATED / PHASED-APPLICATION LEGAL MAP`
+
+Bu coordination prompt R003'ü otomatik yetkilendirmez.
+
+Continuity cevabında exact:
+
+REPOSITORY
+BRANCH
+CURRENT_HEAD
+CURRENT_TREE
+R001_STATE
+R021_STATE
+GROK_PROTOCOL_STATE
+NOTEBOOKLM_PROTOCOL_STATE
+SOURCE_MANIFEST_STATE
+CURRENT_NEXT_BOUNDED_UNIT
+LEGAL_ADVICE_STATE
+AUTO_ADVANCE
+
+Son satırlar:
+
+LEGAL_ADVICE = NO
+MODEL_OUTPUT_CANONICAL = NO
+UNKNOWN_PRESERVED = YES
+AUTO_ADVANCE = NO
