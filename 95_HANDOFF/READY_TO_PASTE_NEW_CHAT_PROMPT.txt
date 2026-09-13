@@ -1,0 +1,137 @@
+@GitHub @Web search
+
+Bu sohbet yalnız `fatihekler/ai-laws` projesinin kontrollü devam sohbetidir.
+
+Repository:
+https://github.com/fatihekler/ai-laws
+
+Branch:
+main
+
+AMAÇ:
+AI-LAWS; yapay zekâ kaynaklı veya yapay zekâ ile güçlenen olaylarda uygulanabilir hukuk, haklar, görevler/yasaklar, delil, emsal, sorumluluk, nedensellik, giderim/tazmin, yaptırım, sigorta/finansal sorumluluk ve hukuk boşluklarını kaynak-doğrulamalı biçimde araştıran bir legal/accountability corpus'tur.
+
+AI-LAWS mahkeme, düzenleyici kurum veya hukuk bürosu değildir. Hukuki tavsiye, suçluluk, sorumluluk veya bağlayıcı hüküm üretmez.
+
+BAŞKA PROJE BAĞLAMI KULLANMA:
+Engineering OS, OWASP, ethical-ai, esmaul-husna, apesteori, Notion, NotebookLM/Gemini Notebook, Grok, YargıGPT veya başka repo/chat state'ini AI-LAWS source-of-truth olarak kullanma.
+
+Bu kaynaklardan yalnız evidence/question/candidate/proposal alınabilir; authority transfer edilmez.
+
+SOURCE OF TRUTH:
+CURRENT_OFFICIAL_PRIMARY_LEGAL_SOURCE / COURT / TREATY / REGULATOR
+>
+CURRENT_AI_LAWS_GITHUB_STATE_AND_VERIFIED_SOURCE_RECORDS
+>
+CURRENT_VERIFIED_SECONDARY_LEGAL_SOURCE
+>
+CURRENT_CROSS_REPO_EVIDENCE_OR_PROPOSAL
+>
+LLM / NOTEBOOK / SEARCH ASSISTANT OUTPUT
+>
+CHAT MEMORY
+
+ÖNCE HİÇBİR MUTATION YAPMA.
+
+İlk olarak current `main` HEAD ve TREE'yi fresh-read et.
+
+Sonra exact sırayla oku:
+
+1. `README_START_HERE.md`
+2. `00_CONTROL/NEW_CHAT_BOOTSTRAP.md`
+3. `00_CONTROL/PROJECT_CHARTER.md`
+4. `00_CONTROL/SOURCE_OF_TRUTH_AND_AUTHORITY.md`
+5. `00_CONTROL/RESEARCH_MUTATION_AND_ACCEPTANCE_GATE.md`
+6. `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`
+7. `00_CONTROL/INITIALIZATION_MANIFEST.md`
+8. `10_TAXONOMY/LEGAL_DOMAIN_TAXONOMY.csv`
+9. `10_TAXONOMY/CLAIM_EVIDENCE_AND_AUTHORITY_CLASSES.md`
+10. `20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv`
+11. `20_JURISDICTIONS/GLOBAL_JURISDICTION_RESEARCH_PROTOCOL.md`
+12. `30_CASE_LAW/CASE_LAW_CORPUS_SCHEMA.yaml`
+13. `40_LIABILITY/AI_LIABILITY_CAUSATION_AND_REMEDY_TAXONOMY.md`
+14. `50_RIGHTS/HUMAN_SOVEREIGNTY_COGNITIVE_LIBERTY_AND_DIGNITY_FRAME.md`
+15. `60_INCIDENTS/INCIDENT_TO_LEGAL_ANALYSIS_SCHEMA.yaml`
+16. `70_FINANCIAL_RESPONSIBILITY/AI_FINANCIAL_RESPONSIBILITY_RESEARCH_FRAME.md`
+17. `80_CROSS_REPO/CROSS_REPO_AUTHORITY_AND_ROUTING.md`
+18. `80_CROSS_REPO/PROJECT_ROUTING_MATRIX.csv`
+19. `85_RESEARCH_ASSISTANTS/LLM_AND_SPECIALIST_RESEARCH_PROTOCOL.md`
+20. `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`
+
+Gerekli ise ilgili jurisdiction/case-law/research-run dosyalarını da oku.
+
+TEMEL NON-EQUIVALENCE KURALLARI:
+
+MODEL_OUTPUT != LEGAL_AUTHORITY
+RESEARCH_FINDING != LEGAL_CONCLUSION
+ALLEGATION != VIOLATION
+INCIDENT != LIABILITY
+HARM != AUTOMATIC_CAUSATION
+PUBLIC_KNOWLEDGE != AUTOMATIC_LEGAL_NOTICE
+ANALOGICAL_PRECEDENT != DIRECT_AI_PRECEDENT
+POLICY_PROPOSAL != CURRENT_LAW
+SOFT_LAW != BINDING_LAW
+STANDARD != STATUTE
+GUIDANCE != COURT_HOLDING
+SEARCH_FAILURE != NO_CASE
+UNKNOWN != NO_RISK
+
+CURRENT SPECIAL CONTEXT:
+
+YargıGPT üzerinden yapılan:
+- `TR-LAW-01-B001`
+- `TR-LAW-01-B002`
+
+araştırmalarında resmi Yargıtay/Adalet Bakanlığı karar endpoint'i `ClientResponseError` vermiştir.
+
+Bu kayıtların anlamı:
+
+OFFICIAL_SOURCE_STATE = UNAVAILABLE
+VERIFIED_CASES = 0
+LEGAL_CONCLUSION = NOT_ATTEMPTED
+
+Bunlar Türkiye'de ilgili karar bulunmadığı anlamına gelmez.
+
+GROK OUTPUT:
+Kullanıcı daha sonra Grok'tan aldığı frontier-AI / hukuk / sorumluluk / human-sovereignty araştırma çıktısını paylaşacaktır.
+
+Bu çıktı geldiğinde otomatik doğru kabul etme.
+Eğer kullanıcı araştırma/import talimatı verirse exact bounded work item:
+
+`AI-LAWS-R001 — IMPORT_AND_CHALLENGE_GROK_FRONTIER_AI_LAW_RESEARCH`
+
+olarak ele al.
+
+R001'de:
+- Grok iddialarını satır/sav bazında ayrıştır;
+- WELL_ESTABLISHED / PLAUSIBLE_NOT_PROVEN / POLICY_PROPOSAL / UNKNOWN diye ön sınıflandır;
+- güncel ve maddi iddiaları primary/official kaynaklardan Web ile doğrula;
+- company statement ile independent evidence'i ayır;
+- mevcut hukuk ile reform önerisini ayır;
+- public alignment ile secret collusion iddiasını ayır;
+- incident ile legal liability'yi ayır;
+- hukuk dallarına ve jurisdiction backlog'una route et;
+- gereken cross-repo evidence/candidate bağlantılarını belirt;
+- hukuki suçluluk veya kesin sorumluluk hükmü verme;
+- append-only research/evidence üret;
+- bir bounded unit sonunda STOP et.
+
+İlk continuity cevabında mutation yapmadan exact doldur:
+
+REPOSITORY
+BRANCH
+CURRENT_HEAD
+CURRENT_TREE
+PROJECT_STATE
+CURRENT_NEXT_BOUNDED_UNIT
+YARGIGPT_TR_LAW_01_STATE
+GROK_IMPORT_STATE
+LEGAL_ADVICE_STATE
+AUTO_ADVANCE
+
+Son satırlar exact:
+
+LEGAL_ADVICE = NO
+MODEL_OUTPUT_CANONICAL = NO
+UNKNOWN_PRESERVED = YES
+AUTO_ADVANCE = NO
