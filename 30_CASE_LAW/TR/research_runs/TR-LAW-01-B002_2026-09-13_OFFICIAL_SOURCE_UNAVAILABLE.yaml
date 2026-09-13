@@ -1,0 +1,82 @@
+research_session:
+  jurisdiction: TR
+  research_date: 2026-09-13
+  researcher_system: YargiGPT
+  source_policy: OFFICIAL_SOURCE_REQUIRED
+  full_text_verification_required: true
+  official_api_state: UNAVAILABLE
+
+batch:
+  id: TR-LAW-01-B002
+  topic_id: TR-LAW-01
+  topic_name: Yazılım ve otomatik sistem zararı
+  derived_from: TR-LAW-01-B001
+  result_state: UNKNOWN_API_UNAVAILABLE
+  legal_conclusion: NOT_ATTEMPTED
+
+search:
+  attempted_queries:
+    - '"program hatası"'
+    - '"bilgi işlem sistemi" AND zarar'
+    - '"otomatik sistem" AND sorumluluk'
+    - '"elektronik sistem" AND kusur'
+  query_syntax_observations:
+    phrase_syntax_behavior: UNKNOWN
+    and_operator_behavior: UNKNOWN
+    reason: Endpoint failure prevented evaluation of search semantics.
+  next_query_set:
+    - '"otomasyon hatası"'
+    - '"elektronik sistem arızası"'
+    - 'algoritmik AND işlem'
+    - 'otomatik AND işlem AND zarar'
+
+research_interruption:
+  state: OFFICIAL_SOURCE_UNAVAILABLE
+  endpoint_type: Adalet Bakanlığı / Yargıtay karar arama API
+  error_class: ClientResponseError
+  retry_count: 4
+  decisions_verified_before_failure: 0
+  legal_claims_created_after_failure: 0
+
+special_research_question:
+  question: Türk yargı kararlarında klasik yazılım, bilgi işlem veya otomatik sistem kaynaklı zararlarda sistem hatası ile işletici/sağlayıcı/kurumun hukuki sorumluluğu arasındaki bağlantı nasıl kurulmaktadır?
+  result_state: UNKNOWN_API_UNAVAILABLE
+  legal_conclusion: NOT_ATTEMPTED
+
+unresolved_concepts:
+  SOFTWARE_OR_SYSTEM_DEFECT: UNKNOWN
+  HUMAN_OPERATION_ERROR: UNKNOWN
+  ORGANIZATIONAL_FAILURE: UNKNOWN
+  MAINTENANCE_OR_UPDATE_FAILURE: UNKNOWN
+  SECURITY_FAILURE: UNKNOWN
+  THIRD_PARTY_INTERVENTION: UNKNOWN
+  FORESEEABILITY: UNKNOWN
+  DUTY_OF_CARE: UNKNOWN
+  CAUSATION: UNKNOWN
+  DAMAGE: UNKNOWN
+
+results:
+  candidates_reviewed: 0
+  full_texts_verified: 0
+  directly_relevant_count: 0
+  analogical_precedent_count: 0
+  not_relevant_count: 0
+  unknown_count: UNKNOWN_API_UNAVAILABLE
+
+integrity:
+  search_failure_is_no_case: false
+  absence_of_ai_cases_inferred: false
+  unverified_decisions_included: 0
+  ai_precedent_inferred_from_analogy: false
+  unknown_preserved: true
+  legal_advice_provided: false
+  canonical: false
+
+loop_control:
+  repeated_official_source_failure_count: 2
+  recommendation: If a later independent-time retry again produces no new information, mark TR-LAW-01 BLOCKED_BY_OFFICIAL_SOURCE_AVAILABILITY and reroute rather than endlessly repeating identical queries.
+
+next_state:
+  topic_closed: false
+  next_bounded_topic: TR-LAW-01
+  auto_advance: false
