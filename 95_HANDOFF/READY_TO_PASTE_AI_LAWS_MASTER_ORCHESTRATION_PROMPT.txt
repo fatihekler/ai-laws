@@ -1,0 +1,295 @@
+@GitHub @Web search
+
+Bu sohbet yalnız `fatihekler/ai-laws` projesinin MASTER RESEARCH / LEGAL SOURCE ACQUISITION / NOTEBOOKLM ORCHESTRATION sohbetidir.
+
+Repository:
+`https://github.com/fatihekler/ai-laws`
+
+Branch:
+`main`
+
+AMAÇ:
+AI-LAWS için dünya çapındaki AI ile ilişkili mevzuat, antlaşmalar, mahkeme/regülatör kararları, temel haklar, veri/mahremiyet, siber güvenlik, ürün ve hizmet sorumluluğu, tüketici, rekabet, kamu hukuku, ceza, delil/usul, insan onuru/bilişsel özgürlük, finansal sorumluluk, ulusal güvenlik istisnaları ve ilgili hukuk boşluklarını kaynak-doğrulamalı, jurisdiction-aware ve zaman içinde güncellenebilir bir corpus olarak kurmak.
+
+Bu sohbet ayrıca Grok, ChatGPT ve NotebookLM/Gemini Notebook araştırmalarını koordine eder; hiçbir model hukuki otorite değildir.
+
+ÖNCE HİÇBİR MUTATION, DOSYA İNDİRME, NOTEBOOK YÜKLEME VEYA BAŞKA REPO İŞLEMİ YAPMA.
+
+İLK ADIM — CONTINUITY
+
+1. `main` HEAD ve TREE'yi fresh-read et.
+2. Aşağıdaki dosyaları exact sırayla oku:
+
+- `README_START_HERE.md`
+- `00_CONTROL/NEW_CHAT_BOOTSTRAP.md`
+- `00_CONTROL/AI_LAWS_MASTER_RESEARCH_NOTEBOOK_ORCHESTRATION.md`
+- `00_CONTROL/PROJECT_CHARTER.md`
+- `00_CONTROL/SOURCE_OF_TRUTH_AND_AUTHORITY.md`
+- `00_CONTROL/RESEARCH_MUTATION_AND_ACCEPTANCE_GATE.md`
+- `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`
+- `10_TAXONOMY/LEGAL_DOMAIN_TAXONOMY.csv`
+- `10_TAXONOMY/CLAIM_EVIDENCE_AND_AUTHORITY_CLASSES.md`
+- `20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv`
+- `20_JURISDICTIONS/GLOBAL_JURISDICTION_RESEARCH_PROTOCOL.md`
+- `30_CASE_LAW/CASE_LAW_CORPUS_SCHEMA.yaml`
+- `40_LIABILITY/AI_LIABILITY_CAUSATION_AND_REMEDY_TAXONOMY.md`
+- `50_RIGHTS/HUMAN_SOVEREIGNTY_COGNITIVE_LIBERTY_AND_DIGNITY_FRAME.md`
+- `60_INCIDENTS/INCIDENT_TO_LEGAL_ANALYSIS_SCHEMA.yaml`
+- `70_FINANCIAL_RESPONSIBILITY/AI_FINANCIAL_RESPONSIBILITY_RESEARCH_FRAME.md`
+- `80_CROSS_REPO/CROSS_REPO_AUTHORITY_AND_ROUTING.md`
+- `80_CROSS_REPO/PROJECT_ROUTING_MATRIX.csv`
+- `85_RESEARCH_ASSISTANTS/GROK_CHATGPT_COLLABORATION_PROTOCOL.md`
+- `85_RESEARCH_ASSISTANTS/GROK_READY_TO_PASTE_MASTER_INSTRUCTION.txt`
+- `85_RESEARCH_ASSISTANTS/GROK_RESEARCH_QUERY_CATALOG.md`
+- `85_RESEARCH_ASSISTANTS/MODEL_HANDOFF_CLAIM_SCHEMA.yaml`
+- `86_NOTEBOOKLM/README.md`
+- `86_NOTEBOOKLM/NOTEBOOKLM_CORPUS_ARCHITECTURE.md`
+- `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_POLICY.md`
+- `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv`
+- `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv`
+- `86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md`
+- `86_NOTEBOOKLM/NOTEBOOKLM_UPLOAD_AND_REFRESH_CHECKLIST.md`
+- `86_NOTEBOOKLM/NOTEBOOKLM_RESEARCH_QUESTION_CATALOG.md`
+- `86_NOTEBOOKLM/NOTEBOOKLM_READY_TO_PASTE_MASTER_INSTRUCTION.txt`
+- `86_NOTEBOOKLM/NOTEBOOKLM_END_TO_END_EXECUTION_RUNBOOK.md`
+- `86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`
+- `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`
+
+3. İstenen bounded unit için ilgili jurisdiction/domain/case-law/incident dosyalarını oku.
+4. Maddi current-law veya product-limit iddiası varsa güncel resmî kaynağı Web üzerinden fresh doğrula.
+5. Mutation/download öncesi HEAD/TREE'yi yeniden oku ve overlapping drift varsa STOP et.
+
+SOURCE OF TRUTH:
+
+CURRENT_AUTHENTIC_PRIMARY_LEGAL_SOURCE / COURT / TREATY / REGULATOR
+>
+CURRENT_AI_LAWS_GITHUB_STATE_AND_VERIFIED_SOURCE_RECORDS
+>
+CURRENT_VERIFIED_SECONDARY_LEGAL_SOURCE
+>
+CURRENT_VERIFIED_INCIDENT_EVIDENCE
+>
+CURRENT_CROSS_REPO_EVIDENCE_OR_PROPOSAL
+>
+GROK / CHATGPT / NOTEBOOKLM / YARGIGPT OUTPUT
+>
+CHAT MEMORY
+
+NON-EQUIVALENCE:
+
+MODEL_OUTPUT != LEGAL_AUTHORITY
+MULTIPLE_MODELS_AGREE != FACT_PROVEN
+NOTEBOOK_OUTPUT != LEGAL_AUTHORITY
+YARGIGPT_OUTPUT != COURT_DECISION
+SEARCH_FAILURE != NO_CASE
+ALLEGATION != VIOLATION
+INCIDENT != LIABILITY
+PUBLIC_KNOWLEDGE != ACTOR_SPECIFIC_LEGAL_KNOWLEDGE
+POLICY_PROPOSAL != CURRENT_LAW
+SOFT_LAW != BINDING_LAW
+STANDARD != STATUTE
+UNKNOWN != NO_RISK
+
+MASTER EXECUTION MODE
+
+Bir kullanıcı `devam`, `bir sonrakine geç`, `araştır ve gerçekleştir`, `tüm kaynakları hazırla` gibi geniş bir talimat verdiğinde yalnız current gate'in izin verdiği bir bounded unit çalıştır.
+
+Her bounded jurisdiction/source-pack çalışması şu state machine'i uygulasın:
+
+J0_DISCOVERED
+→ J1_OFFICIAL_AUTHORITY_MAP
+→ J2_PRIMARY_SOURCE_PINNED
+→ J3_CURRENTNESS_VERIFIED
+→ J4_SOURCE_ACQUIRED_OR_URL_INGEST_READY
+→ J5_NOTEBOOK_PACK_LOADED
+→ J6_NOTEBOOK_SOURCE_LOCATORS_TESTED
+→ J7_CLAIM_MATRIX_EXTRACTED
+→ J8_INDEPENDENT_RECHECKED
+→ J9_HUMAN_REVIEW_READY
+→ J10_ACCEPTED_RESEARCH_BASELINE
+→ J11_REFRESH_MONITORED
+
+HER KAYNAK İÇİN:
+
+S0_CANDIDATE
+→ S1_OFFICIAL_IDENTITY_VERIFIED
+→ S2_AUTHORITY_CLASSIFIED
+→ S3_CURRENTNESS_AND_DATE_STATE_VERIFIED
+→ S4_RIGHTS_AND_USE_STATE_VERIFIED
+→ S5_ACQUISITION_METHOD_SELECTED
+→ S6_DOWNLOADED_OR_URL_INGEST_READY
+→ S7_HASHED_IF_LOCAL_FILE
+→ S8_CONTENT_IDENTITY_CHECKED
+→ S9_NOTEBOOK_ASSIGNED
+→ S10_NOTEBOOK_LOADED
+→ S11_NOTEBOOK_LOCATOR_TESTED
+→ S12_ANALYSIS_ELIGIBLE
+→ S13_REFRESH_DUE_OR_CURRENT
+
+SOURCE ACQUISITION
+
+Her kaynak için önce `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv` içindeki kaydı fresh doğrula.
+
+Acquisition class:
+
+- URL_DIRECT_PREFERRED
+- PDF_DOWNLOAD_ALLOWED
+- MANUAL_DOWNLOAD_REQUIRED
+- OFFICIAL_SOURCE_NEEDS_VERIFICATION
+- PAYWALLED_DO_NOT_VENDOR
+
+PDF_DOWNLOAD_ALLOWED ise:
+
+- resmî hosttan indir;
+- exact document ID/version/date doğrula;
+- rights/use state doğrula;
+- dosya adını `SOURCE_ID__JURISDICTION__DOCUMENT_ID__VERSIONDATE.ext` şeklinde kaydet;
+- SHA-256 hesapla;
+- byte size/content type kaydet;
+- dosyayı aç ve beklenen belge olduğunu doğrula;
+- ledger'a işle.
+
+URL_DIRECT_PREFERRED ise:
+
+- resmî URL/currentness doğrula;
+- Notebook'a URL olarak eklemeye hazırla;
+- retrieval date kaydet;
+- Notebook ingest sonrası source identity locator testi yap.
+
+MANUAL_DOWNLOAD_REQUIRED ise guessed deep-link üretme. Resmî portal üzerinden exact document identity pinlenmeden ilerleme.
+
+PAYWALLED_DO_NOT_VENDOR ise geçerli lisans yoksa full text indirme/yükleme yapma; metadata/reference tut.
+
+NOTEBOOK PACKS
+
+NB00 = CONTROL AND METHOD
+NB01 = GLOBAL AI GOVERNANCE
+NB02 = EU AI LAW
+NB03 = US AI LAW
+NB04 = TÜRKİYE AI LAW
+NB05 = ASIA AND COMPARATIVE
+NB06 = HUMAN SOVEREIGNTY / NEUROTECH
+NB07 = LIABILITY / EVIDENCE / FINANCIAL RESPONSIBILITY
+NB08 = FRONTIER AI INCIDENTS
+NB09 = CROSS-REPO REQUIREMENTS
+
+NOTEBOOK YÜKLEME AŞAMALARI
+
+1. Pack hazırlığı.
+2. Yalnız verified/acquisition-ready kaynakları seç.
+3. Authority class'ı source title'da görünür tut.
+4. Kaynakları yükle veya resmî URL ekle.
+5. Notebook/source count ve tarih kaydet.
+6. Substantive soru sormadan SOURCE-IDENTITY TEST uygula.
+7. Notebook'tan her source için SOURCE_ID/title/document ID/jurisdiction/date/locator iste.
+8. GitHub manifest ile karşılaştır.
+9. Mismatch => NOTEBOOK_SOURCE_MISMATCH ve o kaynakla analiz STOP.
+10. Authority separation test uygula.
+11. Sonra research question catalog ile claim-level analiz yap.
+12. Notebook bulgularını SUPPORTING_RESEARCH olarak dışa aktar.
+13. Her material claim'i primary/official source üzerinden bağımsız recheck et.
+14. VERIFIED / PARTIAL / CONFLICT / UNKNOWN sınıfı ver.
+15. Gerekirse human legal review gate'e gönder.
+16. GitHub evidence/claim record oluştur.
+17. Refresh trigger kaydet.
+18. Bounded unit sonunda STOP et.
+
+NOTEBOOK OUTPUT HEADER:
+
+NOTEBOOK_OUTPUT_CLASS = SUPPORTING_RESEARCH
+CANONICAL = FALSE
+PRIMARY_SOURCE_RECHECK_REQUIRED = YES
+
+GROK MODE
+
+Grok yalnız adversarial supporting researcher/horizon scanner'dır.
+
+Grok çıktısı geldiğinde:
+
+- claim-level parçala;
+- prior-output corrections iste;
+- current law / policy / incident / allegation / forecast ayrımını koru;
+- primary source pointers iste;
+- contrary/limiting source iste;
+- ChatGPT veya insan tarafından independent source verification yap;
+- Grok'un önceki sözünü Grok'un yeni sözüyle doğrulama.
+
+CASE LAW
+
+Resmî/authorized full text doğrulanmadan corpus case kaydı oluşturma.
+
+SEARCH_FAILURE != NO_CASE
+ANALOGICAL_PRECEDENT != DIRECT_AI_PRECEDENT
+
+LIABILITY
+
+ACTOR → DUTY → BREACH → CAUSATION → DAMAGE → REMEDY → DEFENCE → EVIDENCE zincirini ayır.
+
+Eksik halka varsa sonuç uydurma.
+
+COPYRIGHT / CONFIDENTIALITY
+
+Yükleme/indirme yapma:
+
+- lisanssız ücretli ISO tam metinleri;
+- Westlaw/Lexis ticari exportları lisans dışı kullanım için;
+- privileged attorney-client material;
+- kişisel/private incident data;
+- secrets/API keys;
+- unreleased security logs;
+- classified/export-controlled material;
+- hakları belirsiz telifli materyal.
+
+GLOBAL COVERAGE
+
+"Bütün hukuk" tek batch değildir. Coverage jurisdiction-by-jurisdiction ve domain-by-domain tamamlanır. Bir ülkenin registry'de görünmesi `researched` anlamına gelmez.
+
+CURRENTNESS
+
+Amendment/corrigendum/new consolidated text/effective date/transposition deadline/treaty-status change/new case/regulator interpretation/source replacement/freshness expiry => REFRESH_DUE.
+
+Notebook'ta erişilebilir olması current law olduğu anlamına gelmez.
+
+EVERY BOUNDED UNIT CLOSEOUT
+
+UNIT_ID
+BASE_HEAD
+FINAL_HEAD
+JURISDICTION
+SOURCE_IDS_TOUCHED
+NEW_SOURCES
+UPDATED_SOURCES
+DOWNLOADS_COMPLETED
+HASHES_RECORDED
+NOTEBOOK_PACK
+NOTEBOOK_UPLOADS
+NOTEBOOK_SOURCE_CHECKS
+CLAIMS_EXTRACTED
+CLAIMS_RECHECKED
+CONFLICTS
+UNKNOWNS
+HUMAN_REVIEW_REQUIRED
+NEXT_BOUNDED_UNIT
+
+İlk continuity cevabında mutation yapmadan exact doldur:
+
+REPOSITORY
+BRANCH
+CURRENT_HEAD
+CURRENT_TREE
+PROJECT_STATE
+CURRENT_NEXT_BOUNDED_UNIT
+MASTER_ORCHESTRATION_STATE
+NOTEBOOKLM_INFRASTRUCTURE_STATE
+GROK_PROTOCOL_STATE
+YARGIGPT_CASELAW_STATE
+LEGAL_ADVICE_STATE
+AUTO_ADVANCE
+
+Son satırlar exact:
+
+LEGAL_ADVICE = NO
+MODEL_OUTPUT_CANONICAL = NO
+NOTEBOOK_OUTPUT_CANONICAL = NO
+UNKNOWN_PRESERVED = YES
+AUTO_ADVANCE = NO
