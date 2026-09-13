@@ -1,0 +1,55 @@
+research_session:
+  jurisdiction: TR
+  research_date: 2026-09-13
+  researcher_system: YargiGPT
+  source_policy: OFFICIAL_SOURCE_REQUIRED
+  full_text_verification_required: true
+  official_api_state: UNAVAILABLE
+
+batch:
+  id: TR-LAW-01-B001
+  topic_id: TR-LAW-01
+  topic_name: Yazılım ve otomatik sistem zararı
+  result_state: UNKNOWN_API_UNAVAILABLE
+  legal_conclusion: NOT_ATTEMPTED
+
+search:
+  attempted_queries:
+    - '"yazılım hatası"'
+    - 'yazılım hatası'
+    - 'yazılım AND hata'
+  next_query_set:
+    - '"program hatası"'
+    - '"bilgi işlem sistemi" AND zarar'
+    - '"otomatik sistem" AND sorumluluk'
+    - '"elektronik sistem" AND kusur'
+
+research_interruption:
+  state: OFFICIAL_SOURCE_UNAVAILABLE
+  endpoint_type: Adalet Bakanlığı / Yargıtay karar arama API
+  error_class: ClientResponseError
+  retry_count: 3
+  decisions_verified_before_failure: 0
+  legal_claims_created_after_failure: 0
+
+results:
+  candidates_reviewed: 0
+  full_texts_verified: 0
+  directly_relevant_count: 0
+  analogical_precedent_count: 0
+  not_relevant_count: 0
+  unknown_count: UNKNOWN_API_UNAVAILABLE
+
+integrity:
+  search_failure_is_no_case: false
+  absence_of_ai_cases_inferred: false
+  unverified_decisions_included: 0
+  ai_precedent_inferred_from_analogy: false
+  unknown_preserved: true
+  legal_advice_provided: false
+  canonical: false
+
+next_state:
+  topic_closed: false
+  next_bounded_topic: TR-LAW-01
+  auto_advance: false
