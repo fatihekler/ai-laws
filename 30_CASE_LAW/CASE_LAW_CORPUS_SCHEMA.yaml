@@ -1,0 +1,99 @@
+schema_version: 1.0.0
+schema_name: AI-LAWS Case Law Corpus Record
+
+required_integrity_rules:
+  - NO_OFFICIAL_OR_ACCEPTED_AUTHORITATIVE_FULL_TEXT__NO_VERIFIED_CASE_RECORD
+  - SEARCH_FAILURE_IS_NOT_NO_CASE
+  - ANALOGICAL_PRECEDENT_IS_NOT_DIRECT_AI_PRECEDENT
+  - COURT_HOLDING_MUST_BE_SEPARATED_FROM_RESEARCHER_INTERPRETATION
+  - UNKNOWN_MUST_BE_PRESERVED
+
+record:
+  case_id: REQUIRED
+  jurisdiction: REQUIRED
+  source_type: COURT_PRECEDENT
+
+  relevance_class:
+    allowed:
+      - DIRECTLY_RELEVANT
+      - ANALOGICAL_PRECEDENT
+      - NOT_RELEVANT
+      - UNKNOWN
+
+  identity:
+    court: UNKNOWN_ALLOWED
+    chamber: UNKNOWN_ALLOWED
+    docket_no: UNKNOWN_ALLOWED
+    decision_no: UNKNOWN_ALLOWED
+    decision_date: UNKNOWN_ALLOWED
+    publication_date: UNKNOWN_ALLOWED
+    official_decision_url: UNKNOWN_ALLOWED
+    official_verification_source: REQUIRED_FOR_VERIFIED_ENTRY
+    retrieval_date: REQUIRED_FOR_VERIFIED_ENTRY
+
+  authority:
+    precedential_type: UNKNOWN_ALLOWED
+    binding_effect: UNKNOWN_ALLOWED
+    hierarchy_level: UNKNOWN_ALLOWED
+    later_treatment: UNKNOWN_ALLOWED
+
+  dispute:
+    subject: REQUIRED_FOR_VERIFIED_ENTRY
+    facts_summary: REQUIRED_FOR_VERIFIED_ENTRY
+    parties_generalized: OPTIONAL
+    procedural_posture: UNKNOWN_ALLOWED
+
+  legal_basis:
+    provisions:
+      - instrument: UNKNOWN_ALLOWED
+        article: UNKNOWN_ALLOWED
+        role: UNKNOWN_ALLOWED
+
+  court_content:
+    holding: REQUIRED_FOR_VERIFIED_ENTRY
+    reasoning_summary: REQUIRED_FOR_VERIFIED_ENTRY
+    result: REQUIRED_FOR_VERIFIED_ENTRY
+    direct_quotes:
+      rule: SHORT_ONLY
+      source_locator_required: true
+
+  evidence_and_procedure:
+    material_facts: []
+    evidentiary_issue: UNKNOWN_ALLOWED
+    burden_of_proof_issue: UNKNOWN_ALLOWED
+    missing_records_issue: UNKNOWN_ALLOWED
+    logging_or_preservation_issue: UNKNOWN_ALLOWED
+
+  liability_elements:
+    actor: UNKNOWN_ALLOWED
+    duty: UNKNOWN_ALLOWED
+    breach: UNKNOWN_ALLOWED
+    foreseeability: UNKNOWN_ALLOWED
+    causation: UNKNOWN_ALLOWED
+    damage: UNKNOWN_ALLOWED
+    defences: UNKNOWN_ALLOWED
+    allocation_among_multiple_actors: UNKNOWN_ALLOWED
+
+  ai_relevance:
+    direct_ai_issue: false
+    analogy_targets: []
+    analogous_element: REQUIRED_IF_ANALOGICAL
+    analogy_limit: REQUIRED_IF_ANALOGICAL
+    prohibited_label_inference: "ANALOGICAL_PRECEDENT != AI_PRECEDENT"
+
+  research:
+    search_terms: []
+    full_text_verified: false
+    official_source_verified: false
+    verification_date: UNKNOWN_ALLOWED
+    researcher: UNKNOWN_ALLOWED
+    model_assistance: OPTIONAL
+    notes: UNKNOWN_ALLOWED
+
+  confidence:
+    factual_identity: HIGH_MEDIUM_LOW_UNKNOWN
+    legal_analogy: HIGH_MEDIUM_LOW_UNKNOWN
+
+  review:
+    human_legal_review_state: NOT_REVIEWED
+    canonical: false
