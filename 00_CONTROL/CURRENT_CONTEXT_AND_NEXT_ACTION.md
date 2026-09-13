@@ -3,54 +3,71 @@
 **UPDATED:** 2026-09-13
 **REPOSITORY:** `fatihekler/ai-laws`
 **BRANCH:** `main`
-**STATE:** INITIAL_CONTROL_PLANE_BUILD
+**STATE:** INITIAL_CONTROL_PLANE_COMPLETE
 **AUTO_ADVANCE:** NO
 
-## Current project position
+## 1. Current project position
 
-AI-LAWS has been created as a distinct legal/accountability research project. It does not replace Engineering OS, OWASP, Ethical-AI, Esmaul Husna or Apesteori.
+AI-LAWS is established as a distinct legal/accountability research project. It does not replace Engineering OS, OWASP, Ethical-AI, Esmaul Husna or Apesteori.
 
-Initial construction priorities:
+Initial repository scaffolding is complete for:
 
-1. establish legal-source and authority hierarchy;
-2. establish legal-domain and jurisdiction taxonomies;
-3. establish verified case-law corpus rules;
-4. preserve the two YargıGPT Turkish case-law API failures as research interruption evidence;
-5. establish liability, rights, incident, evidence, remedy and financial-responsibility research frames;
-6. establish cross-repo routing and authority firewall;
-7. establish research-assistant protocol for ChatGPT, Grok, YargıGPT and Notebook/Gemini Notebook;
-8. establish an initial global research queue.
+- legal-source and authority hierarchy;
+- legal-domain taxonomy;
+- jurisdiction research registry/protocol;
+- case-law corpus admission schema;
+- liability/causation/remedy taxonomy;
+- human-sovereignty/cognitive-liberty/dignity research frame;
+- incident-to-legal-analysis schema;
+- financial-responsibility research frame;
+- cross-repo authority/routing;
+- LLM/specialist research-assistant protocol;
+- initial global research queue;
+- new-chat handoff prompt.
 
-## Existing input state
+`00_CONTROL/INITIALIZATION_MANIFEST.md` is the initialization inventory.
 
-### YargıGPT
+## 2. YargıGPT research state
 
-Two bounded Turkish case-law research runs exist:
+Two Turkish case-law research runs are preserved as interruption evidence:
 
-- `TR-LAW-01-B001` — official decision API unavailable / `ClientResponseError`;
-- `TR-LAW-01-B002` — official decision API unavailable / `ClientResponseError`.
+- `30_CASE_LAW/TR/research_runs/TR-LAW-01-B001_2026-09-13_OFFICIAL_SOURCE_UNAVAILABLE.yaml`
+- `30_CASE_LAW/TR/research_runs/TR-LAW-01-B002_2026-09-13_OFFICIAL_SOURCE_UNAVAILABLE.yaml`
 
-Correct legal meaning:
+Both report official Yargıtay/Adalet Bakanlığı decision endpoint failures (`ClientResponseError`).
+
+Correct interpretation:
 
 ```text
-SEARCH_FAILURE != NO_CASE
-OFFICIAL_SOURCE_UNAVAILABLE != NONE_FOUND
+OFFICIAL_SOURCE_STATE = UNAVAILABLE
 VERIFIED_CASE_COUNT = 0
+SEARCH_FAILURE != NO_CASE
 LEGAL_CONCLUSION = NOT_ATTEMPTED
+TR_LAW_01_CLOSED = NO
 ```
 
-### Grok
+Current queue classification:
 
-A cross-disciplinary frontier-AI/liability/human-sovereignty research response is expected from the user in a later turn. It has not yet been imported, verified or accepted.
+```text
+AI-LAWS-R006 = BLOCKED_BY_OFFICIAL_SOURCE_AVAILABILITY
+```
+
+Repeated identical API retries should not become an infinite research loop.
+
+## 3. Grok input state
+
+A cross-disciplinary Grok response concerning frontier AI, liability, human sovereignty, company coordination, pacing, insurance/funds, cognitive liberty and related risks is expected from the user.
+
+It has not yet been imported or verified.
 
 ```text
 GROK_OUTPUT_STATE = EXPECTED_SUPPORTING_RESEARCH
-CANONICAL = FALSE
+GROK_OUTPUT_CANONICAL = FALSE
 ```
 
-## Initial global source seeds
+## 4. Initial global source-seed state
 
-Verified official-source seeds include:
+Official-source seeds presently include:
 
 - Regulation (EU) 2024/1689 — EU Artificial Intelligence Act;
 - Council of Europe CETS No.225 — Framework Convention on AI, Human Rights, Democracy and Rule of Law;
@@ -58,23 +75,61 @@ Verified official-source seeds include:
 - UNESCO Recommendation on the Ethics of Neurotechnology (2025);
 - NIST AI RMF 1.0 and Generative AI Profile as voluntary technical/risk-management frameworks, not binding law.
 
-These are seed records only and do not constitute complete global legal coverage.
-
-## Exact next bounded unit after initialization
-
-After the initial control/corpus scaffolding is complete, the preferred next unit is:
-
 ```text
-AI-LAWS-R001 — IMPORT_AND_CHALLENGE_GROK_FRONTIER_AI_LAW_RESEARCH
+GLOBAL_COVERAGE_COMPLETE = NO
+COUNTRY_BY_COUNTRY_PRIMARY_LAW_RESEARCH = OPEN
+CASE_LAW_RESEARCH = OPEN
 ```
 
-Expected behavior:
+## 5. Exact preferred next bounded unit
 
-- ingest user-provided Grok output as supporting evidence;
-- verify material current claims against primary/official sources;
-- separate current law / incident fact / allegation / scholarly analysis / policy proposal / unknown;
-- route findings into legal domains and jurisdiction research backlog;
-- do not create liability/guilt conclusions;
-- stop after one bounded import-and-challenge package.
+```text
+NEXT_CONTROLLED_UNIT:
+AI-LAWS-R001 — IMPORT_AND_CHALLENGE_GROK_FRONTIER_AI_LAW_RESEARCH
 
-The user may instead explicitly select another bounded research item.
+STATE:
+READY FOR EXPLICIT AUTHORIZATION WHEN USER PROVIDES GROK OUTPUT
+```
+
+R001 scope:
+
+- ingest the user-provided Grok output as supporting research;
+- decompose material claims;
+- classify each claim as `WELL_ESTABLISHED`, `PLAUSIBLE_NOT_PROVEN`, `POLICY_PROPOSAL` or `UNKNOWN` as an initial research state;
+- verify current material facts/law against primary or official sources where available;
+- separate official company statement / independent evidence / allegation / policy proposal;
+- separate current law from soft law, standards and reform proposals;
+- route claims to legal domains, jurisdictions and research backlog;
+- identify required qualified expertise;
+- identify cross-repo evidence/candidate routes without transferring authority;
+- produce append-only research/evidence;
+- do not declare guilt, liability or legal violation;
+- STOP after one bounded import/challenge unit.
+
+## 6. Other queued P0 research
+
+After or independently of R001 by explicit authorization:
+
+- `AI-LAWS-R002` — complete world jurisdiction registry expansion;
+- `AI-LAWS-R003` — EU AI Act current legal map;
+- `AI-LAWS-R004` — CETS 225 treaty-status/implementation map;
+- `AI-LAWS-R005` — Türkiye primary-law baseline;
+- `AI-LAWS-R007` — U.S. federal/state AI-law inventory;
+- `AI-LAWS-R008` — China primary-source AI/data/cyber rule map;
+- `AI-LAWS-R011` — human sovereignty / cognitive liberty comparative research;
+- `AI-LAWS-R012` — comparative AI liability architecture;
+- `AI-LAWS-R014` — evidence/logging/preservation/procedure research;
+- `AI-LAWS-R017` — closed/state/national-security AI accountability gaps.
+
+No item auto-starts merely because it is listed.
+
+## 7. Current integrity state
+
+```text
+INITIAL_CONTROL_PLANE = COMPLETE
+LEGAL_ADVICE = NO
+MODEL_OUTPUT_CANONICAL = NO
+VERIFIED_CASES_IMPORTED = 0
+UNKNOWN_PRESERVED = YES
+AUTO_ADVANCE = NO
+```
