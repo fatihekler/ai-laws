@@ -1,0 +1,137 @@
+name: AI-LAWS NB01 acquire INT-003
+
+on:
+  push:
+    paths:
+      - '.github/workflows/nb01-acquire-int003.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  acquire:
+    if: ${{ !contains(github.event.head_commit.message, '[acq-skip]') }}
+    runs-on: ubuntu-latest
+    env:
+      BATCH_ID: NB-BATCH-NB01-20260913-001
+      SOURCE_ID: INT-003
+      OUT_DIR: 86_NOTEBOOKLM/SOURCES/NB01
+      OUT_FILE: INT-003__UNESCO__41C_RECOMMENDATION_2021__2022.pdf
+      SOURCE_URL: https://unesdoc.unesco.org/in/rest/annotationSVC/DownloadWatermarkedAttachment/attach_import_e86c4b5d-5af9-4e15-be60-82f1a09956fd?_=381137eng.pdf
+    steps:
+      - name: Checkout triggering commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download official UNESCO PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT_DIR"
+          curl --fail --location --retry 3 --retry-delay 2 \
+            --user-agent 'AI-LAWS controlled research acquisition/1.0' \
+            "$SOURCE_URL" -o "$OUT_DIR/$OUT_FILE"
+          test "$(head -c 5 "$OUT_DIR/$OUT_FILE")" = '%PDF-'
+          file "$OUT_DIR/$OUT_FILE"
+
+      - name: Verify document identity and license text
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pdftotext "$OUT_DIR/$OUT_FILE" /tmp/int003.txt
+          grep -Fq 'Recommendation on' /tmp/int003.txt
+          grep -Fq 'Artificial Intelligence' /tmp/int003.txt
+          grep -Fq 'Adopted on 23 November 2021' /tmp/int003.txt
+          grep -Fq 'CC-BY-NC-SA 3.0 IGO' /tmp/int003.txt
+
+      - name: Record SHA-256, size, MIME and acquisition ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA256=$(sha256sum "$OUT_DIR/$OUT_FILE" | awk '{print $1}')
+          BYTE_SIZE=$(stat -c '%s' "$OUT_DIR/$OUT_FILE")
+          CONTENT_TYPE=$(file --brief --mime-type "$OUT_DIR/$OUT_FILE")
+          export SHA256 BYTE_SIZE CONTENT_TYPE
+          python3 - <<'PY'
+          import csv, os
+          from pathlib import Path
+
+          ledger = Path('86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv')
+          row = {
+              'batch_id': os.environ['BATCH_ID'],
+              'source_id': os.environ['SOURCE_ID'],
+              'notebook_pack': 'NB01',
+              'jurisdiction': 'UNESCO',
+              'title': 'Recommendation on the Ethics of Artificial Intelligence',
+              'document_id': 'UNESCO 41 C/Recommendation 2021',
+              'issuing_authority': 'UNESCO General Conference',
+              'authority_class': 'SOFT_LAW_RECOMMENDATION',
+              'binding_state': 'nonbinding recommendation',
+              'official_url': os.environ['SOURCE_URL'],
+              'retrieval_date': '2026-09-13',
+              'version_state': 'Published 2022; adopted 23 November 2021',
+              'adoption_date': '2021-11-23',
+              'publication_date': '2022',
+              'entry_into_force_date': 'NOT_APPLICABLE',
+              'application_date': 'NOT_APPLICABLE',
+              'authentic_language': 'English source copy; authentic-language status not asserted by acquisition step',
+              'translation_state': 'English',
+              'rights_state': 'CC-BY-NC-SA 3.0 IGO stated in source',
+              'acquisition_method': 'PDF_DOWNLOAD_ALLOWED',
+              'local_filename_or_url': f"{os.environ['OUT_DIR']}/{os.environ['OUT_FILE']}",
+              'sha256': os.environ['SHA256'],
+              'byte_size': os.environ['BYTE_SIZE'],
+              'content_type': os.environ['CONTENT_TYPE'],
+              'content_identity_checked': 'YES',
+              'notebook_name': '',
+              'notebook_ingest_date': '',
+              'notebook_ingest_state': 'NOT_RUN',
+              'notebook_locator_test': 'NOT_RUN',
+              'primary_source_recheck_state': 'NOT_APPLICABLE_TO_ACQUISITION_ONLY',
+              'refresh_trigger': 'UNESCO source replacement or authoritative revised publication',
+              'human_review_required': 'NO_FOR_ACQUISITION_METADATA',
+              'notes': 'Vendored only after source-level open-access license and content identity checks; hash proves file identity, not legal authority.'
+          }
+
+          with ledger.open(newline='', encoding='utf-8') as f:
+              reader = csv.DictReader(f)
+              fieldnames = reader.fieldnames
+              rows = list(reader)
+          if any(r.get('batch_id') == row['batch_id'] and r.get('source_id') == row['source_id'] for r in rows):
+              raise SystemExit('Ledger row already exists; refusing duplicate append')
+          with ledger.open('a', newline='', encoding='utf-8') as f:
+              writer = csv.DictWriter(f, fieldnames=fieldnames)
+              writer.writerow(row)
+
+          prov = Path(os.environ['OUT_DIR']) / 'README.md'
+          prov.write_text(
+              '# NB01 vendored source snapshots\n\n'
+              'These files are controlled research snapshots. A local hash proves byte identity only and does not establish legal authority or currentness.\n\n'
+              '## INT-003\n\n'
+              '- Source: UNESCO, Recommendation on the Ethics of Artificial Intelligence\n'
+              '- Adopted: 2021-11-23\n'
+              '- Publication: 2022\n'
+              f"- Official retrieval URL: {os.environ['SOURCE_URL']}\n"
+              '- Rights/use: source states CC-BY-NC-SA 3.0 IGO\n'
+              f"- Local file: {os.environ['OUT_FILE']}\n"
+              f"- SHA-256: {os.environ['SHA256']}\n"
+              f"- Byte size: {os.environ['BYTE_SIZE']}\n"
+              f"- Content type: {os.environ['CONTENT_TYPE']}\n"
+              '- Notebook ingest: NOT_RUN\n'
+              '- Canonical legal authority: NO; this is a source snapshot of a nonbinding UNESCO recommendation.\n',
+              encoding='utf-8'
+          )
+          PY
+
+      - name: Commit acquired source and ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$OUT_DIR/$OUT_FILE" "$OUT_DIR/README.md" 86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv
+          git commit -m 'acquisition(nb01): vendor licensed UNESCO INT-003 snapshot'
+          git push origin HEAD:main
