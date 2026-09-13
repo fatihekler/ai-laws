@@ -1,0 +1,13 @@
+issue_family,primary_owner,secondary_consumers,ai_laws_role,non_equivalence_rule
+Applicable law / legal duty,AI_LAWS,"ENGINEERING_OS; ETHICAL_AI","verify source, jurisdiction, duty, exceptions, effective date","AI_LAWS_RESEARCH != ENGINEERING_REQUIREMENT_UNTIL_DESTINATION_REVIEW"
+Technical vulnerability / exploitability,OWASP,"ENGINEERING_OS; AI_LAWS","consume technical evidence for legal relevance","OWASP_FINDING != LEGAL_VIOLATION"
+System requirement / V&V / acceptance,ENGINEERING_OS,"OWASP; AI_LAWS; ETHICAL_AI","supply verified legal requirement candidates","LEGAL_DUTY != ENGINEERING_PASS"
+Human dignity / agency / appeal / reversibility,ETHICAL_AI,"AI_LAWS; ENGINEERING_OS","verify legal rights/duties and remedies","ETHICAL_REQUIREMENT != CURRENT_LAW"
+Moral/theological reminder,ESMAUL_HUSNA,"ETHICAL_AI; AI_LAWS supporting only","research legal issue separately; never import theological authority","ESMA_REMINDER != LAW"
+Multidimensional challenge / unknown discovery,APESTEORI,"ALL","use as candidate questions and gap discovery","APESTEORI_ANALYSIS != LEGAL_CONCLUSION"
+Case law / precedent,AI_LAWS,"ENGINEERING_OS; ETHICAL_AI; OWASP when relevant","verify full text, authority, holding and analogy limit","ANALOGICAL_PRECEDENT != DIRECT_AI_PRECEDENT"
+AI incident factual timeline,"AI_LAWS or source project by fact domain","OWASP; ENGINEERING_OS; ETHICAL_AI","separate verified fact, allegation and legal hypothesis","INCIDENT != LIABILITY"
+Security control effectiveness,OWASP,"ENGINEERING_OS; AI_LAWS","analyze whether law references or expects control; no automatic breach","CONTROL_FAILURE != AUTOMATIC_LIABILITY"
+Liability / causation / damages,AI_LAWS,"ETHICAL_AI; ENGINEERING_OS","jurisdiction-specific legal research and human legal review","HARM != AUTOMATIC_CAUSATION"
+Insurance / catastrophe fund / financial responsibility,AI_LAWS,"ENGINEERING_OS; ETHICAL_AI","separate existing law/market from proposals","POLICY_PROPOSAL != CURRENT_COMPENSATION_RIGHT"
+Notebook or LLM synthesis,NONE_RESEARCH_SUPPORT,"ALL","source-verify before any legal use","MODEL_OUTPUT != AUTHORITY"
