@@ -1,0 +1,118 @@
+name: AI-LAWS R032 NB01 residual official-source inspection
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r032-nb01-residual-inspect.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install inspection tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils curl jq file
+      - name: Inspect INT-004 and INT-007 official source layer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, re, subprocess, urllib.parse
+          from pathlib import Path
+
+          def sh(cmd):
+              return subprocess.check_output(cmd, text=True, errors='replace').strip()
+
+          def sha256(b):
+              return hashlib.sha256(b).hexdigest()
+
+          def fetch(url, stem, fail=False):
+              p=Path('/tmp')/stem
+              cmd=['curl','-L','--silent','--show-error','--connect-timeout','20','--max-time','120','--retry','2','--retry-delay','2','-A','Mozilla/5.0 AI-LAWS source verification','-o',str(p),'-w','%{http_code}|%{content_type}|%{url_effective}',url]
+              if fail:
+                  cmd.insert(5,'--fail-with-body')
+              cp=subprocess.run(cmd,text=True,capture_output=True)
+              b=p.read_bytes() if p.exists() else b''
+              return cp.returncode, cp.stdout.strip(), cp.stderr.strip(), b, p
+
+          print('HEAD|'+sh(['git','rev-parse','HEAD']))
+          print('TREE|'+sh(['git','rev-parse','HEAD^{tree}']))
+
+          # INT-004 certified-copy record.
+          int004='https://unesdoc.unesco.org/ark:/48223/pf0000397812_eng'
+          rc,meta,err,b,p=fetch(int004,'int004-record')
+          print(f'INT004_RECORD|rc={rc}|curl={meta}|bytes={len(b)}|sha256={sha256(b) if b else "NONE"}')
+          text=b.decode('utf-8','replace')
+          visible=' '.join(re.sub(r'<[^>]+>',' ',text).split())
+          for marker in ['Recommendation on the Ethics of Neurotechnology','31 March 2026','11 November 2025','pf0000397812']:
+              print(f'INT004_MARKER|{marker}|{"YES" if marker.lower() in visible.lower() or marker.lower() in text.lower() else "NO"}')
+          hrefs=[]
+          for m in re.findall(r'''(?:href|src)=["']([^"']+)["']''', text, flags=re.I):
+              u=urllib.parse.urljoin(meta.split('|')[-1] if '|' in meta else int004,m)
+              if 'pdf' in u.lower() or 'pf0000397812' in u.lower():
+                  hrefs.append(u)
+          for u in list(dict.fromkeys(hrefs))[:40]:
+              print('INT004_LINK|'+u)
+
+          int004_candidates=[
+              'https://unesdoc.unesco.org/ark:/48223/pf0000397812/PDF/397812eng.pdf.multi',
+              'https://unesdoc.unesco.org/ark:/48223/pf0000397812_eng/PDF/397812eng.pdf.multi',
+          ]
+          for i,u in enumerate(int004_candidates,1):
+              rc,meta,err,b,p=fetch(u,f'int004-cand-{i}')
+              mime=sh(['file','-b','--mime-type',str(p)]) if b else 'NONE'
+              print(f'INT004_CANDIDATE|{i}|url={u}|rc={rc}|curl={meta}|mime={mime}|bytes={len(b)}|sha256={sha256(b) if b else "NONE"}')
+              if b and mime=='application/pdf':
+                  try:
+                      info=sh(['pdfinfo',str(p)])
+                      txt=sh(['pdftotext','-layout',str(p),'-'])
+                      pages=re.search(r'^Pages:\s+(\d+)',info,re.M)
+                      print(f'INT004_PDF|{i}|pages={pages.group(1) if pages else "UNKNOWN"}|textchars={len(txt)}|title_marker={"YES" if "Recommendation on the Ethics of Neurotechnology" in txt else "NO"}|adopt_marker={"YES" if "11 November 2025" in txt or "11 November" in txt else "NO"}')
+                  except Exception as e:
+                      print(f'INT004_PDF|{i}|ERROR={type(e).__name__}:{e}')
+
+          # INT-007 exact A/RES/79/1 source discovery.
+          un_candidates=[
+              'https://docs.un.org/api/symbol/access?s=A/RES/79/1&l=en&t=pdf',
+              'https://docs.un.org/en/A/RES/79/1',
+              'https://undocs.org/en/A/RES/79/1',
+              'https://undocs.org/A/RES/79/1',
+          ]
+          for i,u in enumerate(un_candidates,1):
+              rc,meta,err,b,p=fetch(u,f'int007-cand-{i}')
+              mime=sh(['file','-b','--mime-type',str(p)]) if b else 'NONE'
+              print(f'INT007_CANDIDATE|{i}|url={u}|rc={rc}|curl={meta}|mime={mime}|bytes={len(b)}|sha256={sha256(b) if b else "NONE"}')
+              if b and mime=='application/pdf':
+                  try:
+                      info=sh(['pdfinfo',str(p)])
+                      txt=sh(['pdftotext','-layout',str(p),'-'])
+                      pages=re.search(r'^Pages:\s+(\d+)',info,re.M)
+                      flat=' '.join(txt.split())
+                      print(f'INT007_PDF|{i}|pages={pages.group(1) if pages else "UNKNOWN"}|textchars={len(txt)}|symbol={"YES" if "A/RES/79/1" in txt else "NO"}|pact={"YES" if "Pact for the Future" in txt else "NO"}|gdc={"YES" if "Global Digital Compact" in txt else "NO"}|head={flat[:900]}')
+                  except Exception as e:
+                      print(f'INT007_PDF|{i}|ERROR={type(e).__name__}:{e}')
+              elif b:
+                  txt=b.decode('utf-8','replace')
+                  visible=' '.join(re.sub(r'<[^>]+>',' ',txt).split())
+                  print(f'INT007_HTML|{i}|symbol={"YES" if "A/RES/79/1" in visible else "NO"}|pact={"YES" if "Pact for the Future" in visible else "NO"}|head={visible[:900]}')
+
+          # UN Digital Library discovery search for exact symbol.
+          q='https://digitallibrary.un.org/search?ln=en&p='+urllib.parse.quote('A/RES/79/1')+'&f=&action_search=Search&c=United+Nations+Digital+Library&sf=&so=d&rm=&rg=50&sc=0&of=hb'
+          rc,meta,err,b,p=fetch(q,'int007-un-search')
+          print(f'INT007_UN_SEARCH|rc={rc}|curl={meta}|bytes={len(b)}')
+          txt=b.decode('utf-8','replace')
+          visible=' '.join(re.sub(r'<[^>]+>',' ',txt).split())
+          print(f'INT007_UN_SEARCH_MARKERS|symbol={"YES" if "A/RES/79/1" in visible else "NO"}|pact={"YES" if "Pact for the Future" in visible else "NO"}')
+          for u in list(dict.fromkeys(urllib.parse.urljoin(meta.split('|')[-1] if '|' in meta else q,m) for m in re.findall(r'''href=["']([^"']+)["']''',txt,flags=re.I) if ('record/' in m or 'A/RES/79/1' in m)))[:30]:
+              print('INT007_UN_SEARCH_LINK|'+u)
+
+          print('ZIP_OR_ARTIFACT_CREATED=NO')
+          print('REPOSITORY_MUTATION_BY_INSPECTION_JOB=NO')
+          PY
