@@ -1,0 +1,53 @@
+name: R020 destination-neutral requirement candidate validation
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r020-temporary-requirement-candidates.yml'
+      - '.github/scripts/r020_validate_candidates.py'
+      - '79_CROSS_REPO_REQUIREMENTS/**'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact trigger state
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail closed on drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+
+      - name: Validate candidates and generate review packets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/r020_validate_candidates.py
+          git diff --check
+
+      - name: Commit validated packet set and push
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Fatih Mehmet Ekler'
+          git config user.email '5189511+fatihekler@users.noreply.github.com'
+          git add 79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_ENGINEERING_OS_REVIEW_PACKET_2026-09-14.csv \
+                  79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_OWASP_REVIEW_PACKET_2026-09-14.csv \
+                  79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_ETHICAL_AI_REVIEW_PACKET_2026-09-14.csv \
+                  79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_SOURCE_AND_AUTHORITY_MATRIX_2026-09-14.csv \
+                  79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_VALIDATION_SUMMARY_2026-09-14.csv
+          git diff --cached --check
+          git commit -m 'research(r020): validate and generate destination-neutral candidate packets'
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          git push origin HEAD:main
+          printf 'R020_RESEARCH_HEAD=%s\nR020_RESEARCH_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
