@@ -28,6 +28,22 @@ jobs:
       - name: Persist R033 controlled state
         run: python3 .github/scripts/r033_persist.py
 
+      - name: Normalize only generated R033 Markdown section
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md')
+          marker = '## R033 — TR-009 current Türkiye AI policy source'
+          text = p.read_text(encoding='utf-8')
+          before, sep, after = text.partition(marker)
+          if not sep:
+              raise SystemExit('R033 generated section marker missing')
+          cleaned = '\n'.join(line.rstrip() for line in after.splitlines()).rstrip()
+          p.write_text(before.rstrip() + '\n\n' + marker + '\n' + cleaned + '\n', encoding='utf-8')
+          PY
+
       - name: Validate and commit durable state
         shell: bash
         run: |
