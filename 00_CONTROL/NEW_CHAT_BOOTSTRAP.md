@@ -9,29 +9,52 @@
 
 Every new AI-LAWS chat starts by reconstructing current repository state from GitHub rather than relying on memory or another project.
 
+The active dated handoff is discovered through:
+
+`95_HANDOFF/CURRENT_HANDOFF_POINTER.md`
+
+The pointer is a continuity router, not a replacement for fresh GitHub state. If a handoff file conflicts with fresher current control files, current GitHub state controls and the conflict must be reported.
+
 ## Mandatory startup order
 
 1. Fresh-read `main` HEAD and TREE.
 2. Read `README_START_HERE.md`.
 3. Read this file.
-4. Read `00_CONTROL/AI_LAWS_MASTER_RESEARCH_NOTEBOOK_ORCHESTRATION.md`.
-5. Read `00_CONTROL/PROJECT_CHARTER.md`.
-6. Read `00_CONTROL/SOURCE_OF_TRUTH_AND_AUTHORITY.md`.
-7. Read `00_CONTROL/RESEARCH_MUTATION_AND_ACCEPTANCE_GATE.md`.
-8. Read `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`.
-9. Read `10_TAXONOMY/LEGAL_DOMAIN_TAXONOMY.csv` and `10_TAXONOMY/CLAIM_EVIDENCE_AND_AUTHORITY_CLASSES.md`.
-10. Read `20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv` and `20_JURISDICTIONS/GLOBAL_JURISDICTION_RESEARCH_PROTOCOL.md`.
-11. If Grok/model collaboration is in scope, read `85_RESEARCH_ASSISTANTS/GROK_CHATGPT_COLLABORATION_PROTOCOL.md`, the Grok master instruction and model handoff schema.
-12. If NotebookLM/Gemini Notebook or source acquisition is in scope, read the complete `86_NOTEBOOKLM` control set, including `NOTEBOOKLM_END_TO_END_EXECUTION_RUNBOOK.md` and `NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`.
-13. If `86_NOTEBOOKLM/downloads/` binaries are in scope, also read exact:
+4. Read `95_HANDOFF/CURRENT_HANDOFF_POINTER.md`.
+5. Read the pointer's `CURRENT_MASTER`.
+6. Read the pointer's `CURRENT_CHECKLIST`.
+7. Read the pointer's `CURRENT_STATUS_FORMAT`.
+8. Read `00_CONTROL/AI_LAWS_MASTER_RESEARCH_NOTEBOOK_ORCHESTRATION.md`.
+9. Read `00_CONTROL/PROJECT_CHARTER.md`.
+10. Read `00_CONTROL/SOURCE_OF_TRUTH_AND_AUTHORITY.md`.
+11. Read `00_CONTROL/RESEARCH_MUTATION_AND_ACCEPTANCE_GATE.md`.
+12. Read `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`.
+13. Read `10_TAXONOMY/LEGAL_DOMAIN_TAXONOMY.csv` and `10_TAXONOMY/CLAIM_EVIDENCE_AND_AUTHORITY_CLASSES.md`.
+14. Read `20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv` and `20_JURISDICTIONS/GLOBAL_JURISDICTION_RESEARCH_PROTOCOL.md`.
+15. If Grok/model collaboration is in scope, read `85_RESEARCH_ASSISTANTS/GROK_CHATGPT_COLLABORATION_PROTOCOL.md`, the Grok master instruction and model handoff schema.
+16. If NotebookLM/Gemini Notebook or source acquisition is in scope, read the complete `86_NOTEBOOKLM` control set, including `NOTEBOOKLM_END_TO_END_EXECUTION_RUNBOOK.md` and `NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`.
+17. If `86_NOTEBOOKLM/downloads/` binaries are in scope, also read exact:
    - `86_NOTEBOOKLM/downloads/README.md`
    - `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`
    - `86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md`
    - `86_NOTEBOOKLM/PDF_CONTENT_IDENTITY_AND_DERIVED_TEXT_PROTOCOL.md`
-14. Read `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`.
-15. Read the exact jurisdiction/domain/case-law/cross-repo protocol relevant to the requested bounded unit.
-16. Fresh-read any primary legal source whose current status materially affects the answer.
-17. Before mutation/download/upload, fresh-read HEAD/TREE again and stop on overlapping drift.
+18. Read `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`.
+19. Read the exact jurisdiction/domain/case-law/cross-repo/research closeout files relevant to the requested bounded unit.
+20. Fresh-read any primary legal source whose current status materially affects the answer.
+21. Before mutation/download/upload, fresh-read HEAD/TREE again and stop on overlapping unexplained drift.
+
+## First continuity response
+
+Before mutation, return the current-state fields defined by the pointer's `CURRENT_STATUS_FORMAT`.
+
+The continuity reconstruction response is observational only and must use:
+
+```text
+SELECTED_BOUNDED_UNIT = NONE
+AUTO_ADVANCE = NO
+```
+
+until the user explicitly authorizes a bounded unit.
 
 ## Source precedence
 
@@ -112,4 +135,13 @@ A broad instruction such as “research everything, create needed documents and 
 USER_SAYS_CONTINUE != UNLIMITED_AUTO_ADVANCE
 BROAD_RESEARCH != AUTOMATIC_CANONICALIZATION
 AUTO_ADVANCE = NO
+```
+
+## GitHub-only continuity preference
+
+When the new chat has GitHub access, repository files should be read directly from GitHub rather than manually re-uploaded. A prior chat export is supporting history only.
+
+```text
+GITHUB_CURRENT_STATE > CHAT_EXPORT
+ZIP_FOR_CONTINUITY = NOT_REQUIRED
 ```
