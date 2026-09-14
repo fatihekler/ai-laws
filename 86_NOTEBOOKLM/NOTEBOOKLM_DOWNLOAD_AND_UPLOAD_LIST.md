@@ -244,6 +244,37 @@ PRIMARY_SOURCE_RECHECK_REQUIRED_BEFORE_MATERIAL_CLAIM = YES
 
 ---
 
+## E3. NB05 — Comparative / United Kingdom URL source set
+
+R009 established a 13-source official URL baseline for the United Kingdom. Use URL-direct ingestion. No dedicated repository binary set is created by R009.
+
+- `GB-001` https://www.legislation.gov.uk/eur/2016/679/contents
+- `GB-002` https://www.legislation.gov.uk/ukpga/2018/12/contents
+- `GB-003` https://www.legislation.gov.uk/ukpga/2025/18/contents
+- `GB-004` https://www.legislation.gov.uk/ukpga/2023/50/contents
+- `GB-005` https://www.legislation.gov.uk/ukpga/2024/13/contents
+- `GB-006` https://www.legislation.gov.uk/ukpga/2015/15/contents
+- `GB-007` https://www.legislation.gov.uk/ukpga/1987/43/contents
+- `GB-008` https://www.legislation.gov.uk/ukpga/2025/20/contents
+- `GB-009` https://www.gov.uk/government/calls-for-evidence/ai-growth-lab
+- `GB-010` https://www.gov.uk/government/publications/regulators-strategic-approaches-to-ai
+- `GB-011` https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/
+- `GB-012` https://www.gov.uk/cma-cases/ai-foundation-models-initial-review
+- `GB-013` https://www.gov.uk/government/publications/ai-opportunities-action-plan-government-response
+
+```text
+NB05_UK_OFFICIAL_URL_SOURCE_SET = READY_13_WITH_LIMITS
+BINDING_LAW_AND_POLICY_SEPARATED = YES
+SECTION_LEVEL_CURRENTNESS_RECHECK_REQUIRED = YES
+OFCOM_HUB = HTTP_403_GITHUB_RUNNER
+REPOSITORY_BINARY_SET = NONE
+NOTEBOOK_UPLOAD = NOT_RUN
+```
+
+Do not use enactment date as universal commencement. Do not treat AI Growth Lab, ICO/CMA material or government policy papers as statutes. Do not import the EU AI Act as UK domestic law.
+
+---
+
 ## F. NB06 — Human sovereignty / neurotechnology
 
 Primary source set:

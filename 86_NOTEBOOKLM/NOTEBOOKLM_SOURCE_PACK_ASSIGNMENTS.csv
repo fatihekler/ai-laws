@@ -70,3 +70,16 @@ NB05,CN-005,REQUIRED,China central primary-source baseline; authentic Chinese of
 NB05,CN-006,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
 NB05,CN-007,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
 NB05,CN-008,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
+NB05,GB-001,REQUIRED,Core UK data-protection baseline
+NB05,GB-002,REQUIRED,UK data-protection statutory baseline
+NB05,GB-003,REQUIRED,Current UK data-use/data-protection reform layer
+NB05,GB-004,REQUIRED,Core UK online-safety statutory layer
+NB05,GB-005,REQUIRED,Digital markets competition and consumer enforcement baseline
+NB05,GB-006,RECOMMENDED,Consumer contract/service/digital-content baseline
+NB05,GB-007,RECOMMENDED,UK product-liability baseline
+NB05,GB-008,RECOMMENDED,Current product-regulation enabling framework relevant to AI-enabled products
+NB05,GB-009,RECOMMENDED,Newer AI-regulation policy proposal layer; must remain separate from law
+NB05,GB-010,RECOMMENDED,Cross-regulator sectoral AI-governance architecture
+NB05,GB-011,RECOMMENDED,ICO AI/data-protection guidance and explanation resources
+NB05,GB-012,RECOMMENDED,Competition/foundation-model regulator context
+NB05,GB-013,RECOMMENDED,National AI strategy/policy context separated from binding law
