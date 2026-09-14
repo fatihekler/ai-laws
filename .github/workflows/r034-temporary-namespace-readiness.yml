@@ -38,6 +38,18 @@ jobs:
             86_NOTEBOOKLM/downloads/NOTEBOOK_SOURCE_LABELS.csv \
             86_NOTEBOOKLM/downloads/MANUAL_DOWNLOAD_AND_UPLOAD_REQUESTS.csv \
             86_NOTEBOOKLM/NOTEBOOK_READINESS_MATRIX.csv
+          python3 - <<'PY'
+          from pathlib import Path
+          for name in [
+              '86_NOTEBOOKLM/SOURCE_CATALOG.md',
+              '86_NOTEBOOKLM/AI-LAWS-R034_NAMESPACE_AND_NOTEBOOK_READINESS_ASSESSMENT_2026-09-14.md',
+          ]:
+              p = Path(name)
+              lines = [line.rstrip() for line in p.read_text(encoding='utf-8').splitlines()]
+              while lines and lines[-1] == '':
+                  lines.pop()
+              p.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
           git diff --check
           test "$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*.pdf' | wc -l)" -eq 38
           test "$(awk -F, 'NR>1 && $10=="YES" {n++} END {print n+0}' 86_NOTEBOOKLM/downloads/RENAME_MANIFEST.csv)" -eq 0
