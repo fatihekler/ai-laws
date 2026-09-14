@@ -1,0 +1,114 @@
+name: R013 temporary financial responsibility source probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r013-temporary-source-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact source state
+        uses: actions/checkout@v4
+
+      - name: Extract controlled current-law insurance signals
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils >/dev/null
+          pld="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*Product Liability Directive*.pdf' -print -quit)"
+          ai="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*consolidated AI Act*.pdf' -print -quit)"
+          gdpr="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname 'GDPR.pdf' -print -quit)"
+          test -n "$pld" && test -n "$ai" && test -n "$gdpr"
+          pdftotext -raw "$pld" /tmp/pld.txt
+          pdftotext -raw "$ai" /tmp/ai.txt
+          pdftotext -raw "$gdpr" /tmp/gdpr.txt
+          echo '===== CONTROLLED SNAPSHOT HASHES ====='
+          sha256sum "$pld" "$ai" "$gdpr"
+          for spec in PLD:/tmp/pld.txt AI_ACT:/tmp/ai.txt GDPR:/tmp/gdpr.txt; do
+            id="${spec%%:*}"; file="${spec#*:}"
+            echo "===== ${id} FINANCIAL TERMS ====="
+            grep -inE -C 3 'insurance|insurability|financial guarantee|financial assurance|compensation scheme|compensation fund|catastrophe|reserve requirement|capital requirement|reinsurance' "$file" || true
+          done
+
+      - name: Probe official EU proposal and current-status sources
+        shell: bash
+        run: |
+          set -u
+          probe() {
+            id="$1"; url="$2"
+            body="$(mktemp)"; hdr="$(mktemp)"
+            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
+            ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
+            bytes="$(wc -c < "$body" | tr -d ' ')"
+            sha="$(sha256sum "$body" | awk '{print $1}')"
+            echo "SOURCE_ID=${id}"
+            echo "HTTP_STATUS=${status}"
+            echo "CONTENT_TYPE=${ctype}"
+            echo "BYTE_SIZE=${bytes}"
+            echo "SHA256=${sha}"
+            python3 - "$body" <<'PY'
+import re, sys
+from pathlib import Path
+p=Path(sys.argv[1])
+s=p.read_text(errors='replace') if p.exists() else ''
+text=re.sub(r'<script.*?</script>|<style.*?</style>', ' ', s, flags=re.I|re.S)
+text=re.sub(r'<[^>]+>', ' ', text)
+text=re.sub(r'\s+', ' ', text)
+for term in ['insurance','withdraw','liability','compensation','high-risk AI','Artificial Intelligence Liability Directive']:
+    m=re.search(r'.{0,220}'+re.escape(term)+r'.{0,420}', text, flags=re.I)
+    if m:
+        print('SNIPPET_'+re.sub(r'\W+','_',term).upper()+'='+m.group(0)[:800])
+PY
+            echo '---'
+            rm -f "$body" "$hdr"
+          }
+          probe EU_EP_2020_LIABILITY 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52020IP0276'
+          probe EU_AILD_PROPOSAL 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52022PC0496'
+          probe EC_WORK_PROGRAMME_2025 'https://commission.europa.eu/strategy-and-policy/strategy-documents/commission-work-programme/commission-work-programme-2025_en'
+          probe EC_WORK_PROGRAMME_2026 'https://commission.europa.eu/strategy-and-policy/strategy-documents/commission-work-programme/commission-work-programme-2026_en'
+
+      - name: Probe current market-source candidates
+        shell: bash
+        run: |
+          set -u
+          probe_market() {
+            id="$1"; url="$2"
+            body="$(mktemp)"; hdr="$(mktemp)"
+            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
+            ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
+            bytes="$(wc -c < "$body" | tr -d ' ')"
+            echo "MARKET_SOURCE_ID=${id}"
+            echo "HTTP_STATUS=${status}"
+            echo "CONTENT_TYPE=${ctype}"
+            echo "BYTE_SIZE=${bytes}"
+            python3 - "$body" <<'PY'
+import re, sys
+from pathlib import Path
+s=Path(sys.argv[1]).read_text(errors='replace') if Path(sys.argv[1]).exists() else ''
+text=re.sub(r'<script.*?</script>|<style.*?</style>', ' ', s, flags=re.I|re.S)
+text=re.sub(r'<[^>]+>', ' ', text)
+text=re.sub(r'\s+', ' ', text)
+for term in ['aiSure','artificial intelligence','AI insurance','warranty','insurance','performance guarantee']:
+    m=re.search(r'.{0,220}'+re.escape(term)+r'.{0,520}', text, flags=re.I)
+    if m:
+        print('SNIPPET_'+re.sub(r'\W+','_',term).upper()+'='+m.group(0)[:900])
+PY
+            echo '---'
+            rm -f "$body" "$hdr"
+          }
+          probe_market MUNICHRE_AI 'https://www.munichre.com/en/risks/artificial-intelligence.html'
+          probe_market MUNICHRE_AISURE 'https://www.munichre.com/en/solutions/for-industry-clients/ai-performance-insurance.html'
+          probe_market ARMILLA 'https://www.armilla.ai/'
+
+      - name: Confirm no artifact production
+        shell: bash
+        run: |
+          echo 'WORKFLOW_ARTIFACTS_CREATED=0'
+          echo 'NOTEBOOK_UPLOADS=0'
