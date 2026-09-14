@@ -56,10 +56,12 @@ jobs:
             echo "CONTENT_TYPE=${ctype}"
             echo "BYTE_SIZE=${bytes}"
             echo "SHA256=${sha}"
-            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,180}(insurance|withdrawn|withdrawal|liability|compensation|high-risk AI|Artificial Intelligence Liability Directive).{0,320}' | head -n 12 || true
+            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,220}(insurance|withdrawn|withdrawal|liability|compensation|high-risk AI|Artificial Intelligence Liability Directive|procedure).{0,420}' | head -n 20 || true
             echo '---'
             rm -f "$body" "$hdr"
           }
+          probe EP_RESOLUTION_2020 'https://www.europarl.europa.eu/doceo/document/TA-9-2020-0276_EN.html'
+          probe EP_OEIL_AILD 'https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/0303(COD)'
           probe EU_EP_2020_LIABILITY 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52020IP0276'
           probe EU_AILD_PROPOSAL 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52022PC0496'
           probe EC_WORK_PROGRAMME_2025 'https://commission.europa.eu/strategy-and-policy/strategy-documents/commission-work-programme/commission-work-programme-2025_en'
@@ -81,7 +83,8 @@ jobs:
             echo "HTTP_STATUS=${status}"
             echo "CONTENT_TYPE=${ctype}"
             echo "BYTE_SIZE=${bytes}"
-            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,180}(aiSure|artificial intelligence|AI insurance|warranty|insurance|performance guarantee).{0,360}' | head -n 12 || true
+            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,220}(aiSure|artificial intelligence|AI insurance|warranty|insurance|performance guarantee).{0,420}' | head -n 20 || true
+            grep -Eio 'href="[^"]*(insurance|warranty|coverage)[^"]*"' "$body" | head -n 20 || true
             echo '---'
             rm -f "$body" "$hdr"
           }
