@@ -1,4 +1,4 @@
-name: R013 temporary financial responsibility source probe
+name: R013 targeted proposal and market verification
 
 on:
   push:
@@ -11,34 +11,12 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     steps:
       - name: Checkout exact source state
         uses: actions/checkout@v4
 
-      - name: Extract controlled current-law financial signals
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils >/dev/null
-          pld="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*Product Liability Directive*.pdf' -print -quit)"
-          ai="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*consolidated AI Act*.pdf' -print -quit)"
-          gdpr="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname 'GDPR.pdf' -print -quit)"
-          test -n "$pld" && test -n "$ai" && test -n "$gdpr"
-          pdftotext -raw "$pld" /tmp/pld.txt
-          pdftotext -raw "$ai" /tmp/ai.txt
-          pdftotext -raw "$gdpr" /tmp/gdpr.txt
-          echo '===== CONTROLLED SNAPSHOT HASHES ====='
-          sha256sum "$pld" "$ai" "$gdpr"
-          for spec in PLD:/tmp/pld.txt AI_ACT:/tmp/ai.txt GDPR:/tmp/gdpr.txt; do
-            id="${spec%%:*}"
-            file="${spec#*:}"
-            echo "===== ${id} FINANCIAL TERMS ====="
-            grep -inE -C 4 'insurance|insurability|financial guarantee|financial assurance|compensation scheme|compensation fund|catastrophe|reserve requirement|capital requirement|reinsurance' "$file" || true
-          done
-
-      - name: Probe official EU proposal and status sources
+      - name: Probe Parliament resolution variants
         shell: bash
         run: |
           set -u
@@ -56,41 +34,39 @@ jobs:
             echo "CONTENT_TYPE=${ctype}"
             echo "BYTE_SIZE=${bytes}"
             echo "SHA256=${sha}"
-            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,220}(insurance|withdrawn|withdrawal|liability|compensation|high-risk AI|Artificial Intelligence Liability Directive|procedure).{0,420}' | head -n 20 || true
+            if [ "$bytes" -gt 0 ]; then
+              if echo "$ctype" | grep -qi pdf; then
+                pdftotext "$body" - 2>/dev/null | grep -inE -C 4 'insurance|high-risk|strict liability|compensation' | head -n 120 || true
+              else
+                tr '\n' ' ' < "$body" | sed -E 's/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,260}(insurance|high-risk|strict liability|compensation).{0,520}' | head -n 20 || true
+              fi
+            fi
             echo '---'
             rm -f "$body" "$hdr"
           }
-          probe EP_RESOLUTION_2020 'https://www.europarl.europa.eu/doceo/document/TA-9-2020-0276_EN.html'
-          probe EP_OEIL_AILD 'https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/0303(COD)'
-          probe EU_EP_2020_LIABILITY 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52020IP0276'
-          probe EU_AILD_PROPOSAL 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52022PC0496'
-          probe EC_WORK_PROGRAMME_2025 'https://commission.europa.eu/strategy-and-policy/strategy-documents/commission-work-programme/commission-work-programme-2025_en'
-          probe EC_WORK_PROGRAMME_2026 'https://commission.europa.eu/strategy-and-policy/strategy-documents/commission-work-programme/commission-work-programme-2026_en'
+          probe EP_RESOLUTION_PDF 'https://www.europarl.europa.eu/doceo/document/TA-9-2020-0276_EN.pdf'
+          probe EP_RESOLUTION_XML 'https://www.europarl.europa.eu/doceo/document/TA-9-2020-0276_EN.xml'
+          probe EP_RESOLUTION_HTML 'https://www.europarl.europa.eu/doceo/document/TA-9-2020-0276_EN.html'
 
-      - name: Probe current market-source candidates
+      - name: Probe current Armilla market detail
         shell: bash
         run: |
           set -u
-          probe_market() {
-            id="$1"
-            url="$2"
+          for path in '/' '/ai-insurance' '/become-an-armilla-broker-ai-insurance-warranty'; do
+            url="https://www.armilla.ai${path}"
             body="$(mktemp)"
             hdr="$(mktemp)"
             status="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
             ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
             bytes="$(wc -c < "$body" | tr -d ' ')"
-            echo "MARKET_SOURCE_ID=${id}"
+            echo "URL=${url}"
             echo "HTTP_STATUS=${status}"
             echo "CONTENT_TYPE=${ctype}"
             echo "BYTE_SIZE=${bytes}"
-            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,220}(aiSure|artificial intelligence|AI insurance|warranty|insurance|performance guarantee).{0,420}' | head -n 20 || true
-            grep -Eio 'href="[^"]*(insurance|warranty|coverage)[^"]*"' "$body" | head -n 20 || true
+            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,240}(AI insurance|insurance|warranty|coverage|underwrit|policy|liability).{0,520}' | head -n 30 || true
             echo '---'
             rm -f "$body" "$hdr"
-          }
-          probe_market MUNICHRE_AI 'https://www.munichre.com/en/risks/artificial-intelligence.html'
-          probe_market MUNICHRE_AISURE 'https://www.munichre.com/en/solutions/for-industry-clients/ai-performance-insurance.html'
-          probe_market ARMILLA 'https://www.armilla.ai/'
+          done
 
       - name: Confirm bounded execution
         shell: bash
