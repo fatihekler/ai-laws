@@ -1,0 +1,386 @@
+name: AI-LAWS R011 persist human sovereignty baseline
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r011-persist.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fresh drift gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          echo 'R011_DRIFT_GATE=PASS'
+      - name: Generate R011 durable state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import csv, io, re
+
+          root=Path('.')
+          rights_dir=root/'50_RIGHTS'
+          research_dir=root/'95_RESEARCH'/'RIGHTS'
+          rights_dir.mkdir(parents=True,exist_ok=True)
+          research_dir.mkdir(parents=True,exist_ok=True)
+
+          legal_map = r'''# AI-LAWS-R011 — Human Sovereignty Comparative Legal Map
+
+**UNIT_ID:** `AI-LAWS-R011`  
+**RESEARCH_DATE:** 2026-09-14  
+**STATE:** `COMPLETE_RESEARCH_BASELINE_L1_L2_RIGHTS_MAP_SCOPE_LIMITS_OPEN`  
+**LEGAL_ADVICE:** NO  
+**AUTO_ADVANCE:** NO
+
+## 1. Scope
+
+This bounded unit maps selected verified legal protections relevant to human sovereignty: dignity, physical and mental integrity, privacy, personal-data protection, manipulation and vulnerability exploitation, biometric/emotion inference, automated-decision safeguards, contestability, remedy, children/vulnerable persons, and Chile-specific brain-activity protections.
+
+It does **not** declare a universal named right of `cognitive liberty`, does not admit blocked case law, and does not convert soft law or a treaty instrument that is not yet treaty-wide in force into currently binding universal law.
+
+## 2. Controlled source set
+
+| Source | Authority state | R011 use | Critical limit |
+|---|---|---|---|
+| `EU-004` Charter of Fundamental Rights | binding EU primary law within its field of application | dignity; mental integrity; private life; data protection; non-discrimination; children; remedy | Article 51 scope controls; not a universal/global source |
+| `EU-005` GDPR | binding EU regulation | consent withdrawal; special-category data; information/access/rectification/erasure/restriction/objection; Article 22 automated-decision safeguards | rights are conditional and provision-specific; no general AI opt-out inferred |
+| `EU-001` AI Act consolidated 2026-07-27 | binding EU regulation with phased application | manipulation/vulnerability exploitation; emotion recognition; biometric categorisation; AI-interaction/transparency duties | provision/date/scope/exceptions must be preserved; new 2026/1744 Article 5(ba)/(bb) provisions are not treated as already applicable on 2026-09-14 |
+| `INT-001` CETS No. 225 | legally binding treaty form, but treaty-wide entry into force not achieved in R004 status snapshot | dignity/autonomy; transparency; accountability; equality; remedies; contestability/procedural safeguards | R004 status as of 2026-09-12: Article 30 threshold unmet; no current treaty-wide duty inferred |
+| `INT-003` UNESCO AI Ethics Recommendation | nonbinding soft law | dignity, agency/autonomy, vulnerable persons, human-rights ethics framing | recommendation is not statute/treaty/court holding |
+| `INT-004` UNESCO Neurotechnology Recommendation | nonbinding soft law; certified-copy identity pinned | neurotechnology ethics/mental privacy research framing | R011 live ARK body extraction returned shell-only; clause-level claims are not newly asserted here |
+| `CL-001` Chile Ley 21.383 | Chile-specific constitutional amendment anchor | physical/psychological integrity; special safeguarding of brain activity and information derived from it | current constitutional text still requires recheck before broad jurisdiction-wide conclusions |
+| `CL-002` Girardi / Emotiv, Corte Suprema Rol 105.065-2023 | official docket identity pinned; official full text unavailable | blocker/evidence-gap only | `CASE_LAW_ADMISSION = BLOCKED`; no holding is imported into this map |
+
+## 3. Comparative findings
+
+### Dignity and integrity
+
+`EU-004` expressly protects human dignity (Article 1) and physical and mental integrity (Article 3), but Charter Article 51 limits its field of application. `INT-001` Article 7 places human dignity and individual autonomy in the treaty text, while the R004 entry-into-force gate remains controlling. `INT-003` reinforces dignity as nonbinding international soft law.
+
+### Brain activity / neurotechnology versus ordinary inference
+
+`CL-001` is a narrow positive-law anchor concerning technology used on persons and special safeguarding of brain activity and information derived from it. That is not interchangeable with ordinary behavioural profiling or AI emotion inference. R011 therefore preserves:
+
+```text
+DIRECT_NEURAL_OR_BRAIN_ACTIVITY_DATA != ORDINARY_BEHAVIOURAL_INFERENCE
+CHILE_NEURORIGHTS_ANCHOR != UNIVERSAL_COGNITIVE_LIBERTY_RIGHT
+```
+
+### Emotion recognition and biometric categorisation
+
+The controlled `EU-001` snapshot defines emotion-recognition systems through inference of emotions or intentions from biometric data. Article 5 prohibits specified workplace/education emotion inference subject to the medical/safety exception, and prohibits specified sensitive-attribute biometric categorisation. Article 50 separately requires transparency for permitted emotion-recognition/biometric-categorisation uses within its scope. These rules are narrower than a generalized mental-privacy prohibition.
+
+### Manipulation and vulnerability
+
+AI Act Article 5(1)(a) and (b) regulate defined manipulative/deceptive techniques and exploitation of specified vulnerabilities. R011 does not convert these provisions into a general autonomy tort: the statutory elements, including material distortion and the significant-harm condition, remain necessary.
+
+### Automated decisions, human intervention and contestability
+
+GDPR Article 22(1) concerns decisions based solely on automated processing that produce legal effects or similarly significant effects. Article 22(2) contains exceptions. Under Article 22(3), specified exception routes require safeguards including human intervention, expression of the data subject's point of view, and contestability. This is not a general right to human review of every AI output.
+
+CETS 225 Articles 14–15 contain remedy, contestability and procedural-safeguard language in the treaty text, but R004's treaty-status gate prevents treating those provisions as treaty-wide in-force obligations on 2026-09-14.
+
+### Correction, deletion, restriction and objection
+
+GDPR Articles 16–18 and 21 create specific rectification, erasure, restriction and objection rights under their own conditions and exceptions. R011 does not rename these collectively as a universal legal right of “reversibility”.
+
+### Children and vulnerable persons
+
+EU Charter Article 24 protects children's interests within Charter scope. AI Act Article 5 includes a vulnerability-exploitation prohibition keyed to age, disability or specific social/economic situation and defined effects/harms. UNESCO AI Ethics provides additional nonbinding ethical framing for vulnerable persons.
+
+## 4. Cognitive-liberty terminology result
+
+The exact phrase `cognitive liberty` was not found in the selected controlled binding EU texts (`EU-001`, `EU-004`, `EU-005`) during the R011 GitHub probe.
+
+This result is deliberately narrow:
+
+```text
+SELECTED_SOURCE_TERM_NOT_FOUND != UNIVERSAL_RIGHT_DOES_NOT_EXIST
+SCHOLARLY_OR_POLICY_LABEL != AUTOMATIC_POSITIVE_LAW_RIGHT
+```
+
+R011 therefore treats `cognitive liberty` as a comparative research label unless and until a specific jurisdiction/source expressly supplies a legally recognized right or an accepted doctrinal equivalent.
+
+## 5. Currentness and access limits
+
+- R011 live EUR-Lex ELI requests returned HTTP 202 with empty bodies in the GitHub runner. Previously verified exact official EUR-Lex snapshots/currentness pins therefore remain the controlled basis; currentness remains temporal.
+- `CL-001` returned an official BCN page shell, but the targeted constitutional text was not extractable in this run. The prior exact source pin is preserved without broadening it.
+- `CL-002` returned an anti-bot/human-challenge page rather than official judgment full text. Full-text admission remains blocked.
+- UNESCO ARK pages returned shell-only HTML in this run. Existing verified source identities are preserved; no new clause-level certified-copy claims are inferred.
+- Live Council of Europe Treaty Office access returned HTTP 403 in this run. R004's dated 2026-09-12 treaty-status snapshot remains controlling.
+
+## 6. No liability conclusion
+
+This unit does not determine breach, causation, damage, remedy entitlement or liability for any actor. It creates a rights/protection research baseline only.
+
+```text
+RIGHT_OR_PROTECTION_IDENTIFIED != BREACH_PROVEN
+BREACH != CAUSATION
+CAUSATION != COMPENSABLE_DAMAGE
+```
+
+## 7. Stop
+
+```text
+CASE_LAW_ADMITTED = 0
+LIABILITY_CONCLUSION = NOT_ATTEMPTED
+UNIVERSAL_COGNITIVE_LIBERTY_RIGHT = NOT_INFERRED
+NOTEBOOK_UPLOADS = 0
+NEW_SOURCE_BINARY_DOWNLOADS = 0
+ZIP_OR_ARTIFACT_CREATED = NO
+AUTO_ADVANCE = NO
+STOP = YES
+```
+'''
+
+          rights_csv = '''right_or_interest,source_id,jurisdiction,authority_class,legal_status,subject_or_trigger,protection_or_process,scope_limit,unknown_or_open
+HUMAN_DIGNITY,EU-004,EU,CONSTITUTIONAL_OR_TREATY_TEXT,BINDING_WITHIN_CHARTER_SCOPE,natural persons,Charter Article 1 dignity protection,Charter Article 51 field of application controls,case-specific application not attempted
+PHYSICAL_AND_MENTAL_INTEGRITY,EU-004,EU,CONSTITUTIONAL_OR_TREATY_TEXT,BINDING_WITHIN_CHARTER_SCOPE,natural persons,Charter Article 3 physical and mental integrity,Charter Article 51 field of application controls,AI-specific application not attempted
+PRIVATE_LIFE,EU-004,EU,CONSTITUTIONAL_OR_TREATY_TEXT,BINDING_WITHIN_CHARTER_SCOPE,natural persons,Charter Article 7 private/family life home communications,Charter Article 51 controls,AI-specific interference test not attempted
+PERSONAL_DATA_PROTECTION,EU-004,EU,CONSTITUTIONAL_OR_TREATY_TEXT,BINDING_WITHIN_CHARTER_SCOPE,data concerning a person,Charter Article 8 fair specified-purpose processing plus access/rectification and independent control,Charter Article 51 controls,lawful-basis analysis not attempted
+CONSENT_WITHDRAWAL,EU-005,EU,STATUTE_OR_REGULATION,BINDING,processing based on consent,GDPR Article 7(3) withdrawal at any time and as easy to withdraw as give,only where processing is consent-based; withdrawal not retroactive,other lawful bases not analysed
+SPECIAL_CATEGORY_BIOMETRIC_DATA,EU-005,EU,STATUTE_OR_REGULATION,BINDING,biometric data used to uniquely identify plus other Article 9 categories,Article 9 default prohibition subject to enumerated exceptions,biometric processing outside unique-identification purpose requires separate analysis,Member-State additional conditions may apply
+AUTOMATED_DECISION_SAFEGUARD,EU-005,EU,STATUTE_OR_REGULATION,BINDING,solely automated decision with legal or similarly significant effect,Article 22(1) right not to be subject plus exceptions and safeguards,not every AI-assisted decision; Article 22(2) exceptions apply,fact-specific trigger unresolved
+HUMAN_INTERVENTION_AND_CONTEST,EU-005,EU,STATUTE_OR_REGULATION,BINDING_CONDITIONAL,Article 22(2)(a) or (c) exception route,Article 22(3) safeguards include human intervention viewpoint and contest,not a universal human-review right,exact system facts required
+RECTIFICATION,EU-005,EU,STATUTE_OR_REGULATION,BINDING_CONDITIONAL,inaccurate/incomplete personal data,Article 16 rectification/completion,personal-data scope and purposes control,application to model inferences fact-specific
+ERASURE,EU-005,EU,STATUTE_OR_REGULATION,BINDING_CONDITIONAL,Article 17 listed grounds,erasure right with enumerated exceptions,not absolute and not equivalent to universal reversibility,downstream model effects not analysed
+RESTRICTION,EU-005,EU,STATUTE_OR_REGULATION,BINDING_CONDITIONAL,Article 18 listed grounds,restriction of processing,grounds and exceptions control,model-specific implementation not analysed
+OBJECTION,EU-005,EU,STATUTE_OR_REGULATION,BINDING_CONDITIONAL,Article 21 processing bases/direct marketing,objection rights with basis-specific rules,not a blanket AI opt-out,overriding grounds may matter
+MANIPULATION_AND_DECEPTION,EU-001,EU,STATUTE_OR_REGULATION,BINDING_DATE_SPECIFIC,AI practices meeting Article 5(1)(a) elements,prohibition on specified subliminal/manipulative/deceptive techniques,material distortion informed-decision impairment and significant-harm elements preserved,case classification not attempted
+VULNERABILITY_EXPLOITATION,EU-001,EU,STATUTE_OR_REGULATION,BINDING_DATE_SPECIFIC,age disability or specific social/economic vulnerability plus Article 5(1)(b) elements,prohibition on specified exploitation causing material behavioural distortion and significant harm,narrow statutory trigger not general vulnerability rule,case classification not attempted
+EMOTION_INFERENCE_WORK_EDUCATION,EU-001,EU,STATUTE_OR_REGULATION,BINDING_DATE_SPECIFIC,emotion inference in workplace or education,Article 5(1)(f) prohibition,medical/safety exception and biometric-data definition context preserved,other contexts require separate analysis
+SENSITIVE_BIOMETRIC_CATEGORISATION,EU-001,EU,STATUTE_OR_REGULATION,BINDING_DATE_SPECIFIC,biometric categorisation deducing/infering listed sensitive characteristics,Article 5(1)(g) prohibition,statutory exceptions and scope preserved,other categorisation uses require separate analysis
+AI_INTERACTION_DISCLOSURE,EU-001,EU,STATUTE_OR_REGULATION,BINDING_DATE_SPECIFIC,direct AI interaction with natural persons,Article 50(1) disclosure unless obvious plus stated exception,scope and law-enforcement safeguards preserved,system/context classification required
+EMOTION_BIOMETRIC_DISCLOSURE,EU-001,EU,STATUTE_OR_REGULATION,BINDING_DATE_SPECIFIC,permitted emotion recognition or biometric categorisation,Article 50(3) exposure disclosure plus data-protection compliance,law-enforcement exception with safeguards,does not legalize otherwise prohibited use
+DIGNITY_AND_INDIVIDUAL_AUTONOMY,INT-001,COE,TREATY_OR_INTERNATIONAL_INSTRUMENT,TREATY_FORM_NOT_TREATY_WIDE_IN_FORCE_R004,AI lifecycle activities,Article 7 treaty-text duty for Parties,R004 2026-09-12 Article 30 threshold unmet,no current treaty-wide obligation inferred
+REMEDY_AND_CONTESTABILITY,INT-001,COE,TREATY_OR_INTERNATIONAL_INSTRUMENT,TREATY_FORM_NOT_TREATY_WIDE_IN_FORCE_R004,AI significantly affecting human rights,Articles 14-15 remedy information contest and procedural safeguards,R004 entry-into-force gate and domestic-law qualifiers control,domestic implementation not verified
+DIGNITY_AGENCY_ETHICS,INT-003,UNESCO,SOFT_LAW_RECOMMENDATION,NONBINDING,AI lifecycle and affected persons,ethics framing for dignity rights agency autonomy and vulnerable persons,not statute/treaty/court holding,implementation varies
+NEUROTECH_ETHICS_MENTAL_PRIVACY,INT-004,UNESCO,SOFT_LAW_RECOMMENDATION,NONBINDING,neurotechnology,certified-copy recommendation is research framing for neurotechnology rights and ethics,live body extraction shell-only in R011; no new clause-level proposition asserted,current implementation/state-specific law open
+BRAIN_ACTIVITY_AND_DERIVED_INFORMATION,CL-001,CL,CONSTITUTIONAL_TEXT,BINDING_CHILE_SPECIFIC,scientific/technological development and use on persons,Ley 21.383 constitutional amendment specially safeguards brain activity and information derived from it,current constitutional text should be rechecked before broad jurisdiction-wide conclusion,sector statutes/remedies not analysed
+GIRARDI_EMOTIV_CASE,CL-002,CL,BINDING_COURT_DECISION,CASE_ADMISSION_BLOCKED,official docket identity only,no holding admitted because official/accepted full text not verified,HTTP 200 anti-bot challenge is not full-text access,official full text remains open
+COGNITIVE_LIBERTY_TERM,EU-001;EU-004;EU-005,EU,RESEARCH_LABEL,NOT_ESTABLISHED_AS_NAMED_RIGHT_BY_SELECTED_TEXTS,exact-term check,zero exact occurrences in selected controlled binding EU texts,R011 selected-source term result only; not universal negative finding,other jurisdictions/doctrine require separate research
+'''
+
+          source_csv = '''source_id,jurisdiction,authority_class,binding_or_effect_state,r011_role,currentness_or_access_state,primary_scope_limit
+EU-001,EU,STATUTE_OR_REGULATION,BINDING_WITH_PHASED_APPLICATION,manipulation emotion-recognition biometric-categorisation transparency,controlled consolidated snapshot 2026-07-27 exact official bytes; R011 live ELI HTTP202 empty body,new 2026/1744 Article 5(ba)/(bb) provisions must retain future 2026-12-02 date state
+EU-004,EU,CONSTITUTIONAL_OR_TREATY_TEXT,BINDING_WITHIN_CHARTER_SCOPE,dignity integrity privacy data discrimination children remedy,exact official EUR-Lex PDF bytes previously verified; R011 live ELI HTTP202 empty body,Article 51 field of application controls
+EU-005,EU,STATUTE_OR_REGULATION,BINDING,data protection consent rights automated decisions contestability,exact official EUR-Lex PDF bytes previously verified; R011 live ELI HTTP202 empty body,provision-specific triggers exceptions and Member-State law remain relevant
+INT-001,COE,TREATY_OR_INTERNATIONAL_INSTRUMENT,TREATY_FORM_NOT_TREATY_WIDE_IN_FORCE_R004,dignity autonomy transparency accountability equality remedies procedural safeguards,R004 official Treaty Office status as of 2026-09-12 preserved; R011 live Treaty Office HTTP403,signature/approval does not equal treaty-wide entry into force or domestic implementation
+INT-003,UNESCO,SOFT_LAW_RECOMMENDATION,NONBINDING,dignity agency autonomy vulnerable-person ethics,existing verified source and repository snapshot reused; R011 live ARK shell-only,soft law is not binding law
+INT-004,UNESCO,SOFT_LAW_RECOMMENDATION,NONBINDING,neurotechnology ethics rights framing,certified-copy identity pf0000397812_eng preserved; R011 live ARK shell-only,legacy 43GC repo PDF remains superseded for preferred primary use
+CL-001,CL,CONSTITUTIONAL_TEXT,BINDING_CHILE_SPECIFIC,brain activity derived information physical/psychological integrity,exact official BCN record prior-pin preserved; R011 live page body did not expose target text,current constitutional text recheck required before broad Chile-wide conclusion
+CL-002,CL,BINDING_COURT_DECISION,OFFICIAL_DOCKET_VERIFIED_FULLTEXT_BLOCKED,evidence-gap only,R011 official deep link returned anti-bot human-challenge HTML not judgment body,CASE_LAW_ADMISSION=BLOCKED
+'''
+
+          closeout = r'''# AI-LAWS-R011 — Human Sovereignty Comparative Rights Baseline Closeout
+
+**UNIT_ID:** `AI-LAWS-R011`  
+**RESEARCH_DATE:** 2026-09-14  
+**STATE:** `COMPLETE_RESEARCH_BASELINE_L1_L2_RIGHTS_MAP_SCOPE_LIMITS_OPEN`  
+**AUTO_ADVANCE:** NO
+
+## Result
+
+```text
+CONTROLLED_SOURCE_RECORDS = 8
+EU_BINDING_PRIMARY_SOURCES = 3
+CHILE_BINDING_PRIMARY_SOURCE_ANCHORS = 1
+TREATY_INSTRUMENT_RECORDS = 1
+UNESCO_NONBINDING_SOFT_LAW_RECORDS = 2
+BLOCKED_CASE_LAW_RECORDS = 1
+EU001_CONTROLLED_SNAPSHOT = 2026-07-27
+EU001_MANIPULATION_AND_VULNERABILITY_PROHIBITIONS_MAPPED = YES
+EU001_EMOTION_RECOGNITION_AND_BIOMETRIC_RULES_MAPPED = YES
+EU001_ARTICLE50_TRANSPARENCY_MAPPED = YES
+EU004_DIGNITY_MENTAL_INTEGRITY_PRIVACY_DATA_CHILD_REMEDY_MAPPED = YES
+EU004_ARTICLE51_SCOPE_LIMIT_PRESERVED = YES
+EU005_ARTICLE22_HUMAN_INTERVENTION_CONTEST_LIMITS_PRESERVED = YES
+GDPR_GENERAL_AI_OPT_OUT_INFERRED = NO
+CL001_NEUROTECH_CONSTITUTIONAL_ANCHOR_PRESERVED = YES
+CL002_OFFICIAL_FULL_TEXT_ACQUIRED = NO
+CL002_CASE_LAW_ADMISSION = BLOCKED
+CETS225_R004_ENTRY_INTO_FORCE_STATE_PRESERVED = NOT_TREATY_WIDE_IN_FORCE
+UNESCO_SOFT_LAW_PROMOTED_TO_BINDING = NO
+SELECTED_EU_BINDING_TEXT_EXACT_COGNITIVE_LIBERTY_TERM_COUNT = 0
+UNIVERSAL_COGNITIVE_LIBERTY_NEGATIVE_FINDING = NOT_ATTEMPTED
+UNIVERSAL_COGNITIVE_LIBERTY_RIGHT = NOT_INFERRED
+NEW_SOURCE_BINARY_DOWNLOADS = 0
+DERIVED_MARKDOWN_CREATED = 0
+NOTEBOOK_UPLOADS = 0
+CASE_LAW_ADMITTED = 0
+LIABILITY_CONCLUSION = NOT_ATTEMPTED
+ZIP_OR_ARTIFACT_CREATED = NO
+AUTO_ADVANCE = NO
+STOP = YES
+```
+
+## Source/access observations
+
+- The R011 GitHub probe extracted the already-controlled repository snapshots for `EU-001`, `EU-004`, `EU-005`, `INT-001` and `INT-003`; it did not create new source binaries.
+- EUR-Lex live ELI requests returned HTTP 202 with empty bodies; prior exact-official-byte validation/currentness pins remain the controlled basis and must still be refreshed before future material conclusions.
+- The official Chile BCN URL returned an HTML shell that did not expose the targeted text in this runner. The prior exact `CL-001` source pin remains preserved, without broadening its claim.
+- The official Chile judiciary deep link for `CL-002` returned an anti-bot challenge page. HTTP 200 challenge HTML is not decision full text; case-law admission remains blocked.
+- UNESCO ARK URLs returned shell-only HTML in this run. Existing verified identities are preserved; no new exact clause claims from the certified Neurotechnology Recommendation are created.
+- Council of Europe Treaty Office live access returned HTTP 403. The R004 official status snapshot as of 2026-09-12 remains controlling.
+
+## Comparative limits
+
+```text
+DIRECT_NEURAL_OR_BRAIN_ACTIVITY_DATA != ORDINARY_BEHAVIOURAL_INFERENCE
+ARTICLE_22_GDPR != UNIVERSAL_HUMAN_REVIEW_RIGHT
+GDPR_ERASURE_OR_OBJECTION != UNIVERSAL_REVERSIBILITY_RIGHT
+AI_ACT_MANIPULATION_PROHIBITION != GENERAL_AUTONOMY_TORT
+SELECTED_SOURCE_TERM_NOT_FOUND != UNIVERSAL_RIGHT_DOES_NOT_EXIST
+TREATY_TEXT != CURRENT_TREATY_WIDE_IN_FORCE_DUTY
+SOFT_LAW != BINDING_LAW
+OFFICIAL_DOCKET_IDENTITY != FULL_TEXT_VERIFIED
+```
+
+## Durable outputs
+
+- `50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_COMPARATIVE_LEGAL_MAP_2026-09-14.md`
+- `50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_RIGHTS_MATRIX_2026-09-14.csv`
+- `50_RIGHTS/AI-LAWS-R011_SOURCE_AUTHORITY_AND_SCOPE_MATRIX_2026-09-14.csv`
+- this closeout
+- reconciled research queue, current context and NB06 source routing
+
+## Stop condition
+
+R011 stops before case-law admission, jurisdiction-wide exhaustive rights research, ECHR/constitutional case-law expansion, neurotechnology sector-law expansion, liability analysis, or R012.
+
+```text
+STOP = YES
+AUTO_ADVANCE = NO
+```
+'''
+
+          (rights_dir/'AI-LAWS-R011_HUMAN_SOVEREIGNTY_COMPARATIVE_LEGAL_MAP_2026-09-14.md').write_text(legal_map.strip()+"\n",encoding='utf-8')
+          (rights_dir/'AI-LAWS-R011_HUMAN_SOVEREIGNTY_RIGHTS_MATRIX_2026-09-14.csv').write_text(rights_csv,encoding='utf-8')
+          (rights_dir/'AI-LAWS-R011_SOURCE_AUTHORITY_AND_SCOPE_MATRIX_2026-09-14.csv').write_text(source_csv,encoding='utf-8')
+          (research_dir/'AI-LAWS-R011_CLOSEOUT_2026-09-14.md').write_text(closeout.strip()+"\n",encoding='utf-8')
+
+          # Research queue: change only R011 row.
+          qpath=root/'90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv'
+          qrows=list(csv.DictReader(qpath.read_text(encoding='utf-8').splitlines()))
+          qfields=['work_item_id','priority','workstream','scope','state','dependencies','expected_output','stop_condition']
+          found=False
+          for row in qrows:
+              if row['work_item_id']=='AI-LAWS-R011':
+                  found=True
+                  row['state']='COMPLETE_RESEARCH_BASELINE_L1_L2_RIGHTS_MAP_SCOPE_LIMITS_OPEN'
+                  row['expected_output']='50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_COMPARATIVE_LEGAL_MAP_2026-09-14.md; 50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_RIGHTS_MATRIX_2026-09-14.csv; 50_RIGHTS/AI-LAWS-R011_SOURCE_AUTHORITY_AND_SCOPE_MATRIX_2026-09-14.csv; 95_RESEARCH/RIGHTS/AI-LAWS-R011_CLOSEOUT_2026-09-14.md'
+                  row['stop_condition']='selected comparative L1/L2 rights/protection baseline complete; stop before universal named-right inference, blocked case-law admission, exhaustive jurisdiction expansion, concrete breach/liability or R012'
+          assert found
+          sio=io.StringIO(newline='')
+          w=csv.DictWriter(sio,fieldnames=qfields,lineterminator='\n')
+          w.writeheader(); w.writerows(qrows)
+          qpath.write_text(sio.getvalue(),encoding='utf-8')
+
+          # NB06 controlled-source reuse routing. Do not duplicate existing lines.
+          ppath=root/'86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv'
+          prows=list(csv.DictReader(ppath.read_text(encoding='utf-8').splitlines()))
+          pfields=['pack_id','source_id','requirement','reason']
+          have={(r['pack_id'],r['source_id']) for r in prows}
+          additions=[
+              {'pack_id':'NB06','source_id':'EU-001','requirement':'RECOMMENDED','reason':'Binding EU AI Act layer for manipulation vulnerability emotion-recognition biometric-categorisation and transparency; phased application labels required'},
+              {'pack_id':'NB06','source_id':'INT-001','requirement':'RECOMMENDED','reason':'AI human-rights dignity autonomy remedies and procedural-safeguards treaty interface; R004 entry-into-force state must remain explicit'},
+          ]
+          for a in additions:
+              if (a['pack_id'],a['source_id']) not in have:
+                  prows.append(a)
+          sio=io.StringIO(newline='')
+          w=csv.DictWriter(sio,fieldnames=pfields,lineterminator='\n')
+          w.writeheader(); w.writerows(prows)
+          ppath.write_text(sio.getvalue(),encoding='utf-8')
+
+          # Current context: deterministic, minimal reconciliation.
+          cpath=root/'00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md'
+          ctx=cpath.read_text(encoding='utf-8')
+          state_token=' / R010_KR_JP_L1_L2_COMPLETE_KR_POLICY_SOURCE_OPEN / R021_COMPLETE'
+          replacement=' / R010_KR_JP_L1_L2_COMPLETE_KR_POLICY_SOURCE_OPEN / R011_HUMAN_SOVEREIGNTY_L1_L2_COMPLETE_SCOPE_LIMITS_OPEN / R021_COMPLETE'
+          if 'R011_HUMAN_SOVEREIGNTY_L1_L2_COMPLETE_SCOPE_LIMITS_OPEN' not in ctx:
+              assert state_token in ctx
+              ctx=ctx.replace(state_token,replacement,1)
+          completed='AI-LAWS-R010 = COMPLETE_RESEARCH_BASELINE_L1_L2_CURRENTNESS_OPEN\n'
+          if 'AI-LAWS-R011 = COMPLETE_RESEARCH_BASELINE_L1_L2_RIGHTS_MAP_SCOPE_LIMITS_OPEN' not in ctx:
+              assert completed in ctx
+              ctx=ctx.replace(completed,completed+'AI-LAWS-R011 = COMPLETE_RESEARCH_BASELINE_L1_L2_RIGHTS_MAP_SCOPE_LIMITS_OPEN\n',1)
+          section='''\n### R011 — Human sovereignty comparative rights baseline\n\nR011 established a selected-source comparative map for dignity, mental integrity, privacy/data protection, manipulation/vulnerability exploitation, biometric/emotion inference, automated-decision safeguards, contestability/remedies, and Chile-specific brain-activity protection. It does not create a universal named cognitive-liberty right.\n\n```text\nR011_CONTROLLED_SOURCE_RECORDS = 8\nR011_EU_BINDING_PRIMARY_SOURCES = 3\nR011_CHILE_BINDING_PRIMARY_SOURCE_ANCHORS = 1\nR011_CETS225_TREATY_STATUS_GATE = R004_NOT_TREATY_WIDE_IN_FORCE\nR011_UNESCO_SOFT_LAW_SOURCES = 2\nR011_CL002_CASE_LAW_ADMISSION = BLOCKED\nR011_SELECTED_EU_EXACT_COGNITIVE_LIBERTY_TERM_COUNT = 0\nR011_UNIVERSAL_COGNITIVE_LIBERTY_RIGHT = NOT_INFERRED\nR011_NEW_SOURCE_BINARY_DOWNLOADS = 0\nR011_NOTEBOOK_UPLOADS = 0\nR011_LIABILITY_CONCLUSION = NOT_ATTEMPTED\n```\n\nDurable outputs are under `50_RIGHTS/` plus `95_RESEARCH/RIGHTS/AI-LAWS-R011_CLOSEOUT_2026-09-14.md`.\n\n`DIRECT_NEURAL_OR_BRAIN_ACTIVITY_DATA != ORDINARY_BEHAVIOURAL_INFERENCE`, `SELECTED_SOURCE_TERM_NOT_FOUND != UNIVERSAL_RIGHT_DOES_NOT_EXIST`, and `OFFICIAL_DOCKET_IDENTITY != FULL_TEXT_VERIFIED` remain controlling boundaries.\n'''
+          if '### R011 — Human sovereignty comparative rights baseline' not in ctx:
+              marker='\n### R021'
+              assert marker in ctx
+              ctx=ctx.replace(marker,section+marker,1)
+          integrity='''R011_CONTROLLED_SOURCE_RECORDS = 8\nR011_CL002_CASE_LAW_ADMISSION = BLOCKED\nR011_UNIVERSAL_COGNITIVE_LIBERTY_RIGHT = NOT_INFERRED\nR011_NEW_SOURCE_BINARY_DOWNLOADS = 0\nR011_NOTEBOOK_UPLOADS = 0\nR011_LIABILITY_CONCLUSION = NOT_ATTEMPTED\n'''
+          if 'R011_CONTROLLED_SOURCE_RECORDS = 8' not in ctx[ctx.find('## 10. Current integrity state'):]:
+              marker='NOTEBOOK_UPLOAD_COUNT = 0\n'
+              assert marker in ctx
+              ctx=ctx.replace(marker,integrity+marker,1)
+          cpath.write_text(ctx.rstrip()+"\n",encoding='utf-8')
+
+          print('R011_DURABLE_GENERATION=PASS')
+          print('ZIP_OR_ARTIFACT_CREATED=NO')
+          print('NEW_SOURCE_BINARY_DOWNLOADS=0')
+          print('DERIVED_MARKDOWN_CREATED=0')
+          print('NOTEBOOK_UPLOADS=0')
+          print('AUTO_ADVANCE=NO')
+          PY
+      - name: Validate R011 durable state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          test -f 50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_COMPARATIVE_LEGAL_MAP_2026-09-14.md
+          test -f 50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_RIGHTS_MATRIX_2026-09-14.csv
+          test -f 50_RIGHTS/AI-LAWS-R011_SOURCE_AUTHORITY_AND_SCOPE_MATRIX_2026-09-14.csv
+          test -f 95_RESEARCH/RIGHTS/AI-LAWS-R011_CLOSEOUT_2026-09-14.md
+          grep -q '^AI-LAWS-R011,P0,Human sovereignty,.*COMPLETE_RESEARCH_BASELINE_L1_L2_RIGHTS_MAP_SCOPE_LIMITS_OPEN' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          grep -q '^NB06,EU-001,RECOMMENDED,' 86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv
+          grep -q '^NB06,INT-001,RECOMMENDED,' 86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv
+          grep -q 'CL002_CASE_LAW_ADMISSION = BLOCKED' 95_RESEARCH/RIGHTS/AI-LAWS-R011_CLOSEOUT_2026-09-14.md
+          grep -q 'UNIVERSAL_COGNITIVE_LIBERTY_RIGHT = NOT_INFERRED' 95_RESEARCH/RIGHTS/AI-LAWS-R011_CLOSEOUT_2026-09-14.md
+          grep -q 'SELECTED_SOURCE_TERM_NOT_FOUND != UNIVERSAL_RIGHT_DOES_NOT_EXIST' 50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_COMPARATIVE_LEGAL_MAP_2026-09-14.md
+          grep -q 'R011_HUMAN_SOVEREIGNTY_L1_L2_COMPLETE_SCOPE_LIMITS_OPEN' 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          grep -q '^AI-LAWS-R012,P0,Liability,.*READY_RESEARCH' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          if find 50_RIGHTS 95_RESEARCH/RIGHTS -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' \) | grep -q .; then exit 1; fi
+          echo 'R011_DURABLE_VALIDATION=PASS'
+      - name: Commit and push R011 durable outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_COMPARATIVE_LEGAL_MAP_2026-09-14.md \
+            50_RIGHTS/AI-LAWS-R011_HUMAN_SOVEREIGNTY_RIGHTS_MATRIX_2026-09-14.csv \
+            50_RIGHTS/AI-LAWS-R011_SOURCE_AUTHORITY_AND_SCOPE_MATRIX_2026-09-14.csv \
+            95_RESEARCH/RIGHTS/AI-LAWS-R011_CLOSEOUT_2026-09-14.md \
+            90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+            00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv
+          git diff --cached --check
+          git status --short
+          git commit -m 'research(r011): establish human sovereignty rights baseline'
+          git push origin HEAD:main
+      - name: Confirm controlled stop
+        shell: bash
+        run: |
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
+          echo 'NEW_SOURCE_BINARY_DOWNLOADS=0'
+          echo 'DERIVED_MARKDOWN_CREATED=0'
+          echo 'NOTEBOOK_UPLOADS=0'
+          echo 'CASE_LAW_ADMITTED=0'
+          echo 'LIABILITY_CONCLUSION=NOT_ATTEMPTED'
+          echo 'AUTO_ADVANCE=NO'
+          echo 'STOP=YES'
