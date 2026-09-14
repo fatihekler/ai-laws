@@ -11,8 +11,11 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
+      - name: Checkout controlled repository state
+        uses: actions/checkout@v4
+
       - name: Probe controlled official sources
         shell: bash
         run: |
@@ -39,3 +42,51 @@ jobs:
           probe US-007 'https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10'
           probe US-008 'https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence'
           probe US-009-S101 'https://le.utah.gov/xcode/Title13/Chapter72/C13-72-S101_2026050620260506.pdf'
+
+      - name: Extract R012 liability provisions from verified repository snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils >/dev/null
+          pld="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*Product Liability Directive*.pdf' -print -quit)"
+          gdpr="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname 'GDPR.pdf' -print -quit)"
+          ai="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*consolidated AI Act*.pdf' -print -quit)"
+          test -n "$pld" && test -n "$gdpr" && test -n "$ai"
+          printf 'PLD_FILE=%s\nGDPR_FILE=%s\nAI_ACT_FILE=%s\n' "$pld" "$gdpr" "$ai"
+          sha256sum "$pld" "$gdpr" "$ai"
+          pdftotext -raw "$pld" /tmp/pld.txt
+          pdftotext -raw "$gdpr" /tmp/gdpr.txt
+          pdftotext -raw "$ai" /tmp/ai.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          def article(text, n, next_n=None):
+              starts = [rf'(?m)^Article {n}\s*$', rf'(?m)^Article {n}\b']
+              m = None
+              for pat in starts:
+                  m = re.search(pat, text)
+                  if m: break
+              if not m:
+                  print(f'ARTICLE_{n}=NOT_FOUND')
+                  return
+              if next_n is None:
+                  next_n = n + 1
+              e = re.search(rf'(?m)^Article {next_n}\b', text[m.end():])
+              end = m.end() + e.start() if e else min(len(text), m.end()+12000)
+              body = text[m.start():end].strip()
+              print(f'===== ARTICLE {n} =====')
+              print(body[:12000])
+
+          pld = Path('/tmp/pld.txt').read_text(errors='replace')
+          gdpr = Path('/tmp/gdpr.txt').read_text(errors='replace')
+          ai = Path('/tmp/ai.txt').read_text(errors='replace')
+          print('===== EU-003 PRODUCT LIABILITY DIRECTIVE =====')
+          for n in [4,5,6,7,8,9,10,11,13,14,15,16,17,22]:
+              article(pld, n)
+          print('===== EU-005 GDPR =====')
+          article(gdpr, 82)
+          print('===== EU-001 AI ACT ROLE DEFINITIONS =====')
+          article(ai, 3)
+          PY
