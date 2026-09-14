@@ -1,4 +1,4 @@
-name: AI-LAWS R008 China official-source probe
+name: AI-LAWS R008 China official-law resolver probe
 
 on:
   push:
@@ -13,68 +13,61 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Probe known official China AI/data source candidates
+      - name: Probe exact known CAC sources and candidate current instruments
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import urllib.request,re,html
-          urls={
-            'CN_ALGORITHM':'https://www.cac.gov.cn/2022-01/04/c_1642894606364259.htm',
-            'CN_DEEP_SYNTHESIS':'https://www.cac.gov.cn/2022-12/11/c_1672221949354811.htm',
-            'CN_GENAI':'https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm',
-            'CN_PIPL':'https://www.gov.cn/xinwen/2021-08/20/content_5632486.htm',
-            'CN_DATA_SECURITY':'https://www.gov.cn/xinwen/2021-06/11/content_5616919.htm',
-          }
-          markers={
-            'CN_ALGORITHM':['互联网信息服务算法推荐管理规定','2022年3月1日'],
-            'CN_DEEP_SYNTHESIS':['互联网信息服务深度合成管理规定','2023年1月10日'],
-            'CN_GENAI':['生成式人工智能服务管理暂行办法','2023年8月15日'],
-            'CN_PIPL':['中华人民共和国个人信息保护法','2021年11月1日'],
-            'CN_DATA_SECURITY':['中华人民共和国数据安全法','2021年9月1日'],
-          }
-          for key,url in urls.items():
-              print('\n===',key,'===')
-              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R008'})
+          urls=[
+            'https://www.cac.gov.cn/2022-01/04/c_1642894606364259.htm',
+            'https://www.cac.gov.cn/2022-12/11/c_1672221949354811.htm',
+            'https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm',
+            'https://www.cac.gov.cn/2025-03/14/c_1743654684782215.htm',
+            'https://www.gov.cn/zhengce/content/202409/content_6977766.htm',
+            'https://flk.npc.gov.cn/',
+          ]
+          for u in urls:
+              print('\nURL=',u)
+              req=urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R008'})
               try:
                   with urllib.request.urlopen(req,timeout=30) as r:
-                      b=r.read(); txt=b.decode('utf-8','ignore')
-                      clean=html.unescape(re.sub(r'<[^>]+>',' ',txt)); clean=re.sub(r'\s+',' ',clean)
-                      print('FINAL_URL=',r.geturl())
-                      print('STATUS=',r.status,'BYTES=',len(b),'TYPE=',r.headers.get('content-type'))
-                      print('TITLE=',re.findall(r'<title[^>]*>(.*?)</title>',txt,re.I|re.S)[:1])
-                      for m in markers[key]: print('MARKER',m, m in clean)
-                      for token in ['施行','自2022年3月1日起施行','自2023年1月10日起施行','自2023年8月15日起施行','自2021年11月1日起施行','自2021年9月1日起施行']:
-                          if token in clean:
-                              i=clean.find(token); print('SAMPLE=',clean[max(0,i-160):i+300]); break
-              except Exception as e:
-                  print('ERROR=',type(e).__name__,str(e))
+                      b=r.read(); t=b.decode('utf-8','ignore')
+                      clean=html.unescape(re.sub(r'<[^>]+>',' ',t)); clean=re.sub(r'\s+',' ',clean)
+                      print('FINAL=',r.geturl(),'STATUS=',r.status,'TYPE=',r.headers.get('content-type'),'BYTES=',len(b))
+                      print('TITLE=',re.findall(r'<title[^>]*>(.*?)</title>',t,re.I|re.S)[:1])
+                      for m in ['人工智能生成合成内容标识办法','网络数据安全管理条例','中华人民共和国个人信息保护法','中华人民共和国数据安全法','中华人民共和国网络安全法','2025年9月1日','2025年1月1日','2026年1月1日']:
+                          if m in clean:
+                              i=clean.find(m); print('MARKER=',m,'SAMPLE=',clean[max(0,i-140):i+360])
+              except Exception as e: print('ERROR=',type(e).__name__,str(e))
           PY
-      - name: Discover newer official CN instruments
+      - name: Discover exact official URLs using search pages only as locators
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import urllib.parse,urllib.request,re,html
           queries=[
-            'site:cac.gov.cn 人工智能生成合成内容标识办法',
-            'site:gov.cn 网络数据安全管理条例',
-            'site:npc.gov.cn 网络安全法 2025 修改 2026',
-            'site:gov.cn 网络安全法 2025 修改 2026',
+            '中华人民共和国个人信息保护法 npc.gov.cn',
+            '中华人民共和国数据安全法 npc.gov.cn',
+            '中华人民共和国网络安全法 2025 修改 npc.gov.cn',
+            '人工智能生成合成内容标识办法 cac.gov.cn',
+            '网络数据安全管理条例 gov.cn',
           ]
+          engines=['https://www.google.com/search?q=','https://html.duckduckgo.com/html/?q=']
           for q in queries:
               print('\nQUERY=',q)
-              url='https://cn.bing.com/search?q='+urllib.parse.quote(q)
-              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R008'})
-              try:
-                  with urllib.request.urlopen(req,timeout=30) as r:
-                      t=r.read().decode('utf-8','ignore')
-                      links=[]
-                      for m in re.finditer(r'href=["\'](https?://[^"\']+)',t,re.I):
-                          u=html.unescape(m.group(1))
-                          if any(h in u for h in ['cac.gov.cn','gov.cn','npc.gov.cn']):
-                              if u not in links: links.append(u)
-                      print('OFFICIAL_LINKS=',links[:15])
-              except Exception as e: print('ERROR=',type(e).__name__,str(e))
+              seen=[]
+              for base in engines:
+                  try:
+                      req=urllib.request.Request(base+urllib.parse.quote(q),headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R008'})
+                      with urllib.request.urlopen(req,timeout=30) as r:
+                          t=html.unescape(r.read().decode('utf-8','ignore'))
+                          for m in re.finditer(r'https?://[^\s"\'<>]+',t,re.I):
+                              u=m.group(0).replace('&amp;','&')
+                              if any(h in u for h in ['npc.gov.cn','flk.npc.gov.cn','cac.gov.cn','gov.cn']) and u not in seen:
+                                  seen.append(u)
+                  except Exception as e: print('ENGINE_ERROR=',base,type(e).__name__,str(e))
+              print('OFFICIAL_CANDIDATES=',seen[:30])
           PY
           echo 'ZIP_OR_ARTIFACT_CREATED=NO'
