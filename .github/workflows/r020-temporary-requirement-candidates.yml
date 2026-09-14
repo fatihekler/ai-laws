@@ -1,17 +1,15 @@
-name: R020 destination-neutral requirement candidate validation
+name: R020 final reconciliation cleanup
 
 on:
   push:
     paths:
       - '.github/workflows/r020-temporary-requirement-candidates.yml'
-      - '.github/scripts/r020_validate_candidates.py'
-      - '79_CROSS_REPO_REQUIREMENTS/**'
 
 permissions:
   contents: write
 
 jobs:
-  validate:
+  reconcile:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -27,27 +25,24 @@ jobs:
           git fetch origin main
           test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
 
-      - name: Validate candidates and generate review packets
+      - name: Reconcile controlled state
         shell: bash
         run: |
           set -euo pipefail
-          python3 .github/scripts/r020_validate_candidates.py
+          python3 .github/scripts/r020_reconcile.py
           git diff --check
 
-      - name: Commit validated packet set and push
+      - name: Commit reconciliation cleanup and push
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'Fatih Mehmet Ekler'
           git config user.email '5189511+fatihekler@users.noreply.github.com'
-          git add 79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_ENGINEERING_OS_REVIEW_PACKET_2026-09-14.csv \
-                  79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_OWASP_REVIEW_PACKET_2026-09-14.csv \
-                  79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_ETHICAL_AI_REVIEW_PACKET_2026-09-14.csv \
-                  79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_SOURCE_AND_AUTHORITY_MATRIX_2026-09-14.csv \
-                  79_CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_VALIDATION_SUMMARY_2026-09-14.csv
+          git rm .github/workflows/r020-temporary-requirement-candidates.yml .github/scripts/r020_validate_candidates.py .github/scripts/r020_reconcile.py
+          git add 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv 95_RESEARCH/CROSS_REPO_REQUIREMENTS/AI-LAWS-R020_CLOSEOUT_2026-09-14.md
           git diff --cached --check
-          git commit -m 'research(r020): validate and generate destination-neutral candidate packets'
+          git commit -m 'control(r020): reconcile state and cleanup helpers'
           git fetch origin main
           test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
           git push origin HEAD:main
-          printf 'R020_RESEARCH_HEAD=%s\nR020_RESEARCH_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
+          printf 'FINAL_HEAD=%s\nFINAL_TREE=%s\nWORKFLOW_PRESENT=%s\nVALIDATOR_PRESENT=%s\nRECONCILE_PRESENT=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" "$(test -e .github/workflows/r020-temporary-requirement-candidates.yml && echo YES || echo NO)" "$(test -e .github/scripts/r020_validate_candidates.py && echo YES || echo NO)" "$(test -e .github/scripts/r020_reconcile.py && echo YES || echo NO)"
