@@ -1,0 +1,61 @@
+name: AI-LAWS R008 NPC law-database API probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r008-cn-lawdb-api-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect NPC JS API configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request,re
+          js='https://flk.npc.gov.cn/assets/index-Y9B5oxpu.js'
+          req=urllib.request.Request(js,headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R008'})
+          with urllib.request.urlopen(req,timeout=20) as r:
+              t=r.read().decode('utf-8','ignore')
+          for token in ['search/search/list','baseURL','axios.create','/api/','searchContent','searchType']:
+              print('\nTOKEN=',token)
+              start=0
+              count=0
+              while True:
+                  i=t.find(token,start)
+                  if i<0 or count>=6: break
+                  print(t[max(0,i-700):i+1300])
+                  start=i+len(token); count+=1
+          PY
+      - name: Probe likely official API forms
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request,urllib.error,json
+          terms=['中华人民共和国个人信息保护法','中华人民共和国数据安全法','中华人民共和国网络安全法']
+          endpoints=['https://flk.npc.gov.cn/api/search/search/list','https://flk.npc.gov.cn/search/search/list']
+          payloads=[]
+          for term in terms:
+              payloads += [
+                {'searchType':'title','searchContent':term,'pageNum':1,'pageSize':10},
+                {'searchType':'1','searchContent':term,'pageNum':1,'pageSize':10},
+                {'keyword':term,'pageNum':1,'pageSize':10},
+              ]
+          for ep in endpoints:
+              print('\nENDPOINT=',ep)
+              for p in payloads:
+                  data=json.dumps(p,ensure_ascii=False).encode('utf-8')
+                  req=urllib.request.Request(ep,data=data,method='POST',headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R008','Content-Type':'application/json','Accept':'application/json,text/plain,*/*','Referer':'https://flk.npc.gov.cn/'})
+                  try:
+                      with urllib.request.urlopen(req,timeout=15) as r:
+                          b=r.read(); print('STATUS=',r.status,'PAYLOAD=',p,'BODY=',b[:1200].decode('utf-8','ignore'))
+                  except Exception as e: print('ERROR=',type(e).__name__,str(e),'PAYLOAD=',p)
+          PY
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
