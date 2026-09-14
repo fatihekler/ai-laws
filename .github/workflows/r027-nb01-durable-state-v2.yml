@@ -1,0 +1,85 @@
+name: AI-LAWS R027 NB01 durable state v2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r027-nb01-durable-state-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install PDF inspection tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils
+
+      - name: Execute existing R027 generator with normalized text matching
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          src=Path('.github/workflows/r027-nb01-durable-state.yml').read_text(encoding='utf-8').splitlines()
+          start=None
+          end=None
+          for i,line in enumerate(src):
+              if line.strip()=="python3 - <<'PY'":
+                  start=i+1
+                  break
+          if start is None:
+              raise SystemExit('generator start marker not found')
+          for i in range(start,len(src)):
+              if src[i]=='          PY':
+                  end=i
+                  break
+          if end is None:
+              raise SystemExit('generator end marker not found')
+
+          code_lines=[]
+          for line in src[start:end]:
+              if not line.startswith('          '):
+                  raise SystemExit(f'unexpected generator indentation: {line!r}')
+              code_lines.append(line[10:])
+          code='\n'.join(code_lines)+'\n'
+
+          old="""    low=text.lower()\n    for marker in markers[sid]:\n        assert marker.lower() in low, (sid,'marker',marker)\n"""
+          new="""    norm=' '.join(text.lower().split())\n    for marker in markers[sid]:\n        expected=' '.join(marker.lower().split())\n        assert expected in norm, (sid,'marker',marker)\n"""
+          if old not in code:
+              raise SystemExit('expected strict marker block not found in extracted generator')
+          code=code.replace(old,new,1)
+          exec(compile(code,'r027-extracted-generator.py','exec'),{'__name__':'__main__'})
+          PY
+
+      - name: Assert durable outputs and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f 86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv
+          test -f 86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R027_NB01_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md
+          grep -q 'AI-LAWS-R027' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          grep -q 'R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE' 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv \
+            86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv \
+            86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md \
+            86_NOTEBOOKLM/downloads/README.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv \
+            86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R027_NB01_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md \
+            90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+            00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git diff --cached --stat
+          git commit -m 'validation(r027): persist NB01 repository PDF verification'
+          git push origin HEAD:main
