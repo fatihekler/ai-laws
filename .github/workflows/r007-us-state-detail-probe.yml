@@ -1,0 +1,52 @@
+name: AI-LAWS R007 Utah and Texas detail probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r007-us-state-detail-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve current official state-law detail
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request,re
+          def get(url):
+              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R007'})
+              with urllib.request.urlopen(req,timeout=30) as r:
+                  return r.geturl(),r.status,r.headers.get('content-type',''),r.read()
+          urls=[
+            'https://le.utah.gov/xcode/Title13/Chapter72/13-72-S101.html',
+            'https://le.utah.gov/xcode/Title13/Chapter72/13-72.html',
+            'https://le.utah.gov/xcode/Title13/Chapter72/C13-72_2026050620260506.pdf',
+            'https://le.utah.gov/xcode/Title13/Chapter72/C13-72_20260507.pdf',
+            'https://statutes.capitol.texas.gov/Docs/BC/htm/BC.552.htm',
+          ]
+          for u in urls:
+              print('\nURL=',u)
+              try:
+                  final,status,ctype,b=get(u)
+                  print('FINAL=',final,'STATUS=',status,'TYPE=',ctype,'BYTES=',len(b))
+                  if 'html' in ctype.lower():
+                      t=b.decode('utf-8','ignore')
+                      print('TITLE=',re.findall(r'<title[^>]*>(.*?)</title>',t,re.I|re.S)[:1])
+                      for pat in ['Effective','5/6/2026','2026','Artificial Intelligence Policy Act','Artificial Intelligence','Chapter 552','13-72-101','generative artificial intelligence']:
+                          hits=[m.start() for m in re.finditer(re.escape(pat),t,re.I)]
+                          print(pat,'COUNT=',len(hits),'SAMPLE=',[re.sub(r'\s+',' ',t[max(0,i-120):i+260]) for i in hits[:2]])
+                      print('PDF_LINKS=',re.findall(r'href=[\"\']([^\"\']+\.pdf[^\"\']*)',t,re.I)[:20])
+                      print('SCRIPT_SRCS=',re.findall(r'<script[^>]+src=[\"\']([^\"\']+)',t,re.I)[:20])
+                  else:
+                      import hashlib
+                      print('SHA256=',hashlib.sha256(b).hexdigest())
+              except Exception as e:
+                  print('ERROR=',type(e).__name__,str(e))
+          PY
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
