@@ -19,30 +19,32 @@ jobs:
           set -euo pipefail
           echo "BASE_HEAD=$(git rev-parse HEAD)"
           echo "ZIP_OR_ARTIFACT_CREATED=NO"
-          echo "NEW_BINARY_DOWNLOADS=0"
+          echo "NEW_SOURCE_BINARY_DOWNLOADS=0"
           echo "NOTEBOOK_UPLOADS=0"
 
-          command -v pdftotext >/dev/null
+          if ! command -v pdftotext >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq poppler-utils >/dev/null
+          fi
 
           AI_ACT="86_NOTEBOOKLM/downloads/Current consolidated AI Act.pdf"
           CHARTER="86_NOTEBOOKLM/downloads/Charter of Fundamental Rights.pdf"
           GDPR="86_NOTEBOOKLM/downloads/GDPR.pdf"
-          CETS="86_NOTEBOOKLM/downloads/CETS No.225 treaty status page .pdf"
-          UNESCO_AI="86_NOTEBOOKLM/downloads/Recommendation on the Ethics of Artificial Intelligence.pdf"
+          CETS="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*CETS*225*treaty*pdf' | head -1 || true)"
+          UNESCO_AI="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*Ethics*Artificial*Intelligence*.pdf' | head -1 || true)"
 
-          for f in "$AI_ACT" "$CHARTER" "$GDPR" "$CETS" "$UNESCO_AI"; do
-            if [ -f "$f" ]; then
-              echo "FILE_FOUND=$f"
-            else
-              echo "FILE_MISSING=$f"
-            fi
+          for f in "$AI_ACT" "$CHARTER" "$GDPR"; do
+            test -f "$f"
+            echo "FILE_FOUND=$f"
           done
+          [ -n "$CETS" ] && echo "FILE_FOUND=$CETS" || echo "FILE_MISSING=CETS225_REPO_SNAPSHOT"
+          [ -n "$UNESCO_AI" ] && echo "FILE_FOUND=$UNESCO_AI" || echo "FILE_MISSING=INT003_REPO_SNAPSHOT"
 
           pdftotext -layout "$AI_ACT" /tmp/ai-act.txt
           pdftotext -layout "$CHARTER" /tmp/charter.txt
           pdftotext -layout "$GDPR" /tmp/gdpr.txt
-          if [ -f "$CETS" ]; then pdftotext -layout "$CETS" /tmp/cets.txt; fi
-          if [ -f "$UNESCO_AI" ]; then pdftotext -layout "$UNESCO_AI" /tmp/unesco-ai.txt; fi
+          if [ -n "$CETS" ]; then pdftotext -layout "$CETS" /tmp/cets.txt; fi
+          if [ -n "$UNESCO_AI" ]; then pdftotext -layout "$UNESCO_AI" /tmp/unesco-ai.txt; fi
 
           python3 - <<'PY'
           from pathlib import Path
@@ -162,6 +164,6 @@ jobs:
                   print('ERROR=',type(e).__name__,str(e))
           print('\nAUTO_ADVANCE=NO')
           print('ZIP_OR_ARTIFACT_CREATED=NO')
-          print('NEW_BINARY_DOWNLOADS=0')
+          print('NEW_SOURCE_BINARY_DOWNLOADS=0')
           print('NOTEBOOK_UPLOADS=0')
           PY
