@@ -164,22 +164,24 @@ Before a current-law conclusion, verify the current consolidated/version/applica
 
 ## D. NB03 — United States
 
-### Federal core
+R028 repository validation state:
 
-- `US-001` EO 14179 — official White House URL preferred.
-- `US-002` America's AI Action Plan — PDF eligible after content check.
-- `US-003` OMB M-25-21 — PDF eligible after content check.
-- `US-004` OMB M-25-22 — PDF eligible after content check.
-- `US-005` EO 14365 — official White House URL preferred.
-- `US-006` OMB M-26-04 — PDF eligible after content check.
-- `US-007` NIST AI RMF — official URL/current revision state preferred.
-- `US-008` NIST GenAI Profile — official URL preferred.
+```text
+US-001 = CONTENT_IDENTITY_PARTIAL / WHITE_HOUSE_WEBPAGE_PRINT / LIVE_URL_PRIMARY
+US-002 = CONTENT_IDENTITY_VERIFIED / EXACT_OFFICIAL_PDF
+US-003 = CONTENT_IDENTITY_VERIFIED / EXACT_OFFICIAL_PDF
+US-004 = CONTENT_IDENTITY_VERIFIED / EXACT_OFFICIAL_PDF
+US-005 = CONTENT_IDENTITY_VERIFIED / FEDERAL_REGISTER_PDF_SNAPSHOT / EXACT_BYTE_NOT_RUN
+US-006 = CONTENT_IDENTITY_VERIFIED / EXACT_OFFICIAL_PDF
+US-007 = CONTENT_IDENTITY_VERIFIED / EXACT_NIST_DOI_PDF / REVISION_RECHECK_REQUIRED
+US-008 = CONTENT_IDENTITY_VERIFIED / EXACT_NIST_DOI_PDF
+```
 
-Do not describe executive orders or OMB memoranda as Acts of Congress.
+All eight repository files have native searchable text layers; no Markdown derivative is required. For current executive-policy status use the live White House/OMB sources. NIST materials remain voluntary/nonbinding. Do not describe executive orders or OMB memoranda as Acts of Congress.
 
 ### State law
 
-Do not build a definitive state-law notebook from memory. `AI-LAWS-R007` must pin current enacted/amended text state-by-state.
+Do not build a definitive state-law notebook from memory. `AI-LAWS-R007` must pin current enacted/amended text state-by-state. `US-009` remains outside this R028 core-PDF unit and requires current Utah codification handling.
 
 ---
 

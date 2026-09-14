@@ -3,7 +3,7 @@
 **UPDATED:** 2026-09-14  
 **REPOSITORY:** `fatihekler/ai-laws`  
 **BRANCH:** `main`  
-**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE  
+**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / R028_NB03_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE
 **AUTO_ADVANCE:** NO
 
 ## 1. Project position
@@ -42,6 +42,7 @@ AI-LAWS-R024 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R025 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R026 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R027 = COMPLETE_SUPPORT_SOURCE_VALIDATION
+AI-LAWS-R028 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 ```
 
 ### R001
@@ -154,6 +155,24 @@ Critical corrections: `INT-001` is treaty text rather than a status-page snapsho
 
 Durable output: `86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv` and R027 closeout/registry/ledger/control reconciliations.
 
+### R028 — NB03 United States repository PDF validation
+
+R028 inspected `US-001..US-008` inside GitHub and rechecked their direct White House/OMB/NIST official-source counterparts.
+
+```text
+NB03_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8
+NB03_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8
+NB03_CONTENT_IDENTITY_VERIFIED = 7
+NB03_CONTENT_IDENTITY_PARTIAL = 1
+NB03_OFFICIAL_EXACT_BYTE_MATCH = 6
+NB03_DERIVED_MARKDOWN = 0
+NB03_NOTEBOOK_UPLOADS = 0
+```
+
+Exact official byte matches were established for `US-002`, `US-003`, `US-004`, `US-006`, `US-007` and `US-008`. `US-001` remains a supporting White House webpage-print snapshot. `US-005` was corrected from webpage-snapshot semantics to a verified Federal Register PDF snapshot of EO 14365; exact Federal Register byte comparison remains unverified.
+
+Durable output: `86_NOTEBOOKLM/downloads/NB03_CONTENT_IDENTITY_RESULTS.csv` plus registry/ledger/upload-plan/download-list/queue reconciliation.
+
 ### R025 — NB02 remaining EU source validation
 
 R025 processed the seven NB02 sources not already covered by R024:
@@ -207,7 +226,7 @@ OFFICIAL_URL_SOURCE_VERIFIED != REPOSITORY_PDF_BODY_VERIFIED
 
 ### NB03 — United States
 
-`NB-BATCH-NB03-20260913-001` verified core federal source identities and preserved the Utah current-whole-chapter blocker. R024 later rechecked selected OMB/NIST sources for NB07 reuse.
+`NB-BATCH-NB03-20260913-001` verified core federal source identities and preserved the Utah current-whole-chapter blocker. R024 later rechecked selected OMB/NIST sources for NB07 reuse. R028 then validated the eight repository PDFs `US-001..US-008`: seven have verified content identity, six are exact byte matches to current official PDF endpoints, and `US-001` remains a supporting webpage-print snapshot. `US-009` remains a separate state-law currentness task.
 
 ### NB04 — Türkiye
 
@@ -260,6 +279,20 @@ NB01_NOTEBOOK_UPLOADS = 0
 ```
 
 Use the source-specific routing in `DOWNLOADS_REGISTRY.csv`; dynamic/current official URLs remain authoritative for current status.
+
+### NB03 current ingest state
+
+```text
+NB03_CORE_PDF_CONTENT_IDENTITY_VERIFIED = 7 / 8
+NB03_US001_CONTENT_IDENTITY = PARTIAL_WEBPAGE_PRINT_SUPPORTING_ONLY
+NB03_OFFICIAL_EXACT_BYTE_MATCH = 6 / 8
+NB03_US005_VARIANT = VERIFIED_FEDERAL_REGISTER_PDF_SNAPSHOT_EXACT_BYTE_NOT_RUN
+NB03_NATIVE_TEXT_LAYER = 8 / 8
+NB03_DERIVED_MARKDOWN_REQUIRED = 0
+NB03_NOTEBOOK_UPLOADS = 0
+```
+
+Use `DOWNLOADS_REGISTRY.csv` for exact routing. Live White House/OMB currentness and NIST revision state remain authoritative beyond the pinned snapshots.
 
 ### NB02 current ingest state
 
@@ -371,7 +404,7 @@ The controlled NB02 official URL set is now ready for a separate Notebook ingest
 
 NB07 official sources also remain ready for a separate Notebook ingestion step.
 
-R027 completed the NB01 core repository-PDF classification. The next unprocessed primary repository pack by pack order is NB03, but it is not auto-started.
+R028 completed the NB03 core repository-PDF classification. No further primary repository pack is auto-started by this unit; NB08 incident PDFs remain a separate controlled lane and NB05 has no dedicated primary binary set among the current 38 PDFs.
 
 ### Türkiye source-processing lane
 
@@ -416,6 +449,11 @@ R027_NB01_CONTENT_IDENTITY_VERIFIED = 6
 R027_NB01_CONTENT_IDENTITY_PARTIAL = 1
 R027_NB01_SUPERSEDED_SOURCE = 1
 R027_NB01_NATIVE_TEXT_LAYER_VERIFIED = 8
+R028_NB03_CORE_PDFS_INSPECTED = 8
+R028_NB03_CONTENT_IDENTITY_VERIFIED = 7
+R028_NB03_CONTENT_IDENTITY_PARTIAL = 1
+R028_NB03_OFFICIAL_EXACT_BYTE_MATCH = 6
+R028_NB03_NATIVE_TEXT_LAYER_VERIFIED = 8
 NB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10
 NB02_OFFICIAL_URL_DIRECT_READY = 10
 NB02_REPOSITORY_PDF_CONTENT_IDENTITY_PARTIAL = 10

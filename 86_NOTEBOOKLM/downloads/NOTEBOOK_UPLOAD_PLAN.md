@@ -79,21 +79,28 @@ OFFICIAL_URL_SOURCE_VERIFIED != REPOSITORY_PDF_BODY_VERIFIED
 
 ## NB03 — United States
 
-### PDF candidates after content check
+R028 inspected all eight core `US-001..US-008` repository PDFs inside GitHub and rechecked the corresponding official source layer. No ZIP/artifact, derived Markdown or Notebook upload was created.
 
-- `US-002` America's AI Action Plan;
-- `US-003` OMB M-25-21;
-- `US-004` OMB M-25-22;
-- `US-006` OMB M-26-04.
+```text
+NB03_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8
+NB03_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8
+NB03_CONTENT_IDENTITY_VERIFIED = 7
+NB03_CONTENT_IDENTITY_PARTIAL = 1       # US-001 webpage-print snapshot
+NB03_OFFICIAL_EXACT_BYTE_MATCH = 6      # US-002/003/004/006/007/008
+NB03_DERIVED_MARKDOWN_REQUIRED = 0
+NB03_NOTEBOOK_UPLOADS = 0
+```
 
-### URL/current-status preferred
+Exact official PDF matches: `US-002` America's AI Action Plan, `US-003` OMB M-25-21, `US-004` OMB M-25-22, `US-006` OMB M-26-04, `US-007` NIST AI RMF 1.0 and `US-008` NIST GenAI Profile.
 
-- `US-001` EO 14179;
-- `US-005` EO 14365;
-- `US-007` NIST AI RMF;
-- `US-008` NIST GenAI Profile.
+Special routing:
 
-Do not label executive orders or OMB memoranda as Acts of Congress.
+- `US-001` is a verified White House **webpage-print snapshot** and remains supporting-only; use the live White House page for current executive-order status.
+- `US-005` is not a webpage print: the repository PDF is a 3-page **Federal Register** publication of Executive Order 14365. Its content identity is verified, while exact-byte comparison to a currently resolved Federal Register PDF was not completed; the live White House URL remains current-status authority.
+- `US-007` is an exact byte match to the DOI-resolved NIST AI 100-1 PDF, but NIST's revision-in-progress state still requires currentness recheck before material use.
+- `US-008` is an exact byte match to the DOI-resolved NIST AI 600-1 PDF.
+
+Do not label executive orders or OMB memoranda as Acts of Congress. NIST sources are voluntary/nonbinding frameworks/profiles.
 
 ## NB04 — Türkiye
 
