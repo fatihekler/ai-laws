@@ -1,5 +1,6 @@
 name: R017 final reconciliation cleanup
 
+# retry after fail-closed whitespace normalization
 on:
   push:
     paths:
