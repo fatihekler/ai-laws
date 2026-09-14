@@ -306,3 +306,15 @@ For every repository PDF:
 Do **not** convert every PDF to Markdown. Use direct PDF/official URL ingestion first; create derived Markdown only when extraction quality, diffing or locator requirements justify it.
 
 `AUTO_ADVANCE = NO`
+
+## R033 — TR-009 current Türkiye AI policy source
+
+
+- `TR-009` — **Türkiye Yapay Zekâ Eylem Planı (2026-2030)**
+  Official strategy-document index: https://www.sanayi.gov.tr/plan-program-raporlar-ve-yayinlar/strateji-belgeleri
+  Official release announcement (13 June 2026): https://www.sanayi.gov.tr/medya/haber/turkiye-yapay-zek%C3%A2-eylem-plani-aciklandi
+  **Authority:** `OFFICIAL_GUIDANCE` / national policy-action plan.
+  **Binding state:** nonbinding policy source; **not statute**.
+  **Ingest:** `URL_DIRECT_PREFERRED`.
+  **R033 binary state:** exact official PDF body was not exposed to the GitHub runner; SHA-256/byte size remain `UNKNOWN`; no repository binary was vendored.
+  **Historical boundary:** 2021-2025 strategy and 2024-2025 action-plan sources remain historical context and must not replace the current 2026-2030 plan.

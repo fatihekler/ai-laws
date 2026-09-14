@@ -1,64 +1,64 @@
 pack_id,source_id,requirement,reason
-NB01,INT-001,REQUIRED,"Global treaty baseline"
-NB01,INT-002,REQUIRED,"Treaty interpretation/drafting context"
-NB01,INT-003,REQUIRED,"Global AI ethics soft-law baseline"
-NB01,INT-004,REQUIRED,"Neurotechnology soft-law baseline"
-NB01,INT-005,RECOMMENDED,"Intergovernmental AI principles"
-NB01,INT-006,RECOMMENDED,"UN GA AI resolution"
-NB01,INT-007,RECOMMENDED,"Global Digital Compact"
-NB01,INT-008,RECOMMENDED,"UN advisory governance report"
-NB01,US-007,RECOMMENDED,"Nonbinding AI risk-management framework"
-NB01,US-008,RECOMMENDED,"Generative-AI risk profile"
-NB02,EU-001,REQUIRED,"Current consolidated AI Act"
-NB02,EU-002,REQUIRED,"2026 AI Act amendment"
-NB02,EU-003,REQUIRED,"Product-liability interaction"
-NB02,EU-004,REQUIRED,"Fundamental-rights baseline"
-NB02,EU-005,REQUIRED,"Data-protection baseline"
-NB02,EU-006,RECOMMENDED,"Platform systemic-risk context"
-NB02,EU-007,RECOMMENDED,"Data access/use context"
-NB02,EU-008,OPTIONAL,"Data-governance context"
-NB02,EU-009,RECOMMENDED,"Cybersecurity duty context"
-NB02,EU-010,RECOMMENDED,"Product cybersecurity context"
-NB02,INT-001,RECOMMENDED,"European treaty interface"
-NB03,US-001,REQUIRED,"Current federal executive AI policy root"
-NB03,US-002,REQUIRED,"Current federal AI Action Plan"
-NB03,US-003,REQUIRED,"Federal AI use/governance memorandum"
-NB03,US-004,REQUIRED,"Federal AI procurement memorandum"
-NB03,US-005,REQUIRED,"Federal-state AI policy framework conflict"
-NB03,US-006,RECOMMENDED,"Federal agency LLM principles memorandum"
-NB03,US-007,REQUIRED,"NIST AI RMF"
-NB03,US-008,REQUIRED,"NIST GenAI profile"
-NB03,US-009,OPTIONAL_AFTER_R007,"State-law sample; current version must be rechecked"
-NB04,TR-001,REQUIRED_AFTER_R005,"Constitutional baseline"
-NB04,TR-002,REQUIRED_AFTER_R005,"Data-protection baseline"
-NB04,TR-003,REQUIRED_AFTER_R005,"Civil-liability baseline"
-NB04,TR-004,REQUIRED_AFTER_R005,"Personality-rights baseline"
-NB04,TR-005,RECOMMENDED_AFTER_R005,"Criminal-law baseline"
-NB04,TR-006,REQUIRED_AFTER_R005,"Consumer-law baseline"
-NB04,TR-007,RECOMMENDED_AFTER_R005,"Internet-law baseline"
-NB04,TR-008,REQUIRED_AFTER_R005,"Cybersecurity-law baseline"
-NB04,TR-009,OPTIONAL_AFTER_R005,"AI policy/strategy; nonbinding unless verified otherwise"
-NB06,INT-004,REQUIRED,"Neurotechnology ethics/rights framing"
-NB06,INT-003,REQUIRED,"AI ethics/human-dignity framing"
-NB06,EU-004,REQUIRED,"EU dignity/fundamental-rights baseline"
-NB06,EU-005,REQUIRED,"EU personal-data protections"
-NB06,CL-001,REQUIRED_AFTER_SOURCE_PIN,"Chile neurorights legal anchor"
-NB06,CL-002,REQUIRED_AFTER_SOURCE_PIN,"Chile Supreme Court neurotechnology case"
-NB07,EU-003,REQUIRED,"EU product-liability architecture"
-NB07,EU-001,REQUIRED,"AI Act logging incident governance and evidence provisions relevant to liability analysis"
-NB07,EU-005,RECOMMENDED,"Evidence/data rights context"
-NB07,US-003,RECOMMENDED,"Government risk/oversight duties"
-NB07,US-004,RECOMMENDED,"Procurement/vendor responsibility"
-NB07,US-007,RECOMMENDED,"Nonbinding AI risk-management comparison"
-NB07,US-008,RECOMMENDED,"Generative-AI risk-management comparison"
-NB07,STD-001,METADATA_ONLY,"Management-system standard; no unlicensed full text"
-NB07,STD-002,METADATA_ONLY,"Risk-management standard; no unlicensed full text"
-NB08,INC-001,REQUIRED,"Official incident disclosure"
-NB08,INC-002,REQUIRED,"Independent technical investigation"
-NB08,INC-003,RECOMMENDED,"Vendor threat-intelligence incident/attribution corpus"
-NB08,INC-004,OPTIONAL,"Policy/forecast context; not incident fact"
-NB08,US-007,RECOMMENDED,"Risk-management comparison"
-NB09,STD-001,METADATA_ONLY,"Cross-repo control-system vocabulary reference"
-NB09,STD-002,METADATA_ONLY,"Cross-repo risk-management vocabulary reference"
-NB09,EU-001,RECOMMENDED,"Legal requirement candidate source"
-NB09,INT-001,RECOMMENDED,"Human-rights/democracy/rule-of-law candidate source"
+NB01,INT-001,REQUIRED,Global treaty baseline
+NB01,INT-002,REQUIRED,Treaty interpretation/drafting context
+NB01,INT-003,REQUIRED,Global AI ethics soft-law baseline
+NB01,INT-004,REQUIRED,Neurotechnology soft-law baseline
+NB01,INT-005,RECOMMENDED,Intergovernmental AI principles
+NB01,INT-006,RECOMMENDED,UN GA AI resolution
+NB01,INT-007,RECOMMENDED,Global Digital Compact
+NB01,INT-008,RECOMMENDED,UN advisory governance report
+NB01,US-007,RECOMMENDED,Nonbinding AI risk-management framework
+NB01,US-008,RECOMMENDED,Generative-AI risk profile
+NB02,EU-001,REQUIRED,Current consolidated AI Act
+NB02,EU-002,REQUIRED,2026 AI Act amendment
+NB02,EU-003,REQUIRED,Product-liability interaction
+NB02,EU-004,REQUIRED,Fundamental-rights baseline
+NB02,EU-005,REQUIRED,Data-protection baseline
+NB02,EU-006,RECOMMENDED,Platform systemic-risk context
+NB02,EU-007,RECOMMENDED,Data access/use context
+NB02,EU-008,OPTIONAL,Data-governance context
+NB02,EU-009,RECOMMENDED,Cybersecurity duty context
+NB02,EU-010,RECOMMENDED,Product cybersecurity context
+NB02,INT-001,RECOMMENDED,European treaty interface
+NB03,US-001,REQUIRED,Current federal executive AI policy root
+NB03,US-002,REQUIRED,Current federal AI Action Plan
+NB03,US-003,REQUIRED,Federal AI use/governance memorandum
+NB03,US-004,REQUIRED,Federal AI procurement memorandum
+NB03,US-005,REQUIRED,Federal-state AI policy framework conflict
+NB03,US-006,RECOMMENDED,Federal agency LLM principles memorandum
+NB03,US-007,REQUIRED,NIST AI RMF
+NB03,US-008,REQUIRED,NIST GenAI profile
+NB03,US-009,OPTIONAL_AFTER_R007,State-law sample; current version must be rechecked
+NB04,TR-001,REQUIRED_AFTER_R005,Constitutional baseline
+NB04,TR-002,REQUIRED_AFTER_R005,Data-protection baseline
+NB04,TR-003,REQUIRED_AFTER_R005,Civil-liability baseline
+NB04,TR-004,REQUIRED_AFTER_R005,Personality-rights baseline
+NB04,TR-005,RECOMMENDED_AFTER_R005,Criminal-law baseline
+NB04,TR-006,REQUIRED_AFTER_R005,Consumer-law baseline
+NB04,TR-007,RECOMMENDED_AFTER_R005,Internet-law baseline
+NB04,TR-008,REQUIRED_AFTER_R005,Cybersecurity-law baseline
+NB04,TR-009,OPTIONAL_AFTER_R005,"Current 2026-2030 national AI action-plan policy context; nonbinding guidance/policy, not statute"
+NB06,INT-004,REQUIRED,Neurotechnology ethics/rights framing
+NB06,INT-003,REQUIRED,AI ethics/human-dignity framing
+NB06,EU-004,REQUIRED,EU dignity/fundamental-rights baseline
+NB06,EU-005,REQUIRED,EU personal-data protections
+NB06,CL-001,REQUIRED_AFTER_SOURCE_PIN,Chile neurorights legal anchor
+NB06,CL-002,REQUIRED_AFTER_SOURCE_PIN,Chile Supreme Court neurotechnology case
+NB07,EU-003,REQUIRED,EU product-liability architecture
+NB07,EU-001,REQUIRED,AI Act logging incident governance and evidence provisions relevant to liability analysis
+NB07,EU-005,RECOMMENDED,Evidence/data rights context
+NB07,US-003,RECOMMENDED,Government risk/oversight duties
+NB07,US-004,RECOMMENDED,Procurement/vendor responsibility
+NB07,US-007,RECOMMENDED,Nonbinding AI risk-management comparison
+NB07,US-008,RECOMMENDED,Generative-AI risk-management comparison
+NB07,STD-001,METADATA_ONLY,Management-system standard; no unlicensed full text
+NB07,STD-002,METADATA_ONLY,Risk-management standard; no unlicensed full text
+NB08,INC-001,REQUIRED,Official incident disclosure
+NB08,INC-002,REQUIRED,Independent technical investigation
+NB08,INC-003,RECOMMENDED,Vendor threat-intelligence incident/attribution corpus
+NB08,INC-004,OPTIONAL,Policy/forecast context; not incident fact
+NB08,US-007,RECOMMENDED,Risk-management comparison
+NB09,STD-001,METADATA_ONLY,Cross-repo control-system vocabulary reference
+NB09,STD-002,METADATA_ONLY,Cross-repo risk-management vocabulary reference
+NB09,EU-001,RECOMMENDED,Legal requirement candidate source
+NB09,INT-001,RECOMMENDED,Human-rights/democracy/rule-of-law candidate source
