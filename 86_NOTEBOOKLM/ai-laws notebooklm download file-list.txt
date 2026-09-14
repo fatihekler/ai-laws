@@ -1,0 +1,57 @@
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\PRE_INGESTION_VERIFICATION.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\MANUAL_DOWNLOAD_AND_UPLOAD_REQUESTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\DOWNLOADS_REGISTRY.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INC-001 [US_GLOBAL] [OpenAI] [COMPANY-INCIDENT-DISCLOSURE] [2026-08-26-PARTIAL] — OpenAI-Hugging-Face Incident-Technical-Report.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR-002 [TR] [Mevzuat-Resmi Gazete] [LAW] [6698-SNAPSHOT] — KİŞİSEL VERİLERİN KORUNMASI KANUNU.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\US-008 [US] [NIST] [FRAMEWORK] [NIST-AI-600-1] — NIST GenAI Profile.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\US-007 [US] [NIST] [FRAMEWORK] [NIST-AI-100-1] — NIST AI RMF 1.0.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\US-006 [US] [OMB] [GOVERNMENT-MEMO] [M-26-04] — OMB M-26-04 — Unbiased AI Principles.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\US-005 [US] [White House] [EXECUTIVE-ORDER] [EO-14365-FEDERAL-REGISTER] — Executive Order 14365 — Ensuring a National Policy Framework for AI.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\US-004 [US] [OMB] [GOVERNMENT-MEMO] [M-25-22] — OMB M-25-22.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\US-003 [US] [OMB] [GOVERNMENT-MEMO] [M-25-21] — OMB M-25-21.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\US-002 [US] [White House] [OFFICIAL-GUIDANCE] [2025-07] — America's AI Action Plan.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\US-001 [US] [White House] [EXECUTIVE-ORDER] [EO-14179-WEBPAGE-PRINT-SUPPORTING] — Executive Order 14179 — Removing Barriers to American Leadership in AI.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR-008 [TR] [Mevzuat-Resmi Gazete] [LAW] [7545-AMENDED-7590-2026-07-31] — SİBER GÜVENLİK KANUNU.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR-007 [TR] [Mevzuat-Resmi Gazete] [LAW] [5651-SNAPSHOT] — İNTERNET ORTAMINDA YAPILAN YAYINLARIN DÜZENLENMESİ VE BU YAYINLAR YOLUYLA İŞLENEN SUÇLARLA MÜCADELE EDİLMESİ HAKKINDA KANUN.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR-006 [TR] [Mevzuat-Resmi Gazete] [LAW] [6502-SNAPSHOT] — TÜKETİCİNİN KORUNMASI HAKKINDA KANUN.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR-005 [TR] [Mevzuat-Resmi Gazete] [LAW] [5237-SNAPSHOT] — TÜRK CEZA KANUNU.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR-004 [TR] [Mevzuat-Resmi Gazete] [LAW] [4721-SNAPSHOT] — TÜRK MEDENİ KANUNU.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR-003 [TR] [Mevzuat-Resmi Gazete] [LAW] [6098-SNAPSHOT] — TÜRK BORÇLAR KANUNU.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR-001 [TR] [Mevzuat-Resmi Gazete] [CONSTITUTION] [2709-SNAPSHOT] — TÜRKİYE CUMHURİYETİ ANAYASASI.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\RENAME_MANIFEST.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\README.md
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\ORIGINAL_FILENAME_INDEX.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NOTEBOOK_UPLOAD_PLAN.md
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NOTEBOOK_SOURCE_LABELS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INT-008 [UN] [United Nations] [OFFICIAL-GUIDANCE] [UN-AI-ADVISORY-2024] — Governing AI for Humanity — UN Advisory Body final report.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INT-007 [UN] [United Nations] [UN-RESOLUTION] [A-RES-79-1-SUPPORTING-BUNDLE] — Pact for the Future Global Digital Compact — A RES 79 1.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INT-006 [UN] [United Nations] [UN-RESOLUTION] [A-RES-78-265] — A RES 78 265 — Safe, secure and trustworthy AI systems for sustainable development.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INT-005 [OECD] [OECD] [SOFT-LAW] [OECD-AI-PRINCIPLES-2024] — OECD AI Principles (updated 2024).pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INT-004 [UNESCO] [UNESCO] [SOFT-LAW] [43GC-LEGACY-SUPERSEDED] — Recommendation on the Ethics of Neurotechnology (2025) 43rd General Conference resolutions source.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INT-003 [UNESCO] [UNESCO] [SOFT-LAW] [41C-RECOMMENDATION-2021] — Recommendation on the Ethics of Artificial Intelligence (2021).pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INT-002 [COE] [Council of Europe] [OFFICIAL-GUIDANCE] [CETS-225-EXPLANATORY] — CETS No.225 Explanatory Report.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INT-001 [COE] [Council of Europe Treaty Office] [TREATY] [CETS-225-TREATY-TEXT-2024-09-05] — CETS No.225 treaty status page.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INC-004 [US_GLOBAL] [Dario Amodei] [POLICY-ESSAY] [2026-09-12-SUPPORTING] — Dario Amodei — We Must Pace the Frontier.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INC-003 [GLOBAL] [Anthropic] [VENDOR-THREAT-INTELLIGENCE] [2026-09-10] — Anthropic Threat Intelligence Report September 2026.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\INC-002 [US_GLOBAL] [METR-Redwood Research] [INDEPENDENT-INVESTIGATION] [2026-08-26] — hugging-face-incident-report-aug-2026.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-010 [EU] [EUR-Lex] [REGULATION] [2024-2847] — Cyber Resilience Act.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-009 [EU] [EUR-Lex] [DIRECTIVE] [2022-2555] — NIS 2.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-008 [EU] [EUR-Lex] [REGULATION] [2022-868] — Data Governance Act.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-007 [EU] [EUR-Lex] [REGULATION] [2023-2854] — Data Act.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-006 [EU] [EUR-Lex] [REGULATION] [2022-2065] — Digital Services Act.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-005 [EU] [EUR-Lex] [REGULATION] [2016-679] — GDPR.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-004 [EU] [EUR-Lex] [CONSTITUTION] [2016-C-202-02] — Charter of Fundamental Rights.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-003 [EU] [EUR-Lex] [DIRECTIVE] [2024-2853] — Directive (EU) 2024 2853 — Product Liability Directive.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-002 [EU] [EUR-Lex] [REGULATION] [2026-1744] — Regulation (EU) 2026 1744 — Digital Omnibus on AI.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\EU-001 [EU] [EUR-Lex] [REGULATION] [SNAPSHOT-2026-07-27] — Current consolidated AI Act.pdf
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\TR009_CURRENT_POLICY_SOURCE_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB03_RESIDUAL_VERIFICATION_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB03_CONTENT_IDENTITY_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB01_RESIDUAL_OFFICIAL_SOURCE_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB01_CONTENT_IDENTITY_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB08_CONTENT_IDENTITY_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB02_REPOSITORY_PDF_VALIDATION_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB04_CONTENT_IDENTITY_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB07_CONTENT_IDENTITY_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads\NB02_CONTENT_IDENTITY_RESULTS.csv
+C:\Users\fatihh\Downloads\ai-laws\ai-laws\86_NOTEBOOKLM\downloads
