@@ -6,6 +6,12 @@ OUT.parent.mkdir(parents=True, exist_ok=True)
 FIELDS = ['source_key','jurisdiction','authority_class','title','official_url','source_mode','http_status','content_type','byte_size','sha256','pages','verification_state','binding_scope','critical_limit','evidence_markers']
 rows=[]
 
+def compact_context(text, term, span=650):
+    low=text.lower(); i=low.find(term.lower())
+    if i < 0: return 'TERM_NOT_FOUND'
+    s=max(0,i-span); e=min(len(text),i+span)
+    return re.sub(r'\s+',' ',text[s:e]).strip()
+
 def pdf_text_bytes(body):
     sha=hashlib.sha256(body).hexdigest(); size=len(body); pages=''; text=''
     with tempfile.NamedTemporaryFile(delete=False,suffix='.pdf') as f:
@@ -38,6 +44,9 @@ def local_controlled(key,jur,aclass_,title,name_tokens,markers,binding,limit,off
     state='REPOSITORY_CONTROLLED_BODY_AND_MARKERS_VERIFIED' if ok else 'REPOSITORY_BODY_MARKERS_NOT_VERIFIED'
     rows.append(dict(source_key=key,jurisdiction=jur,authority_class=aclass_,title=title,official_url=official_url,source_mode='REPOSITORY_CONTROLLED_SNAPSHOT',http_status='N/A',content_type='application/pdf',byte_size=size,sha256=sha,pages=pages,verification_state=state,binding_scope=binding,critical_limit=limit,evidence_markers='; '.join(markers)))
     print(key,chosen.name,size,pages,state)
+    if key=='US-STATE-001':
+        print('M2521_CONTEXT_NATIONAL_SECURITY=',compact_context(text,'national security'))
+        print('M2521_CONTEXT_SCOPE=',compact_context(text,'scope'))
 
 def fetch(url):
     with tempfile.NamedTemporaryFile(delete=False) as h, tempfile.NamedTemporaryFile(delete=False) as b:
@@ -71,11 +80,16 @@ def official(key,jur,aclass_,title,url,markers,binding,limit,expected='ANY'):
     else: state='HTTP_200_BODY_MARKERS_NOT_VERIFIED'
     rows.append(dict(source_key=key,jurisdiction=jur,authority_class=aclass_,title=title,official_url=url,source_mode='LIVE_OFFICIAL',http_status=status,content_type=ctype,byte_size=size,sha256=sha,pages=pages,verification_state=state,binding_scope=binding,critical_limit=limit,evidence_markers='; '.join(markers)))
     print(key,status,ctype,size,pages,state)
+    if key=='US-STATE-007':
+        print('ICIG_CONTEXT=',compact_context(text,'inspector general'))
 
 # Existing exact/controlled repository snapshots.
 local_controlled('EU-STATE-001','EU','STATUTE_OR_REGULATION','Regulation (EU) 2024/1689 — AI Act consolidated Article 2 scope boundaries',['artificial intelligence act','ai act','reg-2024-1689','eu-001'],['national security','military','defence'],'BINDING_EU_REGULATION_WITH_PHASED_APPLICATION','AI Act scope exclusion != exemption from all law','https://eur-lex.europa.eu/eli/reg/2024/1689/oj')
 local_controlled('COE-STATE-001','COE','TREATY_TEXT','CETS 225 Framework Convention — Article 3 national-security/defence scope',['cets no.225 treaty status','cets 225 treaty','int-001'],['national security interests','national defence'],'TREATY_TEXT_CURRENT_STATUS_GATE_R004','Treaty text != treaty currently in force for a Party; R004 status controls','https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225')
-local_controlled('US-STATE-001','US','OMB_MEMORANDUM','OMB M-25-21 — federal AI governance scope',['m-25-21','us-003'],['national security','44 u.s.c. 3552'],'EXECUTIVE_BRANCH_OPERATIONAL_MEMORANDUM_WITHIN_SCOPE','OMB memorandum != Act of Congress; national-security-system scope must be preserved','https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf')
+local_controlled('US-STATE-001','US','OMB_MEMORANDUM','OMB M-25-21 — federal AI governance scope',['m-25-21','us-003'],['national security'],'EXECUTIVE_BRANCH_OPERATIONAL_MEMORANDUM_WITHIN_SCOPE','OMB memorandum != Act of Congress; exact exclusion/scope wording controls','https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf')
+
+# Live currentness recheck of the controlled OMB PDF.
+official('US-STATE-001-LIVE','US','OMB_MEMORANDUM','OMB M-25-21 — live official PDF currentness recheck','https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf',['national security'],'EXECUTIVE_BRANCH_OPERATIONAL_MEMORANDUM_WITHIN_SCOPE','Live byte identity/currentness does not convert memorandum into generally applicable statute','PDF')
 
 # Current official public-law / oversight sources.
 official('EU-STATE-002','COE','TREATY_PRIMARY','European Convention on Human Rights — Articles 8 and 13','https://www.echr.coe.int/documents/d/echr/convention_eng',['private and family life','national security','effective remedy'],'BINDING_TREATY_FOR_CONTRACTING_PARTIES_SUBJECT_TO_JURISDICTION_AND_RESERVATIONS','ECHR layer is not an AI-specific statute and applicability/remedy is fact- and jurisdiction-specific','PDF')
@@ -84,10 +98,9 @@ official('US-STATE-003','US','STATUTE_OR_REGULATION','5 U.S.C. §702 — Adminis
 official('US-STATE-004','US','STATUTE_OR_REGULATION','28 U.S.C. §1346(b) — FTCA jurisdictional grant','https://uscode.house.gov/view.xhtml?edition=prelim&req=granuleid%3AUSC-prelim-title28-section1346',['civil actions on claims against the united states','money damages','negligent or wrongful act'],'BINDING_FEDERAL_STATUTE','Jurisdictional waiver conditions require employee/scope/place-law analysis','HTML')
 official('US-STATE-005','US','STATUTE_OR_REGULATION','28 U.S.C. §2674 — United States liability under FTCA','https://uscode.house.gov/view.xhtml?edition=prelim&req=granuleid%3AUSC-prelim-title28-section2674',['liable','same manner and to the same extent as a private individual'],'BINDING_FEDERAL_STATUTE','Does not override statutory exceptions or establish AI-specific liability','HTML')
 official('US-STATE-006','US','STATUTE_OR_REGULATION','28 U.S.C. §2680 — FTCA exceptions','https://uscode.house.gov/view.xhtml?edition=prelim&req=granuleid%3AUSC-prelim-title28-section2680',['discretionary function','due care','foreign country'],'BINDING_FEDERAL_STATUTE','Exception analysis is claim- and fact-specific; exception != no underlying duty','HTML')
-official('US-STATE-007','US','STATUTE_OR_REGULATION','50 U.S.C. §3033 — Inspector General of the Intelligence Community','https://uscode.house.gov/view.xhtml?edition=prelim&req=granuleid%3AUSC-prelim-title50-section3033',['inspector general of the intelligence community','independent and objective','investigations'],'BINDING_FEDERAL_STATUTE','Oversight mechanism != public transparency or private damages remedy','HTML')
+official('US-STATE-007','US','STATUTE_OR_REGULATION','50 U.S.C. §3033 — Inspector General of the Intelligence Community','https://uscode.house.gov/view.xhtml?edition=prelim&req=granuleid%3AUSC-prelim-title50-section3033',['inspector general','intelligence community','independent'],'BINDING_FEDERAL_STATUTE','Oversight mechanism != public transparency or private damages remedy','HTML')
 official('US-STATE-008','US','OFFICIAL_DEPARTMENTAL_DIRECTIVE','DoD Directive 3000.09 — Autonomy in Weapon Systems','https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodd/300009p.PDF',['autonomy in weapon systems','human judgment','use of force'],'BINDING_OR_OPERATIONAL_DEPARTMENTAL_POLICY_WITHIN_DOD_SCOPE','Autonomous-weapon policy != general rule for all defence AI and != statute','PDF')
 
-OUT.parent.mkdir(parents=True,exist_ok=True)
 with OUT.open('w',encoding='utf-8',newline='') as f:
     w=csv.DictWriter(f,fieldnames=FIELDS,lineterminator='\n'); w.writeheader(); w.writerows(rows)
 print('R017_SOURCE_RECORDS=',len(rows))
