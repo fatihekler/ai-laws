@@ -1,0 +1,102 @@
+name: AI-LAWS R010 KR-JP official-source probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r010-kr-jp-official-source-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe official Korea and Japan AI-law sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request, urllib.parse, re, html, json
+          from urllib.error import HTTPError, URLError
+
+          UA={'User-Agent':'Mozilla/5.0 AI-LAWS-R010','Accept':'text/html,application/json,application/xml,*/*'}
+          def fetch(url, timeout=30):
+              req=urllib.request.Request(url,headers=UA)
+              with urllib.request.urlopen(req,timeout=timeout) as r:
+                  b=r.read()
+                  return r.status,r.geturl(),r.headers.get('Content-Type',''),b
+          def plain(b):
+              s=b.decode('utf-8','ignore')
+              s=re.sub(r'<script[\s\S]*?</script>',' ',s,flags=re.I)
+              s=re.sub(r'<style[\s\S]*?</style>',' ',s,flags=re.I)
+              return re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',s))).strip()
+          def title(b):
+              s=b.decode('utf-8','ignore')
+              m=re.search(r'<title[^>]*>(.*?)</title>',s,re.I|re.S)
+              return re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',m.group(1)))).strip() if m else ''
+          def probe(label,url,markers=()):
+              print('\n===',label,'===')
+              try:
+                  st,fu,ct,b=fetch(url)
+                  p=plain(b)
+                  print('STATUS=',st)
+                  print('FINAL=',fu)
+                  print('CONTENT_TYPE=',ct)
+                  print('TITLE=',title(b))
+                  print('BYTES=',len(b))
+                  for m in markers:
+                      print('MARKER',m,'=',m.lower() in p.lower())
+                  print('TEXT_HEAD=',p[:2400])
+              except Exception as e:
+                  print('ERROR=',type(e).__name__,str(e))
+
+          # Republic of Korea: official National Law Information Center current-name endpoints.
+          def kr_name_url(name):
+              return 'https://www.law.go.kr/'+urllib.parse.quote('법령/'+name,safe='/')
+          probe('KR_AI_BASIC_ACT_NAME',kr_name_url('인공지능 발전과 신뢰 기반 조성 등에 관한 기본법'),['인공지능','기본법','시행'])
+          probe('KR_PIPA_NAME',kr_name_url('개인정보 보호법'),['개인정보','시행'])
+
+          # Official Korean ministry/regulator search landing pages for current policy/implementation layer.
+          probe('KR_MSIT_AI', 'https://www.msit.go.kr/eng/bbs/list.do?sCode=eng&mId=4&mPid=2', ['Artificial Intelligence','AI'])
+          probe('KR_PIPC_EN', 'https://www.pipc.go.kr/eng/user/ltn/new/lawSearchList.do', ['Personal Information','Act'])
+
+          # Japan: e-Gov current-law candidates.
+          candidates={
+            'JP_AI_ACT_53_2025':'https://laws.e-gov.go.jp/law/507AC0000000053',
+            'JP_APPI':'https://laws.e-gov.go.jp/law/415AC0000000057',
+          }
+          for k,u in candidates.items():
+              probe(k,u,['人工知能','個人情報','施行'])
+
+          # Japan official policy/guidance candidate pages.
+          probe('JP_CAO_AI_POLICY','https://www8.cao.go.jp/cstp/ai/index.html',['AI','人工知能'])
+          probe('JP_METI_AI_GUIDELINES','https://www.meti.go.jp/shingikai/mono_info_service/ai_shakai_jisso/index.html',['AI','ガイドライン'])
+          probe('JP_MIC_AI','https://www.soumu.go.jp/main_sosiki/joho_tsusin/ai_network/index.html',['AI','ガイドライン'])
+
+          # Domain-restricted search fallback used only to discover official URLs; not authority by itself.
+          print('\n=== DOMAIN_SEARCH_FALLBACK ===')
+          queries=[
+            'site:law.go.kr 인공지능 발전과 신뢰 기반 조성 등에 관한 기본법',
+            'site:msit.go.kr 인공지능 기본법 2026',
+            'site:laws.e-gov.go.jp 人工知能関連技術の研究開発及び活用の推進に関する法律',
+            'site:cao.go.jp 人工知能 基本計画 2026',
+            'site:meti.go.jp AI事業者ガイドライン 2026',
+          ]
+          for q in queries:
+              try:
+                  url='https://html.duckduckgo.com/html/?'+urllib.parse.urlencode({'q':q})
+                  st,fu,ct,b=fetch(url)
+                  p=b.decode('utf-8','ignore')
+                  links=[]
+                  for href,txt in re.findall(r'<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>(.*?)</a>',p,re.I|re.S):
+                      links.append((re.sub(r'<[^>]+>',' ',txt).strip(),html.unescape(href)))
+                  print('QUERY=',q,'STATUS=',st,'RESULTS=',json.dumps(links[:8],ensure_ascii=False))
+              except Exception as e:
+                  print('SEARCH_ERROR=',q,type(e).__name__,str(e))
+
+          print('\nZIP_OR_ARTIFACT_CREATED=NO')
+          print('BINARY_DOWNLOADS=0')
+          print('AUTO_ADVANCE=NO')
+          PY
