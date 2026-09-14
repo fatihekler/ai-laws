@@ -27,6 +27,25 @@ jobs:
         run: |
           set -euo pipefail
           python3 .github/scripts/r010_persist.py
+      - name: Normalize generated Markdown
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          paths = [
+              Path('20_JURISDICTIONS/KR/KR_AI_DATA_PRIMARY_SOURCE_MAP_2026-09-14.md'),
+              Path('20_JURISDICTIONS/JP/JP_AI_POLICY_DATA_PRIMARY_SOURCE_MAP_2026-09-14.md'),
+              Path('95_RESEARCH/ASIA/AI-LAWS-R010_CLOSEOUT_2026-09-14.md'),
+              Path('86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md'),
+              Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md'),
+          ]
+          for p in paths:
+              if p.exists():
+                  lines = [line.rstrip() for line in p.read_text(encoding='utf-8').splitlines()]
+                  p.write_text('\n'.join(lines).rstrip() + '\n', encoding='utf-8')
+          print('R010_MARKDOWN_NORMALIZATION=PASS')
+          PY
       - name: Validate R010 durable state
         shell: bash
         run: |
