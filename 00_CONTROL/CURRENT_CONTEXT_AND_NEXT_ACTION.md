@@ -3,7 +3,7 @@
 **UPDATED:** 2026-09-14  
 **REPOSITORY:** `fatihekler/ai-laws`  
 **BRANCH:** `main`  
-**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE  
+**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE  
 **AUTO_ADVANCE:** NO
 
 ## 1. Project position
@@ -110,6 +110,30 @@ METADATA_ONLY: STD-001, STD-002
 
 `US-002` is not part of the controlled NB07 starter set.
 
+### R026 — NB04 Türkiye repository PDF validation
+
+R026 locally validated all eight `TR-001..TR-008` repository PDFs using SHA-256, PDF metadata, native text extraction, expected title/law-number checks, and rendered first/final pages.
+
+```text
+NB04_REPOSITORY_PDFS_INSPECTED = 8 / 8
+NB04_REPOSITORY_CONTENT_IDENTITY_VERIFIED = 8 / 8
+NB04_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8
+NB04_FIRST_LAST_PAGE_CHECK = 8 / 8
+TR008_REPOSITORY_PDF_REFLECTS_7590 = YES
+NB04_OFFICIAL_LIVE_MEVZUAT_EXACT_BYTE_RECHECK = BLOCKED
+NB04_NOTEBOOK_UPLOADS = 0
+```
+
+`TR-008` now resolves the repository-snapshot 7590 incorporation question: the PDF contains the Article 6/16 amendment signals, `GEÇİCİ MADDE 2`, the attached list and the final table showing Law No. 7590 effective `31/7/2026`. This does **not** establish exact-byte identity with the inaccessible live official Mevzuat file.
+
+`TR-007` also contains a future-effective `1/11/2026` state in its amendment table; date-state must be preserved when used.
+
+Durable outputs:
+
+- `86_NOTEBOOKLM/downloads/NB04_CONTENT_IDENTITY_RESULTS.csv`;
+- updated downloads registry, acquisition ledger and Notebook upload plan;
+- `86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R026_NB04_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md`.
+
 ### R025 — NB02 remaining EU source validation
 
 R025 processed the seven NB02 sources not already covered by R024:
@@ -169,13 +193,14 @@ OFFICIAL_URL_SOURCE_VERIFIED != REPOSITORY_PDF_BODY_VERIFIED
 
 `NB-BATCH-NB04-20260913-001` pinned official source families for `TR-001` through `TR-008` but official current consolidated binary access was blocked in that execution environment.
 
-The user later manually added repository PDFs for `TR-001` through `TR-008`. These files still require content/currentness checks before Notebook baseline use.
+The user later manually added repository PDFs for `TR-001` through `TR-008`. R026 verified the repository PDF identities, searchable text layers, titles/law numbers and first/final pages for all eight. Live official Mevzuat exact-byte/currentness recheck remains blocked.
 
-Special warning:
+Special state:
 
 ```text
-TR-008 / LAW 7545 ORIGINAL TEXT != AUTOMATICALLY CURRENT CONSOLIDATED TEXT
-LAW 7590 AMENDMENTS EFFECTIVE 2026-07-31 MUST BE REFLECTED
+TR-008_REPOSITORY_PDF_REFLECTS_7590 = YES
+TR-008_7590_EFFECTIVE_DATE = 2026-07-31
+REPOSITORY_SNAPSHOT_VERIFIED != OFFICIAL_EXACT_BYTE_MATCH_VERIFIED
 ```
 
 ### NB06 — Human Sovereignty / Neurotechnology
@@ -308,7 +333,7 @@ No subsequent source pack is auto-selected by R025.
 
 ### Türkiye source-processing lane
 
-`TR-001` through `TR-008` remain high-priority repository binaries requiring current consolidated official-text/content verification, particularly `TR-008` after Law 7590.
+`TR-001` through `TR-008` now have verified repository-snapshot content identity. `TR-008` is confirmed to include Law No. 7590 effects. The remaining gate is live official Mevzuat currentness/exact-byte recheck before material legal conclusions; `TR-007` also requires date-aware handling of provisions recorded with future `2026-11-01` effect.
 
 ### Incident corpus
 
@@ -339,6 +364,11 @@ R025_SELECTED_SOURCE_COUNT = 7
 R025_OFFICIAL_SOURCE_RECHECK_COUNT = 7
 R025_REPOSITORY_BINARY_CONTENT_IDENTITY_VERIFIED = 0
 R025_REPOSITORY_BINARY_CONTENT_IDENTITY_PARTIAL = 7
+R026_NB04_REPOSITORY_PDFS_INSPECTED = 8
+R026_NB04_CONTENT_IDENTITY_VERIFIED = 8
+R026_NB04_NATIVE_TEXT_LAYER_VERIFIED = 8
+R026_TR008_7590_INCLUDED = YES
+R026_OFFICIAL_LIVE_MEVZUAT_RECHECK = BLOCKED
 NB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10
 NB02_OFFICIAL_URL_DIRECT_READY = 10
 NB02_REPOSITORY_PDF_CONTENT_IDENTITY_PARTIAL = 10

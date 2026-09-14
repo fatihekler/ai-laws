@@ -94,19 +94,25 @@ Current repository PDFs:
 - `TR-007` Law 5651;
 - `TR-008` Law 7545.
 
-All are currently:
+R026 locally inspected all eight repository PDFs with `pdfinfo`, `pdftotext`, SHA-256 capture, and rendered first/last-page checks. Current repository-snapshot state is:
 
 ```text
-REPOSITORY_BINARY_PRESENT
-CONTENT_IDENTITY_UNVERIFIED
-CURRENT_CONSOLIDATED_TEXT_RECHECK_REQUIRED
+REPOSITORY_BINARY_PRESENT = 8 / 8
+CONTENT_IDENTITY_VERIFIED = 8 / 8
+NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8
+FIRST_LAST_PAGE_RENDER_CHECK = 8 / 8
+OFFICIAL_MEVZUAT_LIVE_EXACT_BYTE_MATCH = NOT_RUN / PORTAL_BLOCKED
 ```
 
-Therefore do **not** upload these eight PDFs as the legal baseline yet.
+The PDFs may be used in NB04 as **verified repository snapshots** only when each source keeps its date/currentness label and `PRIMARY_SOURCE_RECHECK_REQUIRED` status. They are not asserted to be exact official Mevzuat bytes.
 
-Process each PDF using `PDF_CONTENT_IDENTITY_AND_DERIVED_TEXT_PROTOCOL.md` and the official source-pin records.
+Special states:
 
-For `TR-008`, verify that Law No. 7590 amendments effective 2026-07-31 are incorporated before Notebook use.
+- `TR-008` contains Law No. 7590 amendments, including Article 6/16 signals, `GEÇİCİ MADDE 2`, the attached list, and the effective-date table `31/7/2026`; the former 7590-incorporation blocker is resolved for this repository snapshot.
+- `TR-007` contains Law No. 7590 changes effective `31/7/2026` and also records Law No. 7578 provisions with a future effective date of `1/11/2026`; Notebook use must preserve the applicable-date distinction.
+- `TR-003`, `TR-005`, and `TR-006` contain 2026 amendment/effective-date signals in their closing tables.
+
+Before any material legal conclusion, recheck the live official Mevzuat text when the portal becomes accessible.
 
 ## NB06 — Human Sovereignty / Neurotechnology
 
