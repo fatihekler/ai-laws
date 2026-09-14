@@ -1,0 +1,89 @@
+name: AI-LAWS R003 persist EU AI Act baseline
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r003-eu-ai-act-persist.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fresh drift gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          echo "HEAD=$(git rev-parse HEAD)"
+          echo "ORIGIN_MAIN=$(git rev-parse origin/main)"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+      - name: Generate controlled R003 durable state
+        run: python3 .github/scripts/r003_persist.py
+
+      - name: Normalize only newly generated R003 Markdown
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          files = [
+              Path('20_JURISDICTIONS/EU/EU_AI_ACT_CURRENT_CONSOLIDATED_PHASED_APPLICATION_MAP_2026-09-14.md'),
+              Path('95_RESEARCH/EU/AI-LAWS-R003_CLOSEOUT_2026-09-14.md'),
+          ]
+          for p in files:
+              text = p.read_text(encoding='utf-8')
+              text = '\n'.join(line.rstrip() for line in text.splitlines()).rstrip() + '\n'
+              p.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate and commit R003 durable outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          git diff --check
+          test -f 20_JURISDICTIONS/EU/EU_AI_ACT_CURRENT_CONSOLIDATED_PHASED_APPLICATION_MAP_2026-09-14.md
+          test -f 20_JURISDICTIONS/EU/EU_AI_ACT_PHASED_APPLICATION_MATRIX.csv
+          test -f 20_JURISDICTIONS/EU/EU_AI_ACT_INTERACTION_SOURCE_INVENTORY.csv
+          test -f 95_RESEARCH/EU/AI-LAWS-R003_CLOSEOUT_2026-09-14.md
+          grep -q '2027-12-02' 20_JURISDICTIONS/EU/EU_AI_ACT_PHASED_APPLICATION_MATRIX.csv
+          grep -q '2028-08-02' 20_JURISDICTIONS/EU/EU_AI_ACT_PHASED_APPLICATION_MATRIX.csv
+          grep -q 'COMPLETE_RESEARCH_BASELINE_L1_L2' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          grep -q 'AI_ACT_L1_L2_BASELINE_COMPLETE_MEMBER_STATE_DEPENDENCIES_OPEN' 20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv
+          grep -q 'R003_EU_AI_ACT_L1_L2_COMPLETE' 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md \
+            20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv \
+            20_JURISDICTIONS/EU/EU_AI_ACT_CURRENT_CONSOLIDATED_PHASED_APPLICATION_MAP_2026-09-14.md \
+            20_JURISDICTIONS/EU/EU_AI_ACT_PHASED_APPLICATION_MATRIX.csv \
+            20_JURISDICTIONS/EU/EU_AI_ACT_INTERACTION_SOURCE_INVENTORY.csv \
+            90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+            95_RESEARCH/EU/AI-LAWS-R003_CLOSEOUT_2026-09-14.md
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'NO_DURABLE_CHANGES'; exit 1; }
+          git status --short
+          git commit -m 'research(r003): establish EU AI Act phased-application baseline'
+          git push origin HEAD:main
+
+      - name: Confirm controlled stop
+        run: |
+          echo 'R003_STATE=COMPLETE_RESEARCH_BASELINE_L1_L2'
+          echo 'MEMBER_STATE_IMPLEMENTATION=NOT_ATTEMPTED'
+          echo 'CASE_LAW=NOT_ATTEMPTED'
+          echo 'LIABILITY_CONCLUSION=NOT_ATTEMPTED'
+          echo 'NOTEBOOK_UPLOADS=0'
+          echo 'NEW_SOURCE_DOWNLOADS_COMMITTED=0'
+          echo 'DERIVED_MARKDOWN_CREATED=0'
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
+          echo 'AUTO_ADVANCE=NO'
