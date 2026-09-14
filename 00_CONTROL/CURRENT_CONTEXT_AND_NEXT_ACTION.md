@@ -3,7 +3,7 @@
 **UPDATED:** 2026-09-14  
 **REPOSITORY:** `fatihekler/ai-laws`  
 **BRANCH:** `main`  
-**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE  
+**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE  
 **AUTO_ADVANCE:** NO
 
 ## 1. Project position
@@ -28,6 +28,7 @@ Completed control/research infrastructure includes:
 - downloaded-PDF source labeling and Notebook routing layer;
 - PDF content-identity / derived-text protocol;
 - NB07 selected-source official recheck and repository-binary partial-identity state;
+- NB02 EU source-set official recheck and repository-binary partial-identity state;
 - bounded research queue.
 
 ## 2. Completed major units
@@ -38,6 +39,7 @@ AI-LAWS-R021 = COMPLETE_SUPPORT_INFRASTRUCTURE
 AI-LAWS-R022 = COMPLETE_SUPPORT_INFRASTRUCTURE
 AI-LAWS-R023 = COMPLETE_SUPPORT_INFRASTRUCTURE
 AI-LAWS-R024 = COMPLETE_SUPPORT_SOURCE_VALIDATION
+AI-LAWS-R025 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 ```
 
 ### R001
@@ -52,7 +54,7 @@ Grok/ChatGPT collaboration plus NotebookLM corpus/source-acquisition infrastruct
 
 Master legal research / source acquisition / Notebook orchestration was created, including jurisdiction and source state machines.
 
-### R023
+### R023 — downloaded PDF labeling
 
 The user manually committed 38 PDFs under `86_NOTEBOOKLM/downloads/` in commit:
 
@@ -66,7 +68,7 @@ R023 created the labeling/routing layer:
 - `86_NOTEBOOKLM/PDF_CONTENT_IDENTITY_AND_DERIVED_TEXT_PROTOCOL.md`
 - `86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R023_DOWNLOADS_LABELING_CLOSEOUT_2026-09-14.md`
 
-The 38 PDFs are physically present, but R023 intentionally does not equate binary presence with source verification.
+The 38 PDFs are physically present, but binary presence does not establish source/content/currentness verification.
 
 ```text
 REPOSITORY_BINARY_PRESENT != SOURCE_IDENTITY_VERIFIED
@@ -77,7 +79,7 @@ NOTEBOOK_UPLOAD != LEGAL_VERIFICATION
 
 ### R024 — NB07 selected-source validation pilot
 
-R024 processed the controlled NB07 pilot set:
+R024 processed:
 
 - `EU-001` AI Act;
 - `EU-003` Product Liability Directive;
@@ -87,17 +89,7 @@ R024 processed the controlled NB07 pilot set:
 - `US-007` NIST AI RMF 1.0;
 - `US-008` NIST GenAI Profile.
 
-Durable outputs/state:
-
-- `86_NOTEBOOKLM/downloads/NB07_CONTENT_IDENTITY_RESULTS.csv`;
-- reconciled `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv`;
-- updated `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`;
-- updated `86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`;
-- `86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R024_NB07_CONTENT_IDENTITY_PILOT_CLOSEOUT_2026-09-14.md`.
-
-Official source identity/currentness was rechecked for all seven selected sources. The official URL/source layer is ready for Notebook ingestion.
-
-The current GitHub connector exposes repository PDF path, Git blob SHA and byte size but not the binary PDF body. Therefore repository copies remain fail-closed:
+Durable result:
 
 ```text
 R024_SELECTED_SOURCES = 7
@@ -108,13 +100,70 @@ REPOSITORY_BINARY_CONTENT_IDENTITY_PARTIAL = 7
 REPOSITORY_BINARY_EXACT_BYTE_MATCHES = 0
 ```
 
-Do not convert `CONTENT_IDENTITY_PARTIAL` into `CONTENT_IDENTITY_VERIFIED` merely because official-source identity is verified.
+R024 also reconciled NB07 routing:
+
+```text
+REQUIRED: EU-001, EU-003
+RECOMMENDED: EU-005, US-003, US-004, US-007, US-008
+METADATA_ONLY: STD-001, STD-002
+```
+
+`US-002` is not part of the controlled NB07 starter set.
+
+### R025 — NB02 remaining EU source validation
+
+R025 processed the seven NB02 sources not already covered by R024:
+
+- `EU-002` Regulation (EU) 2026/1744;
+- `EU-004` Charter;
+- `EU-006` Digital Services Act;
+- `EU-007` Data Act;
+- `EU-008` Data Governance Act;
+- `EU-009` NIS2;
+- `EU-010` Cyber Resilience Act.
+
+Durable outputs:
+
+- `86_NOTEBOOKLM/downloads/NB02_CONTENT_IDENTITY_RESULTS.csv`;
+- updated `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`;
+- updated `86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md`;
+- `86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R025_NB02_SOURCE_VALIDATION_CLOSEOUT_2026-09-14.md`.
+
+R024 + R025 together establish the controlled NB02 starter source state:
+
+```text
+NB02_CONTROLLED_SOURCE_IDS = EU-001..EU-010
+NB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10 / 10
+NB02_OFFICIAL_URL_SOURCE_SET = READY
+NB02_REPOSITORY_PDF_BODY_VERIFIED = 0 / 10
+NB02_REPOSITORY_PDF_CONTENT_IDENTITY_PARTIAL = 10 / 10
+NB02_NOTEBOOK_UPLOADS = 0
+NB02_DERIVED_MARKDOWN = 0
+```
+
+Important date/state boundaries preserved by R025:
+
+- `EU-002` Regulation (EU) 2026/1744 is in force; effect/entry date rechecked as `2026-07-27`.
+- `EU-006` DSA generally applies from `2024-02-17` with listed earlier provisions from `2022-11-16`.
+- `EU-007` Data Act generally applies from `2025-09-12`; Article 3(1) connected-product date `2026-09-12` has passed; other provision-specific dates remain.
+- `EU-008` DGA applies from `2023-09-24`.
+- `EU-009` NIS2 transposition deadline was `2024-10-17`, with national measures to apply from `2024-10-18`; Member-State implementation must still be researched separately.
+- `EU-010` CRA has phased application: Chapter IV from `2026-06-11`, Article 14 from `2026-09-11`, general application from `2027-12-11`.
+
+```text
+DIRECTIVE_TEXT_VERIFIED != NATIONAL_IMPLEMENTATION_VERIFIED
+OFFICIAL_URL_SOURCE_VERIFIED != REPOSITORY_PDF_BODY_VERIFIED
+```
 
 ## 3. Prior source-pack acquisition evidence
 
 ### NB01 — Global AI Governance
 
 `NB-BATCH-NB01-20260913-001` completed source-rights/acquisition-state reconciliation but created no binaries in that execution environment.
+
+### NB03 — United States
+
+`NB-BATCH-NB03-20260913-001` verified core federal source identities and preserved the Utah current-whole-chapter blocker. R024 later rechecked selected OMB/NIST sources for NB07 reuse.
 
 ### NB04 — Türkiye
 
@@ -154,29 +203,43 @@ Do not upload the entire `downloads/` directory blindly.
 
 Use `downloads/DOWNLOADS_REGISTRY.csv` and pack-by-pack ingestion.
 
-NB07 controlled routing is now reconciled to include:
+### NB02 current ingest state
 
 ```text
-REQUIRED: EU-001, EU-003
-RECOMMENDED: EU-005, US-003, US-004, US-007, US-008
-METADATA_ONLY: STD-001, STD-002
+NB02_OFFICIAL_URL_SOURCE_SET = READY
+NB02_REPOSITORY_PDF_UPLOAD_SET = HOLD_FOR_LOCAL_BINARY_CONTENT_CHECK
 ```
 
-`US-002` is not part of the controlled NB07 starter set.
+Use the exact official EUR-Lex URLs and preserve each source's binding/application/transposition state.
+
+### NB07 current ingest state
+
+```text
+NB07_OFFICIAL_URL_SOURCE_SET = READY
+NB07_REPOSITORY_PDF_UPLOAD_SET = HOLD_FOR_LOCAL_BINARY_CONTENT_CHECK
+```
 
 ## 5. PDF / Markdown decision
 
 Default:
 
 ```text
-DIRECT_OFFICIAL_URL_OR_VERIFIED_PDF > DERIVED_MARKDOWN > MODEL_SUMMARY
+CURRENT_OFFICIAL_URL
+>
+VERIFIED_OFFICIAL_PDF
+>
+VERIFIED_REPOSITORY_PDF_SNAPSHOT
+>
+NONCANONICAL_DERIVED_TEXT
+>
+MODEL_SUMMARY
 ```
 
 Do not bulk-convert PDFs to Markdown.
 
 Derived Markdown is justified only for bad text extraction, scanned pages/OCR, difficult layout, controlled diffing or page-locator requirements. Every derivative must be explicitly `NONCANONICAL_DERIVATIVE` and preserve provenance/page markers.
 
-R024 created no Markdown derivatives because repository PDF text-layer state could not be established in this execution channel and verified official URLs are available.
+R024/R025 created no Markdown derivatives because the repository PDF body/text-layer state cannot be established through the current GitHub connector and verified official URLs are available.
 
 ## 6. Model and Notebook firewall
 
@@ -233,20 +296,19 @@ AI-LAWS-R003 — EU AI ACT CURRENT CONSOLIDATED / PHASED-APPLICATION LEGAL MAP
 STATE = READY FOR EXPLICIT AUTHORIZATION
 ```
 
-R003 remains unstarted.
+R003 remains unstarted. R025 source validation does not constitute R003 substantive legal analysis.
 
-### Notebook/source-pack lane
+### Notebook/source-processing lane
 
-NB07 selected official sources have passed official-source recheck and are ready for a separate explicit Notebook ingestion step using official URLs/source identities.
+The controlled NB02 official URL set is now ready for a separate Notebook ingestion step. Actual Notebook ingestion has not been performed in this execution environment.
 
-```text
-NB07_OFFICIAL_URL_SOURCE_SET = READY
-NB07_REPOSITORY_PDF_UPLOAD_SET = HOLD_FOR_LOCAL_BINARY_CONTENT_CHECK
-NOTEBOOK_UPLOADS = 0
-NOTEBOOK_LOCATOR_TESTS = 0
-```
+NB07 official sources also remain ready for a separate Notebook ingestion step.
 
-No subsequent pack is auto-selected by R024.
+No subsequent source pack is auto-selected by R025.
+
+### Türkiye source-processing lane
+
+`TR-001` through `TR-008` remain high-priority repository binaries requiring current consolidated official-text/content verification, particularly `TR-008` after Law 7590.
 
 ### Incident corpus
 
@@ -273,7 +335,13 @@ R024_SELECTED_SOURCE_COUNT = 7
 R024_OFFICIAL_SOURCE_RECHECK_COUNT = 7
 R024_REPOSITORY_BINARY_CONTENT_IDENTITY_VERIFIED = 0
 R024_REPOSITORY_BINARY_CONTENT_IDENTITY_PARTIAL = 7
-R024_OFFICIAL_URL_DIRECT_READY = 7
+R025_SELECTED_SOURCE_COUNT = 7
+R025_OFFICIAL_SOURCE_RECHECK_COUNT = 7
+R025_REPOSITORY_BINARY_CONTENT_IDENTITY_VERIFIED = 0
+R025_REPOSITORY_BINARY_CONTENT_IDENTITY_PARTIAL = 7
+NB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10
+NB02_OFFICIAL_URL_DIRECT_READY = 10
+NB02_REPOSITORY_PDF_CONTENT_IDENTITY_PARTIAL = 10
 NOTEBOOK_UPLOAD_COUNT = 0
 DERIVED_MARKDOWN_CREATED = 0
 BULK_PDF_TO_MARKDOWN = NOT_RECOMMENDED
