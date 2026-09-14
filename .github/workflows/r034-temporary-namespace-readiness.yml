@@ -1,0 +1,51 @@
+name: R034 human-readable namespace and Notebook readiness
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r034-temporary-namespace-readiness.yml'
+      - '.github/scripts/r034_namespace_readiness.py'
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact trigger state
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail closed on drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+
+      - name: Build audited namespace and readiness layer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/r034_namespace_readiness.py
+          git diff --check
+          test "$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*.pdf' | wc -l)" -eq 38
+          test "$(awk -F, 'NR>1 && $10=="YES" {n++} END {print n+0}' 86_NOTEBOOKLM/downloads/RENAME_MANIFEST.csv)" -eq 0
+
+      - name: Commit namespace normalization and push
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Fatih Mehmet Ekler'
+          git config user.email '5189511+fatihekler@users.noreply.github.com'
+          git add -A 86_NOTEBOOKLM
+          git diff --cached --check
+          test "$(git diff --cached --name-status | awk '$1 ~ /^R/ {n++} END {print n+0}')" -ge 30
+          git commit -m 'support(r034): normalize readable source namespace and notebook readiness'
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          git push origin HEAD:main
+          printf 'R034_NAMESPACE_HEAD=%s\nR034_NAMESPACE_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
