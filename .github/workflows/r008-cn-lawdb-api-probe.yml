@@ -1,4 +1,4 @@
-name: AI-LAWS R008 NPC law-database exact API probe
+name: AI-LAWS R008 NPC law-database detail probe
 
 on:
   push:
@@ -13,41 +13,28 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Query exact NPC official law-search API
+      - name: Verify official NPC law detail endpoints
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import urllib.request,json
-          endpoint='https://flk.npc.gov.cn/law-search/search/list'
-          terms=['中华人民共和国个人信息保护法','中华人民共和国数据安全法','中华人民共和国网络安全法']
-          for term in terms:
-              print('\nTERM=',term)
-              for st in [1,2]:
-                  payload={
-                    'searchRange':1,
-                    'sxrq':[],
-                    'gbrq':[],
-                    'searchType':st,
-                    'sxx':[],
-                    'gbrqYear':[],
-                    'flfgCodeId':[],
-                    'zdjgCodeId':[],
-                    'searchContent':term,
-                    'pageNum':1,
-                    'pageSize':20
-                  }
-                  data=json.dumps(payload,ensure_ascii=False).encode('utf-8')
-                  req=urllib.request.Request(endpoint,data=data,method='POST',headers={
-                    'User-Agent':'Mozilla/5.0 AI-LAWS-R008',
-                    'Content-Type':'application/json;charset=UTF-8',
-                    'Accept':'application/json,text/plain,*/*',
-                    'Origin':'https://flk.npc.gov.cn',
-                    'Referer':'https://flk.npc.gov.cn/'
-                  })
-                  try:
-                      with urllib.request.urlopen(req,timeout=20) as r:
-                          b=r.read(); print('SEARCH_TYPE=',st,'STATUS=',r.status,'BYTES=',len(b)); print(b[:5000].decode('utf-8','ignore'))
-                  except Exception as e: print('SEARCH_TYPE=',st,'ERROR=',type(e).__name__,str(e))
+          import urllib.request,urllib.parse,json,re
+          records={
+            'PIPL':('ff8081817b6472a3017b656cc2040044','中华人民共和国个人信息保护法'),
+            'DSL':('ff80818179f5e0800179f885c7e70392','中华人民共和国数据安全法'),
+            'CSL_CURRENT':('021e7d7684474107b8f3febbb1c4f8b5','中华人民共和国网络安全法'),
+            'CSL_AMEND_DECISION':('621d029681d4457ab5fc56ec7c7464a1','全国人民代表大会常务委员会关于修改《中华人民共和国网络安全法》的决定'),
+          }
+          for key,(bbbs,title) in records.items():
+              print('\n===',key,'===')
+              url='https://flk.npc.gov.cn/law-search/search/flfgDetails?'+urllib.parse.urlencode({'bbbs':bbbs})
+              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R008','Accept':'application/json,text/plain,*/*','Referer':'https://flk.npc.gov.cn/'})
+              try:
+                  with urllib.request.urlopen(req,timeout=20) as r:
+                      b=r.read(); t=b.decode('utf-8','ignore')
+                      print('STATUS=',r.status,'BYTES=',len(b),'URL=',r.geturl())
+                      print('TITLE_MARKER=',title in t)
+                      print('BODY=',t[:6000])
+              except Exception as e: print('ERROR=',type(e).__name__,str(e))
           PY
           echo 'ZIP_OR_ARTIFACT_CREATED=NO'
