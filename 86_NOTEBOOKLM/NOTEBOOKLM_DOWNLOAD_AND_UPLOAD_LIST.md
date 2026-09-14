@@ -1,20 +1,44 @@
 # AI-LAWS — NotebookLM / Gemini Notebook Download and Upload List
 
-**DOCUMENT_ID:** AI-LAWS-R021-NB-DOWNLOAD-LIST-1.0  
-**STATE:** CONTROLLED_SOURCE_ACQUISITION_LIST  
-**DATE:** 2026-09-13
+**DOCUMENT_ID:** AI-LAWS-R021-NB-DOWNLOAD-LIST-1.1  
+**STATE:** CONTROLLED_SOURCE_ACQUISITION_LIST / R023_RECONCILED  
+**UPDATED:** 2026-09-14
 
 This is the human-readable companion to `NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv`.
 
-The list is intentionally divided into:
+## IMPORTANT — existing repository binaries
 
-- **UPLOAD NOW** — source identity/currentness was verified for this R021 package;
-- **UPLOAD AFTER SOURCE PIN** — relevant document family is known but current official text/URL must be pinned by the corresponding jurisdiction research unit;
+The user manually uploaded PDF files under:
+
+`86_NOTEBOOKLM/downloads/`
+
+These binaries are now indexed by:
+
+- `86_NOTEBOOKLM/downloads/README.md`
+- `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`
+- `86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md`
+- `86_NOTEBOOKLM/PDF_CONTENT_IDENTITY_AND_DERIVED_TEXT_PROTOCOL.md`
+
+Do not infer legal/source verification merely from binary presence or filename similarity.
+
+```text
+REPOSITORY_BINARY_PRESENT != CONTENT_IDENTITY_VERIFIED
+PDF_FILENAME_MATCH != CURRENT_LAW_VERIFIED
+NOTEBOOK_UPLOAD != LEGAL_VERIFICATION
+```
+
+Use `DOWNLOADS_REGISTRY.csv` as the source-by-source labeling/Notebook routing layer for the currently uploaded binaries.
+
+The acquisition list remains divided into:
+
+- **UPLOAD / INGEST AFTER IDENTITY CHECK** — binary or official URL exists but content/currentness/rights/pack checks still apply;
+- **OFFICIAL URL PREFERRED** — dynamic/current/copyright-sensitive source should normally be ingested from the official URL;
+- **HOLD / REPLACE** — do not use the repository binary as current primary source until the stated issue is resolved;
 - **METADATA ONLY** — do not upload unlicensed full text.
 
 ## A. NB00 — AI-LAWS control and method
 
-Upload these directly from the `fatihekler/ai-laws` repository:
+Upload directly from the repository:
 
 1. `README_START_HERE.md`
 2. `00_CONTROL/PROJECT_CHARTER.md`
@@ -33,217 +57,194 @@ Upload these directly from the `fatihekler/ai-laws` repository:
 15. `85_RESEARCH_ASSISTANTS/MODEL_HANDOFF_CLAIM_SCHEMA.yaml`
 16. `86_NOTEBOOKLM/NOTEBOOKLM_CORPUS_ARCHITECTURE.md`
 17. `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_POLICY.md`
+18. `86_NOTEBOOKLM/PDF_CONTENT_IDENTITY_AND_DERIVED_TEXT_PROTOCOL.md`
 
-Do **not** use NB00 as proof of substantive law. It teaches the project method.
+NB00 teaches method. It is not proof of substantive law.
 
 ---
 
-## B. NB01 — Global AI governance — UPLOAD NOW
+## B. NB01 — Global AI governance
 
 ### Council of Europe
 
-- CETS No.225 treaty/status page  
-  https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225
+- `INT-001` CETS No.225 treaty/status page  
+  https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225  
+  **Use state:** live official URL required for current treaty status; repository PDF is historical snapshot only.
 
-- CETS No.225 Explanatory Report  
-  https://rm.coe.int/1680afae67
+- `INT-002` CETS No.225 Explanatory Report  
+  https://rm.coe.int/1680afae67  
+  **Use state:** official URL preferred; PDF fallback after content check.
 
 ### UNESCO
 
-- Recommendation on the Ethics of Artificial Intelligence (2021)  
-  https://unesdoc.unesco.org/ark:/48223/pf0000381137
+- `INT-003` Recommendation on the Ethics of Artificial Intelligence (2021)  
+  https://unesdoc.unesco.org/ark:/48223/pf0000381137  
+  **Use state:** PDF eligible after content identity/licence check; nonbinding soft law.
 
-- Recommendation on the Ethics of Neurotechnology (2025) / 43rd General Conference resolutions source  
-  https://unesdoc.unesco.org/ark:/48223/pf0000396877
+- `INT-004` Recommendation on the Ethics of Neurotechnology  
+  **Current preferred certified-copy source:**  
+  https://unesdoc.unesco.org/ark:/48223/pf0000397812_eng  
+  **Use state:** official certified-copy URL preferred. The repository PDF derived from the 43rd General Conference resolutions source is a legacy source variant and must not be loaded as the current primary source.
 
 ### OECD
 
-- OECD AI Principles (updated 2024)  
-  https://www.oecd.org/en/topics/ai-principles.html
+- `INT-005` OECD AI Principles (updated 2024)  
+  https://www.oecd.org/en/topics/ai-principles.html  
+  **Use state:** current official URL preferred; nonbinding recommendation.
 
 ### United Nations
 
-- A/RES/78/265 — Safe, secure and trustworthy AI systems for sustainable development  
-  https://digitallibrary.un.org/record/4043244/
+- `INT-006` A/RES/78/265  
+  https://digitallibrary.un.org/record/4043244/  
+  **Use state:** official URL preferred.
 
-- Pact for the Future / Global Digital Compact — A/RES/79/1  
-  https://www.un.org/pact-for-the-future/en
+- `INT-007` Pact for the Future / Global Digital Compact — A/RES/79/1  
+  https://www.un.org/pact-for-the-future/en  
+  **Use state:** adopted official URL preferred.
 
-- Governing AI for Humanity — UN Advisory Body final report  
-  https://digitallibrary.un.org/record/4062495
+- `INT-008` Governing AI for Humanity — UN Advisory Body final report  
+  https://digitallibrary.un.org/record/4062495  
+  **Use state:** official URL preferred; do not assume public GitHub/Notebook redistribution rights from public accessibility alone.
 
 ### Risk-management reference
 
-- NIST AI RMF 1.0  
+- `US-007` NIST AI RMF 1.0  
   https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10
 
-- NIST GenAI Profile  
+- `US-008` NIST GenAI Profile  
   https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence
 
+These are voluntary framework/profile sources, not statutes.
+
 ---
 
-## C. NB02 — European Union AI law — UPLOAD NOW
+## C. NB02 — European Union AI law
 
-- Current consolidated AI Act  
+Preferred current-law ingestion: official EUR-Lex URL first; repository PDFs are versioned snapshots after content check.
+
+- `EU-001` Current consolidated AI Act  
   https://eur-lex.europa.eu/eli/reg/2024/1689
-
-- Regulation (EU) 2026/1744 — Digital Omnibus on AI  
+- `EU-002` Regulation (EU) 2026/1744 — Digital Omnibus on AI  
   https://eur-lex.europa.eu/eli/reg/2026/1744/oj
-
-- Directive (EU) 2024/2853 — Product Liability Directive  
+- `EU-003` Directive (EU) 2024/2853 — Product Liability Directive  
   https://eur-lex.europa.eu/eli/dir/2024/2853/oj
-
-- Charter of Fundamental Rights  
+- `EU-004` Charter of Fundamental Rights  
   https://eur-lex.europa.eu/eli/treaty/char_2016/oj/eng
-
-- GDPR  
+- `EU-005` GDPR  
   https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng
-
-- Digital Services Act  
+- `EU-006` Digital Services Act  
   https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng
-
-- Data Act  
+- `EU-007` Data Act  
   https://eur-lex.europa.eu/eli/reg/2023/2854
-
-- Data Governance Act  
+- `EU-008` Data Governance Act  
   https://eur-lex.europa.eu/eli/reg/2022/868/oj/eng
-
-- NIS 2  
+- `EU-009` NIS 2  
   https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng
-
-- Cyber Resilience Act  
+- `EU-010` Cyber Resilience Act  
   https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng
 
-### Important
-
-Before using the notebook for a current-law conclusion, verify the current consolidated/version date in EUR-Lex. A Directive must not be treated as if every Member State has identical domestic implementation.
+Before a current-law conclusion, verify the current consolidated/version/application state in EUR-Lex. A Directive must not be treated as identical domestic implementation in every Member State.
 
 ---
 
-## D. NB03 — United States — UPLOAD NOW: federal core
+## D. NB03 — United States
 
-- Executive Order 14179 — Removing Barriers to American Leadership in AI  
-  https://www.whitehouse.gov/presidential-actions/2025/01/removing-barriers-to-american-leadership-in-artificial-intelligence/
+### Federal core
 
-- America's AI Action Plan  
-  https://www.whitehouse.gov/wp-content/uploads/2025/07/Americas-AI-Action-Plan.pdf
+- `US-001` EO 14179 — official White House URL preferred.
+- `US-002` America's AI Action Plan — PDF eligible after content check.
+- `US-003` OMB M-25-21 — PDF eligible after content check.
+- `US-004` OMB M-25-22 — PDF eligible after content check.
+- `US-005` EO 14365 — official White House URL preferred.
+- `US-006` OMB M-26-04 — PDF eligible after content check.
+- `US-007` NIST AI RMF — official URL/current revision state preferred.
+- `US-008` NIST GenAI Profile — official URL preferred.
 
-- OMB M-25-21  
-  https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf
-
-- OMB M-25-22  
-  https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-22-Driving-Efficient-Acquisition-of-Artificial-Intelligence-in-Government.pdf
-
-- Executive Order 14365 — Ensuring a National Policy Framework for AI  
-  https://www.whitehouse.gov/presidential-actions/2025/12/eliminating-state-law-obstruction-of-national-artificial-intelligence-policy/
-
-- OMB M-26-04 — Unbiased AI Principles  
-  https://www.whitehouse.gov/wp-content/uploads/2025/12/M-26-04-Increasing-Public-Trust-in-Artificial-Intelligence-Through-Unbiased-AI-Principles-1.pdf
-
-- NIST AI RMF 1.0
-- NIST GenAI Profile
+Do not describe executive orders or OMB memoranda as Acts of Congress.
 
 ### State law
 
-Do not build a definitive U.S. state-law notebook from memory. `AI-LAWS-R007` must pin the current official enacted/amended text for each state.
-
-Utah may be used as an initial official-source example after current codification is rechecked:
-
-https://le.utah.gov/xcode/Title13/Chapter72/C13-72_2024050120240501.pdf
+Do not build a definitive state-law notebook from memory. `AI-LAWS-R007` must pin current enacted/amended text state-by-state.
 
 ---
 
-## E. NB04 — Türkiye — UPLOAD AFTER R005 SOURCE PIN
+## E. NB04 — Türkiye
 
-Do not use guessed deep links. Use the official Mevzuat Bilgi Sistemi / Resmî Gazete and record exact current document identity.
+Repository binaries now exist for:
 
-Required source families:
+- `TR-001` Constitution — No. 2709
+- `TR-002` Law No. 6698 — Personal Data Protection
+- `TR-003` Turkish Code of Obligations — No. 6098
+- `TR-004` Turkish Civil Code — No. 4721
+- `TR-005` Turkish Penal Code — No. 5237
+- `TR-006` Consumer Protection Law — No. 6502
+- `TR-007` Law No. 5651
+- `TR-008` Cybersecurity Law — No. 7545
 
-- Constitution — No. 2709
-- Law No. 6698 — Personal Data Protection
-- Turkish Code of Obligations — No. 6098
-- Turkish Civil Code — No. 4721
-- Turkish Penal Code — No. 5237
-- Consumer Protection Law — No. 6502
-- Law No. 5651
-- current Cybersecurity Law / Law No. 7545 if current official identity is confirmed
-- relevant current KVKK Board decisions and guidance
-- current Turkish AI strategy/action-plan documents, labeled policy rather than statute
+These files were manually added after the prior R005/NB04 acquisition closeout. Their repository presence resolves neither content identity nor currentness.
+
+Required before Notebook baseline upload:
+
+1. open each PDF;
+2. verify exact law number/title;
+3. compare against the official Mevzuat/Resmî Gazete source pin;
+4. verify current consolidated state;
+5. record content-identity result in the ledger/registry.
+
+`TR-008` requires explicit confirmation that Law No. 7590 amendments effective 2026-07-31 are reflected.
 
 Official portals:
 
 - https://www.mevzuat.gov.tr/
 - https://www.resmigazete.gov.tr/
 
-The two YargıGPT API failure records are **not court-law sources** and should not be loaded as precedent.
+The YargıGPT API failure records are not court-law sources and must not be loaded as precedent.
 
 ---
 
 ## F. NB06 — Human sovereignty / neurotechnology
 
-Upload now:
+Primary source set:
 
-- UNESCO AI Ethics Recommendation
-- UNESCO Neurotechnology Recommendation
-- EU Charter
-- GDPR
+- `INT-003` UNESCO AI Ethics Recommendation;
+- `INT-004` UNESCO Neurotechnology **certified-copy official URL**;
+- `EU-004` EU Charter official URL;
+- `EU-005` GDPR official URL;
+- `CL-001` Chile Ley 21.383 official BCN source after currentness check;
+- `CL-002` Girardi/Emotiv only when the case-law full-text gate is satisfied.
 
-Upload after exact official pin:
-
-- Chile Ley 21.383 neurorights reform
-- Chile Supreme Court `Girardi/Emotiv Inc`, Rol 105065-2023
-
-Official Chile source targets:
-
-- https://www.bcn.cl/leychile/
-- https://juris.pjud.cl/
-
-Do not generalize a Chile neurotechnology rule into a universal right covering every AI mental-state inference.
+Do not generalize Chile neurotechnology law into a universal right governing all AI mental-state inference.
 
 ---
 
 ## G. NB07 — Liability / evidence / financial responsibility
 
-Start with:
+Start with verified/rechecked versions of:
 
-- EU Product Liability Directive
-- relevant AI Act logging/incident provisions from current consolidated AI Act
-- GDPR evidence/data obligations where material
-- OMB AI procurement/use memoranda for public-sector vendor/governance examples
-- NIST frameworks for nonbinding risk-management comparison
+- `EU-003` Product Liability Directive;
+- relevant current AI Act logging/incident provisions from `EU-001`;
+- `EU-005` GDPR where material;
+- `US-003` / `US-004` OMB governance/procurement memoranda;
+- `US-007` / `US-008` NIST sources for nonbinding comparison.
 
-Add later:
-
-- verified national tort/product/consumer/evidence rules;
-- court decisions admitted through case-law gate;
-- academic/policy proposals for mandatory insurance, CAT bonds, industry pools and victim funds.
-
-Do not mix these categories:
+Keep separate:
 
 ```text
 CURRENT LAW
 COMMERCIAL MARKET PRACTICE
+REGULATORY GUIDANCE
 ACADEMIC PROPOSAL
 POLICY PROPOSAL
 ```
 
 ---
 
-## H. NB08 — Frontier AI incident evidence — UPLOAD NOW
+## H. NB08 — Frontier AI incident evidence
 
-- OpenAI — The Hugging Face incident and the road ahead  
-  https://openai.com/index/hugging-face-incident-and-the-road-ahead/
-
-- Redwood/METR — independent investigation  
-  https://www.redwoodresearch.org/research/hugging-face-incident
-
-- Anthropic — Threat Intelligence Report September 2026  
-  https://www.anthropic.com/threat-intelligence-report-september-2026
-
-Optional policy/forecast context:
-
-- Dario Amodei — We Must Pace the Frontier  
-  https://darioamodei.com/post/we-must-pace-the-frontier
+- `INC-001` OpenAI company Hugging Face incident disclosure;
+- `INC-002` Redwood/METR independent investigation;
+- `INC-003` Anthropic Threat Intelligence Report September 2026;
+- `INC-004` Dario Amodei `We Must Pace the Frontier` — optional policy/forecast context, not incident fact.
 
 Rules:
 
@@ -254,46 +255,39 @@ FORECAST != INCIDENT
 INCIDENT != LIABILITY
 ```
 
+Use the source labels from `downloads/DOWNLOADS_REGISTRY.csv` when uploading/ingesting.
+
 ---
 
 ## I. Documents that should NOT be blindly uploaded
 
-- paid ISO/IEC 42001 full text without a valid license;
-- paid ISO/IEC 23894 full text without a valid license;
-- Westlaw/Lexis/commercial database exports outside license terms;
+- paid ISO/IEC 42001 full text without valid licence;
+- paid ISO/IEC 23894 full text without valid licence;
+- Westlaw/Lexis/commercial database exports outside licence terms;
 - attorney-client privileged material;
 - personal/private incident data;
 - security secrets;
 - unreleased internal logs;
-- classified or export-controlled material;
+- classified/export-controlled material;
 - model-generated reports disguised as primary sources.
-
-For ISO standards, keep metadata/reference only unless you possess a license that permits the intended use.
 
 ---
 
-## J. Download procedure
+## J. Existing-PDF validation and upload procedure
 
-For every locally downloaded source:
+For every repository PDF:
 
-1. download from the official URL;
-2. preserve the original filename if meaningful;
-3. rename with `SOURCE_ID__DOCUMENT_ID__DATE.ext` if necessary;
-4. compute SHA-256;
-5. record download date and source URL;
-6. verify file opens and contains expected text;
-7. upload to the correct Notebook source pack;
-8. keep the GitHub manifest as the durable index;
-9. do not assume the Notebook copy remains current forever.
+1. map file to `SOURCE_ID` via `downloads/DOWNLOADS_REGISTRY.csv`;
+2. follow `PDF_CONTENT_IDENTITY_AND_DERIVED_TEXT_PROTOCOL.md`;
+3. verify official/current source state;
+4. choose upload mode from `downloads/NOTEBOOK_UPLOAD_PLAN.md`;
+5. use `recommended_notebook_label` when practical;
+6. use `recommended_canonical_filename` for a local upload copy if renaming is useful;
+7. upload pack-by-pack, not all at once;
+8. run Notebook source identity/locator test;
+9. run authority-separation test;
+10. recheck material claims against primary/official sources.
 
-Recommended local filename pattern:
+Do **not** convert every PDF to Markdown. Use direct PDF/official URL ingestion first; create derived Markdown only when extraction quality, diffing or locator requirements justify it.
 
-```text
-SOURCE_ID__JURISDICTION__DOCUMENT_ID__VERSIONDATE.ext
-```
-
-Example:
-
-```text
-EU-002__EU__REG-2026-1744__2026-07-24.pdf
-```
+`AUTO_ADVANCE = NO`

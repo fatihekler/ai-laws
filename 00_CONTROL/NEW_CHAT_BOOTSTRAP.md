@@ -23,10 +23,15 @@ Every new AI-LAWS chat starts by reconstructing current repository state from Gi
 10. Read `20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv` and `20_JURISDICTIONS/GLOBAL_JURISDICTION_RESEARCH_PROTOCOL.md`.
 11. If Grok/model collaboration is in scope, read `85_RESEARCH_ASSISTANTS/GROK_CHATGPT_COLLABORATION_PROTOCOL.md`, the Grok master instruction and model handoff schema.
 12. If NotebookLM/Gemini Notebook or source acquisition is in scope, read the complete `86_NOTEBOOKLM` control set, including `NOTEBOOKLM_END_TO_END_EXECUTION_RUNBOOK.md` and `NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`.
-13. Read `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`.
-14. Read the exact jurisdiction/domain/case-law/cross-repo protocol relevant to the requested bounded unit.
-15. Fresh-read any primary legal source whose current status materially affects the answer.
-16. Before mutation/download/upload, fresh-read HEAD/TREE again and stop on overlapping drift.
+13. If `86_NOTEBOOKLM/downloads/` binaries are in scope, also read exact:
+   - `86_NOTEBOOKLM/downloads/README.md`
+   - `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`
+   - `86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md`
+   - `86_NOTEBOOKLM/PDF_CONTENT_IDENTITY_AND_DERIVED_TEXT_PROTOCOL.md`
+14. Read `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`.
+15. Read the exact jurisdiction/domain/case-law/cross-repo protocol relevant to the requested bounded unit.
+16. Fresh-read any primary legal source whose current status materially affects the answer.
+17. Before mutation/download/upload, fresh-read HEAD/TREE again and stop on overlapping drift.
 
 ## Source precedence
 
@@ -71,6 +76,18 @@ MULTIPLE_MODELS_AGREE != FACT_PROVEN
 ```
 
 Model output must route back to current primary/official/independent sources before it can support a verified AI-LAWS claim.
+
+## Downloaded-binary firewall
+
+```text
+REPOSITORY_BINARY_PRESENT != SOURCE_IDENTITY_VERIFIED
+REPOSITORY_BINARY_PRESENT != CURRENT_LAW_VERIFIED
+PDF_FILENAME_MATCH != CONTENT_IDENTITY_VERIFIED
+DERIVED_MARKDOWN != PRIMARY_SOURCE
+NOTEBOOK_UPLOAD != LEGAL_VERIFICATION
+```
+
+Existing user-uploaded binaries must be routed through `DOWNLOADS_REGISTRY.csv` and the PDF content-identity protocol before substantive Notebook use.
 
 ## Legal integrity rules
 
