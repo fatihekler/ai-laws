@@ -46,7 +46,7 @@ jobs:
           git config user.name 'Fatih Mehmet Ekler'
           git config user.email '5189511+fatihekler@users.noreply.github.com'
           git rm .github/workflows/r035-temporary-pre-ingestion-reconcile.yml .github/scripts/r035_pre_ingestion_reconcile.py
-          git add -A 00_CONTROL 86_NOTEBOOKLM 90_RESEARCH_QUEUE 95_RESEARCH .github
+          git add -A 00_CONTROL 86_NOTEBOOKLM 90_RESEARCH_QUEUE 95_RESEARCH
           git diff --cached --check
           test -z "$(git diff --cached --name-only -- '*.pdf')"
           git commit -m 'support(r035): reconcile pre-ingestion sources and upload selection'
