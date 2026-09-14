@@ -1,0 +1,117 @@
+name: AI-LAWS R028 NB03 repository PDF inspection
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r028-nb03-pdf-inspect.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install inspection tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils curl file
+
+      - name: Inspect NB03 repository PDFs and official URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv, hashlib, re, subprocess, urllib.parse
+          from pathlib import Path
+
+          wanted=[f'US-{i:03d}' for i in range(1,9)]
+          d=Path('86_NOTEBOOKLM/downloads')
+          with (d/'DOWNLOADS_REGISTRY.csv').open(newline='',encoding='utf-8') as f:
+              registry={r['manifest_source_id']:r for r in csv.DictReader(f) if r['manifest_source_id'] in wanted}
+          with Path('86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv').open(newline='',encoding='utf-8') as f:
+              manifest={r['source_id']:r for r in csv.DictReader(f) if r['source_id'] in wanted}
+          assert set(registry)==set(wanted), ('registry missing',sorted(set(wanted)-set(registry)))
+          assert set(manifest)==set(wanted), ('manifest missing',sorted(set(wanted)-set(manifest)))
+
+          expected={
+            'US-001':['removing barriers','artificial intelligence'],
+            'US-002':['ai action plan'],
+            'US-003':['m-25-21','federal use of ai'],
+            'US-004':['m-25-22','acquisition of artificial intelligence'],
+            'US-005':['national policy framework','artificial intelligence'],
+            'US-006':['m-26-04','unbiased ai principles'],
+            'US-007':['artificial intelligence risk management framework','nist ai 100-1'],
+            'US-008':['generative artificial intelligence profile','nist ai 600-1'],
+          }
+
+          def run(cmd):
+              return subprocess.check_output(cmd,text=True,errors='replace')
+          def clean(s,n=700):
+              s=' '.join(s.replace('|','/').split())
+              return s[:n]
+
+          for sid in wanted:
+              r=registry[sid]
+              p=d/r['repo_filename']
+              assert p.exists(), (sid,'repository PDF missing',str(p))
+              b=p.read_bytes()
+              sha=hashlib.sha256(b).hexdigest()
+              blob=run(['git','hash-object',str(p)]).strip()
+              info=run(['pdfinfo',str(p)])
+              pages_m=re.search(r'^Pages:\s+(\d+)',info,re.M)
+              ver_m=re.search(r'^PDF version:\s+(.+)$',info,re.M)
+              producer_m=re.search(r'^Producer:\s+(.+)$',info,re.M)
+              title_m=re.search(r'^Title:\s*(.*)$',info,re.M)
+              pages=int(pages_m.group(1)) if pages_m else 0
+              text=run(['pdftotext','-layout',str(p),'-'])
+              norm=' '.join(text.lower().split())
+              marker_state=[]
+              for marker in expected[sid]:
+                  marker_state.append(f"{marker}={'YES' if ' '.join(marker.lower().split()) in norm else 'NO'}")
+              print('PDF|%s|filename=%s|blob=%s|sha256=%s|bytes=%s|pages=%s|pdfver=%s|producer=%s|title=%s|textchars=%s|markers=%s' % (
+                  sid, clean(r['repo_filename'],180), blob, sha, len(b), pages,
+                  clean(ver_m.group(1) if ver_m else 'UNKNOWN',80),
+                  clean(producer_m.group(1) if producer_m else 'UNKNOWN',160),
+                  clean(title_m.group(1) if title_m else 'UNKNOWN',220),
+                  len(text), ';'.join(marker_state)))
+              print('HEAD|%s|%s' % (sid,clean(text[:6000],1100)))
+              print('TAIL|%s|%s' % (sid,clean(text[-5000:],900)))
+
+              url=manifest[sid]['official_url']
+              out=Path('/tmp')/(sid+'.official')
+              hdr=Path('/tmp')/(sid+'.headers')
+              cmd=['curl','-L','--silent','--show-error','--fail-with-body','--connect-timeout','15','--max-time','60','--retry','1','-A','Mozilla/5.0 AI-LAWS source verification','-D',str(hdr),'-o',str(out),'-w','%{http_code}|%{content_type}|%{url_effective}',url]
+              try:
+                  meta=run(cmd).strip()
+                  ob=out.read_bytes() if out.exists() else b''
+                  osha=hashlib.sha256(ob).hexdigest() if ob else 'NONE'
+                  ctype=subprocess.check_output(['file','-b','--mime-type',str(out)],text=True).strip() if out.exists() else 'UNKNOWN'
+                  exact='YES' if ob and ob==b else 'NO'
+                  print('OFFICIAL|%s|manifest_url=%s|curl=%s|filetype=%s|bytes=%s|sha256=%s|exact_repo_bytes=%s' % (sid,url,meta,ctype,len(ob),osha,exact))
+                  if ctype=='application/pdf' and ob:
+                      try:
+                          oi=run(['pdfinfo',str(out)])
+                          opm=re.search(r'^Pages:\s+(\d+)',oi,re.M)
+                          ot=run(['pdftotext','-layout',str(out),'-'])
+                          print('OFFICIAL_PDF|%s|pages=%s|textchars=%s|head=%s' % (sid,opm.group(1) if opm else 'UNKNOWN',len(ot),clean(ot[:4500],700)))
+                      except Exception as e:
+                          print('OFFICIAL_PDF|%s|PARSE_ERROR=%s' % (sid,clean(str(e),300)))
+                  elif ob:
+                      raw=ob.decode('utf-8','replace')
+                      visible=re.sub(r'<script.*?</script>|<style.*?</style>',' ',raw,flags=re.I|re.S)
+                      visible=re.sub(r'<[^>]+>',' ',visible)
+                      print('OFFICIAL_HTML|%s|text=%s' % (sid,clean(visible,900)))
+              except subprocess.CalledProcessError as e:
+                  print('OFFICIAL|%s|manifest_url=%s|ACCESS_FAILED|returncode=%s' % (sid,url,e.returncode))
+          PY
+
+      - name: Confirm no artifacts are produced
+        run: |
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
+          echo 'REPOSITORY_MUTATION_BY_INSPECTION_JOB=NO'
