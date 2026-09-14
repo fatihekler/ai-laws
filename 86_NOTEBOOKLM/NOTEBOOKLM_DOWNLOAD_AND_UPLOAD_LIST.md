@@ -1,7 +1,7 @@
 # AI-LAWS — NotebookLM / Gemini Notebook Download and Upload List
 
-**DOCUMENT_ID:** AI-LAWS-R021-NB-DOWNLOAD-LIST-1.1  
-**STATE:** CONTROLLED_SOURCE_ACQUISITION_LIST / R023_RECONCILED  
+**DOCUMENT_ID:** AI-LAWS-R021-NB-DOWNLOAD-LIST-1.1
+**STATE:** CONTROLLED_SOURCE_ACQUISITION_LIST / R023_RECONCILED
 **UPDATED:** 2026-09-14
 
 This is the human-readable companion to `NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv`.
@@ -82,18 +82,18 @@ All eight have native searchable text layers; no Markdown derivative is required
 
 ### Council of Europe
 
-- `INT-001` CETS No.225  
-  https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225  
+- `INT-001` CETS No.225
+  https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225
   **R027 repository file state:** verified 12-page treaty text. Live official URL remains required for current signatures, ratifications, reservations and declarations.
 
-- `INT-002` CETS No.225 Explanatory Report  
-  https://rm.coe.int/1680afae67  
+- `INT-002` CETS No.225 Explanatory Report
+  https://rm.coe.int/1680afae67
   **Use state:** official URL preferred; PDF fallback after content check.
 
 ### UNESCO
 
-- `INT-003` Recommendation on the Ethics of Artificial Intelligence (2021)  
-  https://unesdoc.unesco.org/ark:/48223/pf0000381137  
+- `INT-003` Recommendation on the Ethics of Artificial Intelligence (2021)
+  https://unesdoc.unesco.org/ark:/48223/pf0000381137
   **Use state:** PDF eligible after content identity/licence check; nonbinding soft law.
 
 - `INT-004` Recommendation on the Ethics of Neurotechnology
@@ -104,14 +104,14 @@ All eight have native searchable text layers; no Markdown derivative is required
 
 ### OECD
 
-- `INT-005` OECD AI Principles (updated 2024)  
-  https://www.oecd.org/en/topics/ai-principles.html  
+- `INT-005` OECD AI Principles (updated 2024)
+  https://www.oecd.org/en/topics/ai-principles.html
   **Use state:** current official URL preferred; nonbinding recommendation.
 
 ### United Nations
 
-- `INT-006` A/RES/78/265  
-  https://digitallibrary.un.org/record/4043244/  
+- `INT-006` A/RES/78/265
+  https://digitallibrary.un.org/record/4043244/
   **Use state:** official URL preferred.
 
 - `INT-007` Pact for the Future / Global Digital Compact — A/RES/79/1
@@ -120,16 +120,16 @@ All eight have native searchable text layers; no Markdown derivative is required
   **R032 official PDF state:** 56 pages; 649956 bytes; SHA-256 `0c3968d0ce8d55cf107309794adea6879d70f9aea60e6d6d64e3a8da4b028336`; `A/RES/79/1`, Pact for the Future and Global Digital Compact markers verified.
   **Repository file state:** 64-page Summit outcome-document bundle remains `CONTENT_IDENTITY_PARTIAL` relative to the exact resolution and is supporting-only.
 
-- `INT-008` Governing AI for Humanity — UN Advisory Body final report  
-  https://digitallibrary.un.org/record/4062495  
+- `INT-008` Governing AI for Humanity — UN Advisory Body final report
+  https://digitallibrary.un.org/record/4062495
   **Use state:** official URL preferred; do not assume public GitHub/Notebook redistribution rights from public accessibility alone.
 
 ### Risk-management reference
 
-- `US-007` NIST AI RMF 1.0  
+- `US-007` NIST AI RMF 1.0
   https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10
 
-- `US-008` NIST GenAI Profile  
+- `US-008` NIST GenAI Profile
   https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence
 
 These are voluntary framework/profile sources, not statutes.
@@ -140,25 +140,25 @@ These are voluntary framework/profile sources, not statutes.
 
 Preferred current-law ingestion: official EUR-Lex URL first; repository PDFs are versioned snapshots after content check.
 
-- `EU-001` Current consolidated AI Act  
+- `EU-001` Current consolidated AI Act
   https://eur-lex.europa.eu/eli/reg/2024/1689
-- `EU-002` Regulation (EU) 2026/1744 — Digital Omnibus on AI  
+- `EU-002` Regulation (EU) 2026/1744 — Digital Omnibus on AI
   https://eur-lex.europa.eu/eli/reg/2026/1744/oj
-- `EU-003` Directive (EU) 2024/2853 — Product Liability Directive  
+- `EU-003` Directive (EU) 2024/2853 — Product Liability Directive
   https://eur-lex.europa.eu/eli/dir/2024/2853/oj
-- `EU-004` Charter of Fundamental Rights  
+- `EU-004` Charter of Fundamental Rights
   https://eur-lex.europa.eu/eli/treaty/char_2016/oj/eng
-- `EU-005` GDPR  
+- `EU-005` GDPR
   https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng
-- `EU-006` Digital Services Act  
+- `EU-006` Digital Services Act
   https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng
-- `EU-007` Data Act  
+- `EU-007` Data Act
   https://eur-lex.europa.eu/eli/reg/2023/2854
-- `EU-008` Data Governance Act  
+- `EU-008` Data Governance Act
   https://eur-lex.europa.eu/eli/reg/2022/868/oj/eng
-- `EU-009` NIS 2  
+- `EU-009` NIS 2
   https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng
-- `EU-010` Cyber Resilience Act  
+- `EU-010` Cyber Resilience Act
   https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng
 
 Before a current-law conclusion, verify the current consolidated/version/application state in EUR-Lex. A Directive must not be treated as identical domestic implementation in every Member State.
@@ -371,3 +371,28 @@ Do **not** convert every PDF to Markdown. Use direct PDF/official URL ingestion 
   **Ingest:** `URL_DIRECT_PREFERRED`.
   **R033 binary state:** exact official PDF body was not exposed to the GitHub runner; SHA-256/byte size remain `UNKNOWN`; no repository binary was vendored.
   **Historical boundary:** 2021-2025 strategy and 2024-2025 action-plan sources remain historical context and must not replace the current 2026-2030 plan.
+
+### R010 — NB05 Republic of Korea + Japan official URL source set
+
+R010 adds URL-direct sources only; no binary download is required for this bounded unit.
+
+- `KR-001` Korea AI Basic Act current official law.go.kr state
+- `KR-002` Korea AI Basic Act Enforcement Decree current official law.go.kr state
+- `KR-003` Korea PIPA current official law.go.kr state
+- `JP-001` Japan AI Act current e-Gov law
+- `JP-002` Japan APPI current e-Gov law
+- `JP-003` Japan AI Basic Plan Phase II, Cabinet decision 2026-07-14
+- `JP-004` Japan AI appropriateness guideline, Headquarters decision 2025-12-19
+- `JP-005` Japan AI Guidelines for Business Ver.1.2, current MIC page 2026-03-31
+
+```text
+NB05_R010_OFFICIAL_URL_SOURCE_SET = READY_8_WITH_LIMITS
+KR_BINDING_SOURCES = 3
+KR_SEPARATE_CURRENT_POLICY_PLAN_SOURCE = NOT_PINNED_R010
+JP_BINDING_SOURCES = 2
+JP_POLICY_GUIDANCE_SOURCES = 3
+BINDING_LAW_AND_POLICY_GUIDANCE_SEPARATED = YES
+NEW_BINARY_DOWNLOADS = 0
+NOTEBOOK_UPLOADS = 0
+AUTO_ADVANCE = NO
+```

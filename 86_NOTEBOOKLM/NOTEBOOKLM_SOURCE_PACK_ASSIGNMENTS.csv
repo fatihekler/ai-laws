@@ -83,3 +83,11 @@ NB05,GB-010,RECOMMENDED,Cross-regulator sectoral AI-governance architecture
 NB05,GB-011,RECOMMENDED,ICO AI/data-protection guidance and explanation resources
 NB05,GB-012,RECOMMENDED,Competition/foundation-model regulator context
 NB05,GB-013,RECOMMENDED,National AI strategy/policy context separated from binding law
+NB05,KR-001,REQUIRED,Republic of Korea AI framework-law baseline
+NB05,KR-002,REQUIRED,Current subordinate implementation layer for Korea AI Basic Act
+NB05,KR-003,RECOMMENDED,Current Korean personal-data baseline relevant to AI processing
+NB05,JP-001,REQUIRED,Japan AI Act binding-law baseline
+NB05,JP-002,RECOMMENDED,Current Japanese personal-data baseline relevant to AI processing
+NB05,JP-003,REQUIRED,Current Japanese national AI policy-plan layer separated from binding law
+NB05,JP-004,RECOMMENDED,Official appropriateness-guideline layer required to separate guidance from statute
+NB05,JP-005,RECOMMENDED,Current cross-ministry AI business guidance baseline
