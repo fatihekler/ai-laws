@@ -1,0 +1,33 @@
+name: AI-LAWS R030 EU-001 consolidated PDF resolver
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r030-nb02-eu001-consolidated-resolve.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve consolidated AI Act PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv, hashlib, subprocess
+          from pathlib import Path
+          d=Path('86_NOTEBOOKLM/downloads')
+          with (d/'DOWNLOADS_REGISTRY.csv').open(newline='',encoding='utf-8') as f:
+              r=next(x for x in csv.DictReader(f) if x['manifest_source_id']=='EU-001')
+          repo=(d/r['repo_filename']).read_bytes()
+          url='https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:02024R1689-20260727'
+          out=Path('/tmp/eu001-consolidated.pdf')
+          meta=subprocess.check_output(['curl','-L','--silent','--show-error','--fail-with-body','--connect-timeout','15','--max-time','90','--retry','1','-A','Mozilla/5.0 AI-LAWS source verification','-o',str(out),'-w','%{http_code}|%{content_type}|%{url_effective}',url],text=True).strip()
+          b=out.read_bytes()
+          print('EU001_CONSOLIDATED|url=%s|curl=%s|bytes=%d|sha256=%s|repo_sha256=%s|exact=%s' % (url,meta,len(b),hashlib.sha256(b).hexdigest(),hashlib.sha256(repo).hexdigest(),'YES' if b==repo else 'NO'))
+          PY
+      - run: echo 'ZIP_OR_ARTIFACT_CREATED=NO'
