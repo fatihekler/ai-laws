@@ -1,18 +1,17 @@
-name: R034 human-readable namespace and Notebook readiness
+name: R034 final namespace reconciliation cleanup
 
 on:
   push:
     paths:
       - '.github/workflows/r034-temporary-namespace-readiness.yml'
-      - '.github/scripts/r034_namespace_readiness.py'
 
 permissions:
   contents: write
 
 jobs:
-  normalize:
+  reconcile:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Checkout exact trigger state
         uses: actions/checkout@v4
@@ -26,45 +25,33 @@ jobs:
           git fetch origin main
           test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
 
-      - name: Build audited namespace and readiness layer
+      - name: Reconcile controlled state
         shell: bash
         run: |
           set -euo pipefail
-          python3 .github/scripts/r034_namespace_readiness.py
-          sed -i 's/\r$//' \
-            86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv \
-            86_NOTEBOOKLM/downloads/RENAME_MANIFEST.csv \
-            86_NOTEBOOKLM/downloads/ORIGINAL_FILENAME_INDEX.csv \
-            86_NOTEBOOKLM/downloads/NOTEBOOK_SOURCE_LABELS.csv \
-            86_NOTEBOOKLM/downloads/MANUAL_DOWNLOAD_AND_UPLOAD_REQUESTS.csv \
-            86_NOTEBOOKLM/NOTEBOOK_READINESS_MATRIX.csv
-          python3 - <<'PY'
-          from pathlib import Path
-          for name in [
-              '86_NOTEBOOKLM/SOURCE_CATALOG.md',
-              '86_NOTEBOOKLM/AI-LAWS-R034_NAMESPACE_AND_NOTEBOOK_READINESS_ASSESSMENT_2026-09-14.md',
-          ]:
-              p = Path(name)
-              lines = [line.rstrip() for line in p.read_text(encoding='utf-8').splitlines()]
-              while lines and lines[-1] == '':
-                  lines.pop()
-              p.write_text('\n'.join(lines) + '\n', encoding='utf-8')
-          PY
+          python3 .github/scripts/r034_reconcile.py
           git diff --check
           test "$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*.pdf' | wc -l)" -eq 38
           test "$(awk -F, 'NR>1 && $10=="YES" {n++} END {print n+0}' 86_NOTEBOOKLM/downloads/RENAME_MANIFEST.csv)" -eq 0
+          grep -q 'AI-LAWS-R034' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          grep -q 'CORE_NOTEBOOK_INGESTION_READY = YES' 95_RESEARCH/NOTEBOOK_READINESS/AI-LAWS-R034_CLOSEOUT_2026-09-14.md
 
-      - name: Commit namespace normalization and push
+      - name: Commit reconciliation cleanup and push
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'Fatih Mehmet Ekler'
           git config user.email '5189511+fatihekler@users.noreply.github.com'
-          git add -A 86_NOTEBOOKLM
+          git rm .github/workflows/r034-temporary-namespace-readiness.yml .github/scripts/r034_namespace_readiness.py .github/scripts/r034_reconcile.py
+          git add 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv 95_RESEARCH/NOTEBOOK_READINESS/AI-LAWS-R034_CLOSEOUT_2026-09-14.md
           git diff --cached --check
-          test "$(git diff --cached --name-status | awk '$1 ~ /^R/ {n++} END {print n+0}')" -ge 30
-          git commit -m 'support(r034): normalize readable source namespace and notebook readiness'
+          git commit -m 'control(r034): reconcile namespace readiness and cleanup helpers'
           git fetch origin main
           test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
           git push origin HEAD:main
-          printf 'R034_NAMESPACE_HEAD=%s\nR034_NAMESPACE_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
+          printf 'FINAL_HEAD=%s\nFINAL_TREE=%s\nWORKFLOW_PRESENT=%s\nNAMESPACE_SCRIPT_PRESENT=%s\nRECONCILE_PRESENT=%s\n' \
+            "$(git rev-parse HEAD)" \
+            "$(git rev-parse HEAD^{tree})" \
+            "$(test -e .github/workflows/r034-temporary-namespace-readiness.yml && echo YES || echo NO)" \
+            "$(test -e .github/scripts/r034_namespace_readiness.py && echo YES || echo NO)" \
+            "$(test -e .github/scripts/r034_reconcile.py && echo YES || echo NO)"
