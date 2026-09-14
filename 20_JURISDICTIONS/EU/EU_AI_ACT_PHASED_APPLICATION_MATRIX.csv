@@ -1,0 +1,19 @@
+claim_id,topic,provision,application_state_2026_09_14,application_or_deadline_date,source_id,authority_state,dependency_or_limit,claim_state
+R003-EU-001,Entry into force,Article 113,IN_FORCE,2024-08-01,EU-001,BINDING_EU_REGULATION,Currentness refresh required,VERIFIED_BASELINE
+R003-EU-002,Chapters I and II general tranche,Article 113(a),APPLICABLE,2025-02-02,EU-001,BINDING_EU_REGULATION,New Article 5 ba/bb and 1a/1b excluded until 2026-12-02,VERIFIED_BASELINE
+R003-EU-003,AI literacy,Article 4,APPLICABLE,2025-02-02,EU-001,BINDING_EU_REGULATION,Context-sensitive measures; no guaranteed individual literacy level,VERIFIED_BASELINE
+R003-EU-004,Most prohibited practices,Article 5 and Article 113(a),APPLICABLE,2025-02-02,EU-001,BINDING_EU_REGULATION,National-law dependencies remain for specified real-time RBI authorisation,VERIFIED_BASELINE
+R003-EU-005,New intimate/sexually-explicit and CSAM-related prohibited-practice additions,Article 5(1)(ba)/(bb) and 1a/1b,FUTURE_APPLICATION,2026-12-02,EU-001;EU-002,BINDING_EU_REGULATION,Not yet applicable on 2026-09-14,VERIFIED_BASELINE
+R003-EU-006,Chapter III Section 4 + Chapter V + Chapter VII + Chapter XII + Article 78,Article 113(b),APPLICABLE,2025-08-02,EU-001,BINDING_EU_REGULATION,Article 101 excluded from this tranche,VERIFIED_BASELINE
+R003-EU-007,General application date,Article 113,APPLICABLE,2026-08-02,EU-001,BINDING_EU_REGULATION,Does not override provision-specific dates,VERIFIED_BASELINE
+R003-EU-008,Articles 102 to 110,Article 113(d),APPLICABLE,2026-07-27,EU-001;EU-002,BINDING_EU_REGULATION,Current consolidated text controls,VERIFIED_BASELINE
+R003-EU-009,Annex III high-risk core,Chapter III Sections 1-3 / Article 6(2),FUTURE_APPLICATION,2027-12-02,EU-001;EU-002,BINDING_EU_REGULATION,Article 6(5) excluded from deferral,VERIFIED_BASELINE
+R003-EU-010,Annex I product high-risk core,Chapter III Sections 1-3 / Article 6(1),FUTURE_APPLICATION,2028-08-02,EU-001;EU-002,BINDING_EU_REGULATION,Article 6(5) excluded from deferral; sectoral legislation interactions,VERIFIED_BASELINE
+R003-EU-011,Transparency architecture,Article 50,APPLICABLE,2026-08-02,EU-001,BINDING_EU_REGULATION,Article 111(4) creates legacy transition specifically for Article 50(2),VERIFIED_BASELINE
+R003-EU-012,Legacy synthetic-content systems Article 50(2),Article 111(4),TRANSITION_ACTIVE,2026-12-02,EU-001;EU-002,BINDING_EU_REGULATION,For systems in scope placed before 2026-08-02,VERIFIED_BASELINE
+R003-EU-013,GPAI Chapter V,Chapter V / Article 113(b),APPLICABLE,2025-08-02,EU-001,BINDING_EU_REGULATION,Pre-2025-08-02 GPAI models have Article 111(3) transition,VERIFIED_BASELINE
+R003-EU-014,Legacy GPAI models,Article 111(3),TRANSITION_ACTIVE,2027-08-02,EU-001,BINDING_EU_REGULATION,Applies to GPAI models placed before 2025-08-02,VERIFIED_BASELINE
+R003-EU-015,Legacy high-risk systems for public-authority use,Article 111(2),FUTURE_COMPLIANCE_DEADLINE,2030-08-02,EU-001;EU-002,BINDING_EU_REGULATION,Article 111 conditions and significant-design-change rule must be applied,VERIFIED_BASELINE
+R003-EU-016,Annex X large-scale IT-system components,Article 111(1),FUTURE_COMPLIANCE_DEADLINE,2030-12-31,EU-001,BINDING_EU_REGULATION,Article 5 earlier application remains without prejudice,VERIFIED_BASELINE
+R003-EU-017,National AI regulatory sandbox minimum,Amended Article 57 context,FUTURE_OPERATIONAL_DEADLINE,2027-08-02,EU-002,BINDING_EU_REGULATION,National implementation details not mapped in R003,VERIFIED_BASELINE
+R003-EU-018,Article 2(13) high-risk Annex I limitation mechanism,Article 2(13),DELEGATED_ACT_DEPENDENCY,2027-08-02,EU-001;EU-002,BINDING_EU_REGULATION,Commission delegated acts required to specify systems/requirements/conditions/scope,VERIFIED_BASELINE
