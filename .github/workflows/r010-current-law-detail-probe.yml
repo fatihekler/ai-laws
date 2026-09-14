@@ -1,0 +1,63 @@
+name: AI-LAWS R010 current-law detail probe
+on:
+  push:
+    paths:
+      - '.github/workflows/r010-current-law-detail-probe.yml'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe official current-law detail pages
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import urllib.request, urllib.parse, re, html
+          UA={'User-Agent':'Mozilla/5.0 AI-LAWS-R010'}
+          def get(u):
+              req=urllib.request.Request(u,headers=UA)
+              with urllib.request.urlopen(req,timeout=30) as r:
+                  return r.status,r.geturl(),r.read().decode('utf-8','ignore')
+          def txt(s):
+              return re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',s))).strip()
+          names=[
+            ('KR-001','인공지능 발전과 신뢰 기반 조성 등에 관한 기본법'),
+            ('KR-002','인공지능 발전과 신뢰 기반 조성 등에 관한 기본법 시행령'),
+            ('KR-003','개인정보 보호법'),
+          ]
+          for sid,name in names:
+              print('\n===',sid,'===')
+              u='https://www.law.go.kr/'+urllib.parse.quote('법령/'+name,safe='/')
+              try:
+                  st,fu,raw=get(u)
+                  m=re.search(r'<iframe[^>]+src="([^"]+)"',raw,re.I)
+                  print('WRAPPER_STATUS=',st,'FINAL=',fu,'IFRAME_FOUND=',bool(m))
+                  if not m: continue
+                  iu=urllib.parse.urljoin('https://www.law.go.kr',html.unescape(m.group(1)))
+                  print('IFRAME_URL=',iu)
+                  st2,fu2,body=get(iu); p=txt(body)
+                  print('BODY_STATUS=',st2,'FINAL=',fu2,'BODY_BYTES=',len(body.encode('utf-8')))
+                  print('BODY_HEAD=',p[:8000])
+              except Exception as e:
+                  print('ERROR=',type(e).__name__,str(e))
+
+          print('\n=== JP-GUIDELINE-LINKS ===')
+          hub='https://www8.cao.go.jp/cstp/ai/ai_guideline/ai_guideline.html'
+          try:
+              st,fu,raw=get(hub)
+              print('HUB_STATUS=',st,'FINAL=',fu)
+              for href,label in re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>',raw,re.I|re.S):
+                  lab=txt(label)
+                  if 'AI事業者ガイドライン' in lab:
+                      u=urllib.parse.urljoin(hub,html.unescape(href))
+                      print('AI_BUSINESS_GUIDELINE=',lab,'URL=',u)
+                      try:
+                          s2,f2,b2=get(u); print('LINK_STATUS=',s2,'FINAL=',f2,'TEXT_HEAD=',txt(b2)[:5000])
+                      except Exception as e: print('LINK_ERROR=',type(e).__name__,str(e))
+          except Exception as e: print('HUB_ERROR=',type(e).__name__,str(e))
+          print('ZIP_OR_ARTIFACT_CREATED=NO')
+          print('BINARY_DOWNLOADS=0')
+          print('AUTO_ADVANCE=NO')
+          PY
