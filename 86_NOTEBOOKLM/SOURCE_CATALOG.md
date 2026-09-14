@@ -1206,14 +1206,16 @@ NOTEBOOK_UPLOAD != LEGAL_VERIFICATION
 - **Authority class:** `OFFICIAL_COMPANY_STATEMENT`
 - **Document ID:** `OpenAI 2026-08-26`
 - **Binding state:** incident disclosure; not court finding
-- **Verification state:** `PARTIAL_OFFICIAL_SOURCE_ACCESS_BLOCKED`
-- **Readiness:** `HOLD`
+- **Verification state:** `CONTENT_IDENTITY_VERIFIED_OFFICIAL_EXACT_BYTE_MATCH_R035`
+- **Readiness:** `READY_PDF`
 - **Currentness warning:** Official-source recheck blocked; repository file PARTIAL.
 - **Official URL:** https://openai.com/index/hugging-face-incident-and-the-road-ahead/
 - **Repository PDF path:** `86_NOTEBOOKLM/downloads/INC-001 [US_GLOBAL] [OpenAI] [COMPANY-INCIDENT-DISCLOSURE] [2026-08-26-PARTIAL] — OpenAI-Hugging-Face Incident-Technical-Report.pdf`
 - **Notebook packs:** `NB08`
 - **Related AI-LAWS research:** `86_NOTEBOOKLM/downloads/NB08_CONTENT_IDENTITY_RESULTS.csv; 86_NOTEBOOKLM/NOTEBOOK_UPLOAD_PLAN.md`
 - **Important limitations:** Repository technical report inspected and hashed; both relevant OpenAI official incident URLs returned HTTP 403 in GitHub runner on 2026-09-14. Do not infer exact official-source identity. Use with independent investigation; incident != liability.
+
+- **R035 exact-byte verification:** Official OpenAI CDN PDF matches repository bytes; SHA-256 `dd635cf6e5f39f0e1f646f08c36549090d77156ed89cbd3d733ed496648cae9c`; `521159` bytes. Source remains a company incident disclosure, not an independent investigation or legal finding.
 
 ### INC-002 — Brief independent investigation of OpenAI/Hugging Face incident
 - **Canonical filename:** `INC-002 [US_GLOBAL] [METR-Redwood Research] [INDEPENDENT-INVESTIGATION] [2026-08-26] — hugging-face-incident-report-aug-2026.pdf`

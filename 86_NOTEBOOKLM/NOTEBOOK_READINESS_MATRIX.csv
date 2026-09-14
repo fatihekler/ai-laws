@@ -7,5 +7,5 @@ NB04,READY_WITH_CURRENTNESS_WARNING,8 VERIFIED REPOSITORY SNAPSHOTS,NONE_FOR_ING
 NB05,READY_URL_WITH_CURRENTNESS_WARNINGS,OFFICIAL URL SETS,NONE_FOR_BASELINE_INGESTION,China/UK/Korea/Japan URL sources; authentic-language/currentness limits preserved.
 NB06,READY_WITH_HOLD,URL+VERIFIED PDF,CL-002 FULL TEXT HOLD FOR CASE LAYER,Core dignity/neurotech sources can be ingested now; hold Girardi/Emotiv until official full text.
 NB07,READY_REUSE_VERIFIED_SOURCES,REUSE NB02/NB03 VERIFIED SOURCES,NONE_FOR_CORE_INGESTION,ISO standards remain metadata-only unless licensed.
-NB08,PARTIAL_READY_WITH_HOLD,INC-002/003 READY; INC-004 URL CONTEXT,INC-001 OFFICIAL-SOURCE RECHECK FOR FULL PACK,"Do not conflate company disclosure, independent investigation, vendor TI, policy essay."
+NB08,READY_MIXED_WITH_SOURCE_CLASS_LABELS,INC-001/002/003 READY; INC-004 POLICY CONTEXT OPTIONAL,NONE_FOR_CORE_INGESTION,"R035 resolved INC-001 exact-byte identity. Keep company disclosure, independent investigation, vendor threat intelligence and policy essay as distinct source classes."
 NB09,READY_METADATA_AND_REQUIREMENT_CANDIDATES,R020 CANDIDATES + METADATA,DESTINATION_ACCEPTANCE_NOT_RUN,Not part of requested core ingestion order.
