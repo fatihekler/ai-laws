@@ -3,7 +3,7 @@
 **UPDATED:** 2026-09-14  
 **REPOSITORY:** `fatihekler/ai-laws`  
 **BRANCH:** `main`  
-**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / LEGAL_RESEARCH_ACTIVE  
+**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE  
 **AUTO_ADVANCE:** NO
 
 ## 1. Project position
@@ -27,6 +27,7 @@ Completed control/research infrastructure includes:
 - deterministic master orchestration state machine;
 - downloaded-PDF source labeling and Notebook routing layer;
 - PDF content-identity / derived-text protocol;
+- NB07 selected-source official recheck and repository-binary partial-identity state;
 - bounded research queue.
 
 ## 2. Completed major units
@@ -36,6 +37,7 @@ AI-LAWS-R001 = COMPLETE_SUPPORTING_RESEARCH_IMPORT
 AI-LAWS-R021 = COMPLETE_SUPPORT_INFRASTRUCTURE
 AI-LAWS-R022 = COMPLETE_SUPPORT_INFRASTRUCTURE
 AI-LAWS-R023 = COMPLETE_SUPPORT_INFRASTRUCTURE
+AI-LAWS-R024 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 ```
 
 ### R001
@@ -72,6 +74,41 @@ PDF_FILENAME_MATCH != CONTENT_IDENTITY_VERIFIED
 REPOSITORY_BINARY_PRESENT != CURRENT_LAW_VERIFIED
 NOTEBOOK_UPLOAD != LEGAL_VERIFICATION
 ```
+
+### R024 — NB07 selected-source validation pilot
+
+R024 processed the controlled NB07 pilot set:
+
+- `EU-001` AI Act;
+- `EU-003` Product Liability Directive;
+- `EU-005` GDPR;
+- `US-003` OMB M-25-21;
+- `US-004` OMB M-25-22;
+- `US-007` NIST AI RMF 1.0;
+- `US-008` NIST GenAI Profile.
+
+Durable outputs/state:
+
+- `86_NOTEBOOKLM/downloads/NB07_CONTENT_IDENTITY_RESULTS.csv`;
+- reconciled `86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_PACK_ASSIGNMENTS.csv`;
+- updated `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`;
+- updated `86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`;
+- `86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R024_NB07_CONTENT_IDENTITY_PILOT_CLOSEOUT_2026-09-14.md`.
+
+Official source identity/currentness was rechecked for all seven selected sources. The official URL/source layer is ready for Notebook ingestion.
+
+The current GitHub connector exposes repository PDF path, Git blob SHA and byte size but not the binary PDF body. Therefore repository copies remain fail-closed:
+
+```text
+R024_SELECTED_SOURCES = 7
+OFFICIAL_SOURCE_IDENTITIES_RECHECKED = 7
+OFFICIAL_URL_DIRECT_READY = 7
+REPOSITORY_BINARY_CONTENT_IDENTITY_VERIFIED = 0
+REPOSITORY_BINARY_CONTENT_IDENTITY_PARTIAL = 7
+REPOSITORY_BINARY_EXACT_BYTE_MATCHES = 0
+```
+
+Do not convert `CONTENT_IDENTITY_PARTIAL` into `CONTENT_IDENTITY_VERIFIED` merely because official-source identity is verified.
 
 ## 3. Prior source-pack acquisition evidence
 
@@ -117,6 +154,16 @@ Do not upload the entire `downloads/` directory blindly.
 
 Use `downloads/DOWNLOADS_REGISTRY.csv` and pack-by-pack ingestion.
 
+NB07 controlled routing is now reconciled to include:
+
+```text
+REQUIRED: EU-001, EU-003
+RECOMMENDED: EU-005, US-003, US-004, US-007, US-008
+METADATA_ONLY: STD-001, STD-002
+```
+
+`US-002` is not part of the controlled NB07 starter set.
+
 ## 5. PDF / Markdown decision
 
 Default:
@@ -128,6 +175,8 @@ DIRECT_OFFICIAL_URL_OR_VERIFIED_PDF > DERIVED_MARKDOWN > MODEL_SUMMARY
 Do not bulk-convert PDFs to Markdown.
 
 Derived Markdown is justified only for bad text extraction, scanned pages/OCR, difficult layout, controlled diffing or page-locator requirements. Every derivative must be explicitly `NONCANONICAL_DERIVATIVE` and preserve provenance/page markers.
+
+R024 created no Markdown derivatives because repository PDF text-layer state could not be established in this execution channel and verified official URLs are available.
 
 ## 6. Model and Notebook firewall
 
@@ -188,14 +237,16 @@ R003 remains unstarted.
 
 ### Notebook/source-pack lane
 
-The next acquisition/ingestion-focused pack identified by the prior sequence is:
+NB07 selected official sources have passed official-source recheck and are ready for a separate explicit Notebook ingestion step using official URLs/source identities.
 
 ```text
-NB07 — LIABILITY / EVIDENCE / FINANCIAL RESPONSIBILITY
-STATE = READY ONLY AFTER EXPLICIT AUTHORIZATION AND SELECTED-PDF CONTENT-IDENTITY CHECKS
+NB07_OFFICIAL_URL_SOURCE_SET = READY
+NB07_REPOSITORY_PDF_UPLOAD_SET = HOLD_FOR_LOCAL_BINARY_CONTENT_CHECK
+NOTEBOOK_UPLOADS = 0
+NOTEBOOK_LOCATOR_TESTS = 0
 ```
 
-Do not auto-start NB07.
+No subsequent pack is auto-selected by R024.
 
 ### Incident corpus
 
@@ -218,7 +269,13 @@ NOTEBOOK_EXECUTION_LEDGER_READY = YES
 DOWNLOADED_BINARY_REGISTRY_READY = YES
 REPOSITORY_PDF_BINARIES_PRESENT = 38
 R023_CONTENT_IDENTITY_VERIFIED_COUNT = 0
-R023_NOTEBOOK_UPLOAD_COUNT = 0
+R024_SELECTED_SOURCE_COUNT = 7
+R024_OFFICIAL_SOURCE_RECHECK_COUNT = 7
+R024_REPOSITORY_BINARY_CONTENT_IDENTITY_VERIFIED = 0
+R024_REPOSITORY_BINARY_CONTENT_IDENTITY_PARTIAL = 7
+R024_OFFICIAL_URL_DIRECT_READY = 7
+NOTEBOOK_UPLOAD_COUNT = 0
+DERIVED_MARKDOWN_CREATED = 0
 BULK_PDF_TO_MARKDOWN = NOT_RECOMMENDED
 GROK_OUTPUT_CANONICAL = FALSE
 NOTEBOOK_OUTPUT_CANONICAL = FALSE
