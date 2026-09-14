@@ -62,3 +62,11 @@ NB09,STD-001,METADATA_ONLY,Cross-repo control-system vocabulary reference
 NB09,STD-002,METADATA_ONLY,Cross-repo risk-management vocabulary reference
 NB09,EU-001,RECOMMENDED,Legal requirement candidate source
 NB09,INT-001,RECOMMENDED,Human-rights/democracy/rule-of-law candidate source
+NB05,CN-001,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
+NB05,CN-002,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
+NB05,CN-003,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
+NB05,CN-004,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
+NB05,CN-005,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
+NB05,CN-006,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
+NB05,CN-007,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008
+NB05,CN-008,REQUIRED,China central primary-source baseline; authentic Chinese official URL; R008

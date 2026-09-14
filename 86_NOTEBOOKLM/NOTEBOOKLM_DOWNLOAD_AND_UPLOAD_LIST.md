@@ -222,6 +222,28 @@ The YargıGPT API failure records are not court-law sources and must not be load
 
 ---
 
+## E2. NB05 — Asia and Comparative / China URL source set
+
+R008 established an eight-source China primary-source baseline. Use official URLs directly; no repository binary set exists. Authentic Chinese text controls and translation/currentness caveats remain mandatory.
+
+- `CN-001` https://www.cac.gov.cn/2022-01/04/c_1642894606364259.htm
+- `CN-002` https://www.cac.gov.cn/2022-12/11/c_1672221949354811.htm
+- `CN-003` https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm
+- `CN-004` https://flk.npc.gov.cn/law-search/search/flfgDetails?bbbs=ff8081817b6472a3017b656cc2040044
+- `CN-005` https://flk.npc.gov.cn/law-search/search/flfgDetails?bbbs=ff80818179f5e0800179f885c7e70392
+- `CN-006` https://flk.npc.gov.cn/law-search/search/flfgDetails?bbbs=021e7d7684474107b8f3febbb1c4f8b5
+- `CN-007` https://www.gov.cn/zhengce/content/202409/content_6977766.htm
+- `CN-008` https://www.cac.gov.cn/2025-03/14/c_1743654684782215.htm
+
+```text
+NB05_CN_OFFICIAL_URL_SOURCE_SET = READY_8
+REPOSITORY_BINARY_SET = NONE
+NOTEBOOK_UPLOAD = NOT_RUN
+PRIMARY_SOURCE_RECHECK_REQUIRED_BEFORE_MATERIAL_CLAIM = YES
+```
+
+---
+
 ## F. NB06 — Human sovereignty / neurotechnology
 
 Primary source set:
