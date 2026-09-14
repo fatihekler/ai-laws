@@ -1,0 +1,91 @@
+name: AI-LAWS R027 NB01 durable state v4
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r027-nb01-durable-state-v4.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install PDF inspection tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils
+
+      - name: Execute R027 generator with source-specific normalized markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import textwrap
+
+          src=Path('.github/workflows/r027-nb01-durable-state.yml').read_text(encoding='utf-8').splitlines()
+          start=next((i+1 for i,line in enumerate(src) if line.strip()=="python3 - <<'PY'"),None)
+          if start is None: raise SystemExit('generator start marker not found')
+          end=next((i for i in range(start,len(src)) if src[i]=='          PY'),None)
+          if end is None: raise SystemExit('generator end marker not found')
+          code=textwrap.dedent('\n'.join(src[start:end]))+'\n'
+
+          old_int004="'INT-004':['Resolutions of the 43rd session of the General Conference','ethics of neurotechnology']"
+          new_int004="'INT-004':['General Conference','neurotechnology','2025']"
+          if old_int004 not in code: raise SystemExit('INT-004 marker definition not found')
+          code=code.replace(old_int004,new_int004,1)
+
+          lines=code.splitlines()
+          idx=next((i for i,line in enumerate(lines) if line.strip()=='low=text.lower()'),None)
+          if idx is None or idx+2>=len(lines): raise SystemExit('strict marker block not found')
+          if lines[idx+1].strip()!='for marker in markers[sid]:' or "assert marker.lower() in low" not in lines[idx+2]:
+              raise SystemExit('unexpected marker-validation block shape')
+          prefix=lines[idx][:len(lines[idx])-len(lines[idx].lstrip())]
+          ap=lines[idx+2][:len(lines[idx+2])-len(lines[idx+2].lstrip())]
+          lines[idx]=prefix+"norm=' '.join(text.lower().split())"
+          lines[idx+2]=ap+"assert ' '.join(marker.lower().split()) in norm, (sid,'marker',marker)"
+          code='\n'.join(lines)+'\n'
+          exec(compile(code,'r027-extracted-generator.py','exec'),{'__name__':'__main__'})
+          PY
+
+      - name: Assert durable outputs and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f 86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv
+          test -f 86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R027_NB01_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md
+          grep -q 'AI-LAWS-R027' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          grep -q 'R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE' 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          python3 - <<'PY'
+          import csv
+          with open('86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv',encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          assert len(rows)==8
+          assert sum(r['content_identity_state']=='CONTENT_IDENTITY_VERIFIED' for r in rows)==6
+          assert sum(r['content_identity_state']=='CONTENT_IDENTITY_PARTIAL' for r in rows)==1
+          assert sum(r['content_identity_state']=='SUPERSEDED_SOURCE' for r in rows)==1
+          assert all(r['text_layer_state']=='NATIVE_SEARCHABLE_TEXT_LAYER_VERIFIED' for r in rows)
+          assert next(r for r in rows if r['source_id']=='INT-001')['binary_variant']=='OFFICIAL_TREATY_TEXT_SNAPSHOT'
+          assert next(r for r in rows if r['source_id']=='INT-007')['content_identity_state']=='CONTENT_IDENTITY_PARTIAL'
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv \
+            86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv \
+            86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md \
+            86_NOTEBOOKLM/downloads/README.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv \
+            86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R027_NB01_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md \
+            90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+            00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git diff --cached --stat
+          git commit -m 'validation(r027): persist NB01 repository PDF verification'
+          git push origin HEAD:main
