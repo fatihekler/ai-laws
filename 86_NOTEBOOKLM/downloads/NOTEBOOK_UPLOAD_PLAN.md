@@ -22,6 +22,8 @@ CONTENT_IDENTITY_PARTIAL = 1  # INT-007 outcome bundle, not exact A/RES/79/1 fil
 SUPERSEDED_SOURCE = 1         # INT-004 legacy 43GC volume
 DERIVED_MARKDOWN_REQUIRED = 0
 NOTEBOOK_UPLOADS = 0
+INT007_EXACT_OFFICIAL_A_RES_79_1_SOURCE = VERIFIED_R032
+INT004_CERTIFIED_COPY_R032_ACCESS = BLOCKED_403_PRIOR_PIN_PRESERVED
 ```
 
 Key corrections: `INT-001` repository PDF is the 12-page **CETS 225 treaty text**, not a treaty-status-page snapshot; live Treaty Office status remains mandatory for signatures/ratifications/reservations/declarations. `INT-005` is an OECD Council Recommendation PDF, not a webpage print. `INT-007` is a 64-page Summit of the Future outcome-document bundle containing the Pact and Global Digital Compact, but the extracted PDF does not carry the exact `A/RES/79/1` identifier; use the official adopted source for primary resolution identity. `INT-004` is verified as the legacy 43GC resolutions volume and remains superseded for current primary use by the certified-copy UNESCO URL.
@@ -32,7 +34,7 @@ Key corrections: `INT-001` repository PDF is the 12-page **CETS 225 treaty text*
 - `INT-002` CETS 225 Explanatory Report — URL preferred; PDF fallback after content check.
 - `INT-005` OECD AI Principles — live official page preferred.
 - `INT-006` A/RES/78/265 — UN URL preferred.
-- `INT-007` Pact for the Future / Global Digital Compact — repository PDF is a verified outcome-document bundle but not the exact A/RES/79/1 file; UN official adopted source required for primary resolution identity.
+- `INT-007` Pact for the Future / Global Digital Compact — repository PDF remains a verified supporting outcome-document bundle, but R032 resolved the exact adopted source at `https://docs.un.org/en/A/RES/79/1` and official 56-page PDF `https://documents.un.org/doc/undoc/gen/n24/272/22/pdf/n2427222.pdf` (SHA-256 `0c3968d0ce8d55cf107309794adea6879d70f9aea60e6d6d64e3a8da4b028336`). Use the official source for primary resolution identity.
 - `INT-008` Governing AI for Humanity — UN official URL preferred; repository binary not preferred due reproduction/right-state concerns.
 - `US-007` NIST AI RMF and `US-008` NIST GenAI Profile may be used as supporting framework sources where assigned, but are not binding law.
 
@@ -42,7 +44,7 @@ Key corrections: `INT-001` repository PDF is the 12-page **CETS 225 treaty text*
 
 ### Do not upload as current primary source
 
-- repository `INT-004` legacy 43rd General Conference resolutions PDF. Replace the primary Notebook source with the current certified-copy UNESCO source recorded in the manifest.
+- repository `INT-004` legacy 43rd General Conference resolutions PDF. Replace the primary Notebook source with the current certified-copy UNESCO source recorded in the manifest. R032 GitHub-runner access to the certified-copy URL returned HTTP 403; preserve the prior pin and do not infer source invalidity from the runner access block.
 
 ## NB02 — European Union AI Law
 

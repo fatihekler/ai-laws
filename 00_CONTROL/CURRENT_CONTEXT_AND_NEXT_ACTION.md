@@ -3,7 +3,7 @@
 **UPDATED:** 2026-09-14  
 **REPOSITORY:** `fatihekler/ai-laws`  
 **BRANCH:** `main`  
-**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / R028_NB03_REPOSITORY_PDF_VALIDATION_COMPLETE / R029_NB08_REPOSITORY_INCIDENT_SOURCE_VALIDATION_COMPLETE / R030_NB02_REPOSITORY_PDF_VALIDATION_COMPLETE / R031_NB03_RESIDUAL_SOURCE_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE
+**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / R028_NB03_REPOSITORY_PDF_VALIDATION_COMPLETE / R029_NB08_REPOSITORY_INCIDENT_SOURCE_VALIDATION_COMPLETE / R030_NB02_REPOSITORY_PDF_VALIDATION_COMPLETE / R031_NB03_RESIDUAL_SOURCE_VALIDATION_COMPLETE / R032_NB01_RESIDUAL_OFFICIAL_SOURCE_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE
 **AUTO_ADVANCE:** NO
 
 ## 1. Project position
@@ -46,6 +46,7 @@ AI-LAWS-R028 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R029 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R030 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R031 = COMPLETE_SUPPORT_SOURCE_VALIDATION
+AI-LAWS-R032 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 ```
 
 ### R001
@@ -195,6 +196,26 @@ NB03_NOTEBOOK_UPLOADS = 0
 
 Durable output: `86_NOTEBOOKLM/downloads/NB03_RESIDUAL_VERIFICATION_RESULTS.csv` plus registry/results/ledger/upload-plan/download-list/queue reconciliation.
 
+### R032 — NB01 residual official-source validation
+
+R032 resolved the exact official `A/RES/79/1` source while preserving the correct legacy/supporting boundaries for the existing NB01 repository files.
+
+```text
+INT007_OFFICIAL_VIEWER = https://docs.un.org/en/A/RES/79/1
+INT007_OFFICIAL_PDF = https://documents.un.org/doc/undoc/gen/n24/272/22/pdf/n2427222.pdf
+INT007_OFFICIAL_PDF_PAGES = 56
+INT007_OFFICIAL_PDF_BYTES = 649956
+INT007_OFFICIAL_PDF_SHA256 = 0c3968d0ce8d55cf107309794adea6879d70f9aea60e6d6d64e3a8da4b028336
+INT007_REPOSITORY_BUNDLE_STATE = CONTENT_IDENTITY_PARTIAL_SUPPORTING_ONLY
+INT004_CERTIFIED_COPY_PRIMARY_PIN = PRESERVED
+INT004_R032_GITHUB_ACCESS = HTTP_403
+INT004_REPOSITORY_43GC_STATE = SUPERSEDED_SOURCE
+NOTEBOOK_UPLOADS = 0
+DERIVED_MARKDOWN_CREATED = 0
+```
+
+No new UN/UNESCO binary was committed. Exact official URLs and verification metadata were recorded instead.
+
 ### R029 — NB08 repository incident-source validation
 
 R029 inspected `INC-001..INC-004` inside GitHub and rechecked their direct source/original layer without starting the R019 incident corpus.
@@ -279,7 +300,7 @@ OFFICIAL_URL_SOURCE_VERIFIED != REPOSITORY_PDF_BODY_VERIFIED
 
 ### NB01 — Global AI Governance
 
-`NB-BATCH-NB01-20260913-001` completed source-rights/acquisition-state reconciliation. The user later added repository PDFs; R027 validated the eight core `INT-001..INT-008` binaries and corrected their repository routing semantics. Six are `CONTENT_IDENTITY_VERIFIED`, `INT-007` is `CONTENT_IDENTITY_PARTIAL` as an outcome-document bundle rather than the exact resolution file, and `INT-004` is a genuine but superseded legacy source for primary use.
+`NB-BATCH-NB01-20260913-001` completed source-rights/acquisition-state reconciliation. The user later added repository PDFs; R027 validated the eight core `INT-001..INT-008` binaries and corrected their repository routing semantics. Six are `CONTENT_IDENTITY_VERIFIED`, `INT-007` is `CONTENT_IDENTITY_PARTIAL` as an outcome-document bundle rather than the exact resolution file, and `INT-004` is a genuine but superseded legacy source for primary use. R032 subsequently resolved the exact official `A/RES/79/1` viewer/PDF chain (56 pages; SHA-256 `0c3968d0ce8d55cf107309794adea6879d70f9aea60e6d6d64e3a8da4b028336`) while preserving the repository outcome bundle as supporting-only. The `INT-004` certified-copy pin remains authoritative, but R032 GitHub-runner access returned HTTP 403, so no fresh certified-copy content-body verification is claimed.
 
 ### NB03 — United States
 
@@ -333,6 +354,9 @@ NB01_INT004_PRIMARY_STATE = SUPERSEDED_SOURCE_USE_CERTIFIED_COPY_URL
 NB01_NATIVE_TEXT_LAYER = 8 / 8
 NB01_DERIVED_MARKDOWN_REQUIRED = 0
 NB01_NOTEBOOK_UPLOADS = 0
+NB01_INT007_EXACT_OFFICIAL_A_RES_79_1_SOURCE = VERIFIED_R032
+NB01_INT007_OFFICIAL_PDF_SHA256 = 0c3968d0ce8d55cf107309794adea6879d70f9aea60e6d6d64e3a8da4b028336
+NB01_INT004_R032_FRESH_ACCESS = BLOCKED_403_PRIOR_PIN_PRESERVED
 ```
 
 Use the source-specific routing in `DOWNLOADS_REGISTRY.csv`; dynamic/current official URLs remain authoritative for current status.
@@ -485,7 +509,7 @@ The controlled NB02 official URL set is now ready for a separate Notebook ingest
 
 NB07 official sources also remain ready for a separate Notebook ingestion step.
 
-R029 completed the NB08 repository incident-source classification. The primary PDF packs NB01, NB02, NB03, NB04 and NB08 now have repository-level validation results. NB02 is `10/10` exact official EUR-Lex bytes; NB03 has seven exact-official PDF matches plus the intentionally supporting-only `US-001` White House HTML-print snapshot; NB05 has no dedicated primary binary set. No Notebook ingestion or substantive incident/legal analysis is auto-started.
+R029 completed the NB08 repository incident-source classification. The primary PDF packs NB01, NB02, NB03, NB04 and NB08 now have repository-level validation results. NB02 is `10/10` exact official EUR-Lex bytes; NB03 has seven exact-official PDF matches plus the intentionally supporting-only `US-001` White House HTML-print snapshot; NB05 has no dedicated primary binary set. No Notebook ingestion or substantive incident/legal analysis is auto-started. R032 also resolved the exact official `A/RES/79/1` source for NB01; the repository `INT-007` bundle remains supporting-only, and `INT-004` continues to use the prior UNESCO certified-copy pin with current GitHub-runner access state HTTP 403.
 
 ### Türkiye source-processing lane
 
@@ -542,6 +566,10 @@ R030_NB02_NATIVE_TEXT_LAYER_VERIFIED = 10
 R031_NB03_US005_OFFICIAL_GOVINFO_EXACT_BYTE_MATCH = YES
 R031_NB03_OFFICIAL_EXACT_BYTE_MATCH_TOTAL = 7
 R031_NB03_US001_SUPPORTING_PRINT_STATE_PRESERVED = YES
+R032_NB01_INT007_EXACT_OFFICIAL_SOURCE_VERIFIED = YES
+R032_NB01_INT007_OFFICIAL_SHA256 = 0c3968d0ce8d55cf107309794adea6879d70f9aea60e6d6d64e3a8da4b028336
+R032_NB01_INT004_FRESH_GITHUB_ACCESS = HTTP_403
+R032_NEW_THIRD_PARTY_BINARIES_VENDORED = 0
 R029_NB08_REPOSITORY_PDFS_INSPECTED = 4
 R029_NB08_CONTENT_IDENTITY_VERIFIED = 2
 R029_NB08_CONTENT_IDENTITY_PARTIAL = 2

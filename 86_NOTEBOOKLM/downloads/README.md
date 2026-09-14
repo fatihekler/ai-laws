@@ -158,7 +158,7 @@ R027 verified that the repository PDF is the **12-page treaty text itself**, not
 
 ### INT-004 — UNESCO Neurotechnology
 
-The repository file named `Recommendation on the Ethics of Neurotechnology (2025)  43rd General Conference resolutions source.pdf` is a legacy source variant. The current preferred primary Notebook source is UNESCO's certified-copy record `pf0000397812_eng` identified in the acquisition manifest and NB06 closeout. Do not load the legacy PDF as the primary/current source.
+The repository file named `Recommendation on the Ethics of Neurotechnology (2025)  43rd General Conference resolutions source.pdf` is a legacy source variant. The current preferred primary Notebook source is UNESCO's certified-copy record `pf0000397812_eng` identified in the acquisition manifest and NB06 closeout. Do not load the legacy PDF as the primary/current source. R032 rechecked the certified-copy URL from GitHub; the runner received HTTP 403 on 2026-09-14. This access result does not invalidate the prior official certified-copy pin, but fresh R032 content-body verification is not claimed while access is blocked.
 
 ### INT-005 — OECD AI Principles
 
@@ -166,7 +166,7 @@ R027 verified the repository PDF as the 12-page `Recommendation of the Council o
 
 ### INT-007 — Pact / Global Digital Compact
 
-R027 verified the repository file as a 64-page Summit of the Future outcome-document bundle containing the Pact for the Future and Global Digital Compact. The extracted text does not contain the exact `A/RES/79/1` identifier, so it is `CONTENT_IDENTITY_PARTIAL` for the manifest source and must not replace the exact adopted-resolution source.
+R027 verified the repository file as a 64-page Summit of the Future outcome-document bundle containing the Pact for the Future and Global Digital Compact. The extracted text does not contain the exact `A/RES/79/1` identifier, so it is `CONTENT_IDENTITY_PARTIAL` for the manifest source and must not replace the exact adopted-resolution source. R032 resolved the exact adopted source through `https://docs.un.org/en/A/RES/79/1` to the official 56-page PDF `https://documents.un.org/doc/undoc/gen/n24/272/22/pdf/n2427222.pdf`; SHA-256 `0c3968d0ce8d55cf107309794adea6879d70f9aea60e6d6d64e3a8da4b028336`. Use that official source for primary resolution identity; keep the repository bundle supporting-only.
 
 ### EU-001 — AI Act
 

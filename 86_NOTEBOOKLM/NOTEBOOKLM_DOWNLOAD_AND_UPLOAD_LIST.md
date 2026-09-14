@@ -96,10 +96,11 @@ All eight have native searchable text layers; no Markdown derivative is required
   https://unesdoc.unesco.org/ark:/48223/pf0000381137  
   **Use state:** PDF eligible after content identity/licence check; nonbinding soft law.
 
-- `INT-004` Recommendation on the Ethics of Neurotechnology  
-  **Current preferred certified-copy source:**  
-  https://unesdoc.unesco.org/ark:/48223/pf0000397812_eng  
+- `INT-004` Recommendation on the Ethics of Neurotechnology
+  **Current preferred certified-copy source:**
+  https://unesdoc.unesco.org/ark:/48223/pf0000397812_eng
   **Use state:** official certified-copy URL preferred. The repository PDF derived from the 43rd General Conference resolutions source is a legacy source variant and must not be loaded as the current primary source.
+  **R032 access state:** GitHub runner returned HTTP 403 on 2026-09-14; prior official certified-copy pin preserved; fresh R032 content-body verification not claimed while blocked.
 
 ### OECD
 
@@ -113,9 +114,11 @@ All eight have native searchable text layers; no Markdown derivative is required
   https://digitallibrary.un.org/record/4043244/  
   **Use state:** official URL preferred.
 
-- `INT-007` Pact for the Future / Global Digital Compact — A/RES/79/1 source family  
-  https://www.un.org/pact-for-the-future/en  
-  **R027 repository file state:** 64-page Summit of the Future outcome-document bundle verified; exact `A/RES/79/1` identifier is absent from the PDF, so use the adopted official source for primary resolution identity.
+- `INT-007` Pact for the Future / Global Digital Compact — A/RES/79/1
+  **Official viewer:** https://docs.un.org/en/A/RES/79/1
+  **Official PDF:** https://documents.un.org/doc/undoc/gen/n24/272/22/pdf/n2427222.pdf
+  **R032 official PDF state:** 56 pages; 649956 bytes; SHA-256 `0c3968d0ce8d55cf107309794adea6879d70f9aea60e6d6d64e3a8da4b028336`; `A/RES/79/1`, Pact for the Future and Global Digital Compact markers verified.
+  **Repository file state:** 64-page Summit outcome-document bundle remains `CONTENT_IDENTITY_PARTIAL` relative to the exact resolution and is supporting-only.
 
 - `INT-008` Governing AI for Humanity — UN Advisory Body final report  
   https://digitallibrary.un.org/record/4062495  
