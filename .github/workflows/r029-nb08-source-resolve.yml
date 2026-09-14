@@ -1,0 +1,87 @@
+name: AI-LAWS R029 NB08 source resolver
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r029-nb08-source-resolve.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Resolve official/original source counterparts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv, hashlib, html, re, subprocess, urllib.parse
+          from pathlib import Path
+          
+          d=Path('86_NOTEBOOKLM/downloads')
+          wanted=['INC-001','INC-002','INC-003','INC-004']
+          with (d/'DOWNLOADS_REGISTRY.csv').open(newline='',encoding='utf-8') as f:
+              reg={r['manifest_source_id']:r for r in csv.DictReader(f) if r['manifest_source_id'] in wanted}
+          with Path('86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv').open(newline='',encoding='utf-8') as f:
+              man={r['source_id']:r for r in csv.DictReader(f) if r['source_id'] in wanted}
+          
+          def run(cmd): return subprocess.check_output(cmd,text=True,errors='replace')
+          def get(url,name):
+              out=Path('/tmp')/name
+              cmd=['curl','-L','--silent','--show-error','--fail-with-body','--connect-timeout','15','--max-time','90','--retry','1','-A','Mozilla/5.0 AI-LAWS source verification','-o',str(out),'-w','%{http_code}|%{content_type}|%{url_effective}',url]
+              try:
+                  meta=run(cmd).strip(); b=out.read_bytes(); return meta,b,out
+              except subprocess.CalledProcessError as e:
+                  return f'FAILED:{e.returncode}',b'',out
+          def compare(sid,url,label):
+              meta,b,out=get(url,sid+'-'+label.replace('/','_'))
+              rb=(d/reg[sid]['repo_filename']).read_bytes()
+              print('COMPARE|%s|%s|url=%s|curl=%s|bytes=%d|sha256=%s|repo_sha256=%s|exact=%s' % (
+                  sid,label,url,meta,len(b),hashlib.sha256(b).hexdigest() if b else 'NONE',hashlib.sha256(rb).hexdigest(),'YES' if b and b==rb else 'NO'))
+              return meta,b,out
+          
+          # INC-003: direct PDF link discovered on the official Anthropic page in the inspection run.
+          compare('INC-003','https://www-cdn.anthropic.com/e50be2e51e7695dc4b1366a37a245a597377d3b5/Anthropic-Detecting-and-countering-091026.pdf','ANTHROPIC_DIRECT_REPORT_PDF')
+          
+          # INC-002: inspect every relevant link from the original Redwood Research page.
+          meta,b,out=get(man['INC-002']['official_url'],'redwood.html')
+          raw=b.decode('utf-8','replace') if b else ''
+          links=[]
+          for href in re.findall(r'href=["\']([^"\']+)["\']',raw,flags=re.I):
+              u=urllib.parse.urljoin(man['INC-002']['official_url'],html.unescape(href))
+              if any(k in u.lower() for k in ['metr','google','docs','drive','pdf','hugging-face','hugging_face','incident']):
+                  if u not in links: links.append(u)
+          print('REDWOOD|curl=%s|relevant_links=%d' % (meta,len(links)))
+          for i,u in enumerate(links[:40],1): print('REDWOOD_LINK|%02d|%s' % (i,u))
+          
+          # Try likely direct source candidates found in-page; only compare responses that actually resolve.
+          for i,u in enumerate(links[:40],1):
+              if any(k in u.lower() for k in ['docs.google.com','drive.google.com','.pdf','metr.org']):
+                  m2,b2,o2=get(u,'redwood-candidate-%02d'%i)
+                  print('REDWOOD_CANDIDATE|%02d|url=%s|curl=%s|bytes=%d|sha256=%s|exact_repo=%s' % (
+                      i,u,m2,len(b2),hashlib.sha256(b2).hexdigest() if b2 else 'NONE','YES' if b2 and b2==(d/reg['INC-002']['repo_filename']).read_bytes() else 'NO'))
+          
+          # INC-001: retry official OpenAI identity endpoint variants without using mirrors/proxies.
+          base=man['INC-001']['official_url'].rstrip('/')
+          variants=[base+'/',base,base+'/?output=1',base+'?output=1']
+          for i,u in enumerate(variants,1):
+              m,bv,o=get(u,'openai-%d'%i)
+              print('OPENAI_VARIANT|%d|url=%s|curl=%s|bytes=%d|sha256=%s' % (i,u,m,len(bv),hashlib.sha256(bv).hexdigest() if bv else 'NONE'))
+          smeta,sb,so=get('https://openai.com/sitemap.xml','openai-sitemap.xml')
+          st=sb.decode('utf-8','replace') if sb else ''
+          hits=[x for x in re.findall(r'https?://[^<\s]+',st) if 'hugging-face-incident' in x.lower()]
+          print('OPENAI_SITEMAP|curl=%s|hits=%s' % (smeta,';'.join(hits[:20]) if hits else 'NONE'))
+          
+          # INC-004 is intentionally an HTML policy essay. Confirm live title/date markers only.
+          m4,b4,o4=get(man['INC-004']['official_url'],'inc004-live.html')
+          t4=re.sub(r'<[^>]+>',' ',b4.decode('utf-8','replace')) if b4 else ''
+          t4=' '.join(html.unescape(t4).split())
+          print('INC004_LIVE|curl=%s|title=%s|september_2026=%s|not_pdf_context=YES' % (
+              m4,'YES' if 'We Must Pace the Frontier' in t4 else 'NO','YES' if 'September 2026' in t4 else 'NO'))
+          PY
+      - name: Confirm no artifact
+        run: echo 'ZIP_OR_ARTIFACT_CREATED=NO'
