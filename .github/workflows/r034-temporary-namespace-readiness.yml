@@ -31,6 +31,13 @@ jobs:
         run: |
           set -euo pipefail
           python3 .github/scripts/r034_namespace_readiness.py
+          sed -i 's/\r$//' \
+            86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv \
+            86_NOTEBOOKLM/downloads/RENAME_MANIFEST.csv \
+            86_NOTEBOOKLM/downloads/ORIGINAL_FILENAME_INDEX.csv \
+            86_NOTEBOOKLM/downloads/NOTEBOOK_SOURCE_LABELS.csv \
+            86_NOTEBOOKLM/downloads/MANUAL_DOWNLOAD_AND_UPLOAD_REQUESTS.csv \
+            86_NOTEBOOKLM/NOTEBOOK_READINESS_MATRIX.csv
           git diff --check
           test "$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*.pdf' | wc -l)" -eq 38
           test "$(awk -F, 'NR>1 && $10=="YES" {n++} END {print n+0}' 86_NOTEBOOKLM/downloads/RENAME_MANIFEST.csv)" -eq 0
