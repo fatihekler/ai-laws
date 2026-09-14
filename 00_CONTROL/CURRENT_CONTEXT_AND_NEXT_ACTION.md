@@ -385,7 +385,10 @@ Use the exact official EUR-Lex URLs and preserve each source's binding/applicati
 
 ```text
 NB07_OFFICIAL_URL_SOURCE_SET = READY
-NB07_REPOSITORY_PDF_UPLOAD_SET = HOLD_FOR_LOCAL_BINARY_CONTENT_CHECK
+NB07_SELECTED_REPOSITORY_PDFS_CONTENT_IDENTITY_VERIFIED = 7 / 7
+NB07_SELECTED_REPOSITORY_PDFS_EXACT_OFFICIAL_BYTE_MATCH = 7 / 7
+NB07_REPOSITORY_PDF_UPLOAD_SET = ELIGIBLE_AS_VERIFIED_OFFICIAL_SNAPSHOTS_WITH_SOURCE_SPECIFIC_DATE_STATE_LABELS
+NB07_NOTEBOOK_UPLOADS = 0
 ```
 
 ### NB04 current ingest state
@@ -482,7 +485,7 @@ The controlled NB02 official URL set is now ready for a separate Notebook ingest
 
 NB07 official sources also remain ready for a separate Notebook ingestion step.
 
-R029 completed the NB08 repository incident-source classification. The current 38-PDF primary binary lanes NB01, NB03, NB04 and NB08 now have repository-level validation results; NB02 remains official-URL ready but repository PDF body validation is still partial, and NB05 has no dedicated primary binary set. No Notebook ingestion or substantive incident/legal analysis is auto-started.
+R029 completed the NB08 repository incident-source classification. The primary PDF packs NB01, NB02, NB03, NB04 and NB08 now have repository-level validation results. NB02 is `10/10` exact official EUR-Lex bytes; NB03 has seven exact-official PDF matches plus the intentionally supporting-only `US-001` White House HTML-print snapshot; NB05 has no dedicated primary binary set. No Notebook ingestion or substantive incident/legal analysis is auto-started.
 
 ### Türkiye source-processing lane
 
