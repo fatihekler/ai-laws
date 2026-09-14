@@ -1,4 +1,4 @@
-name: AI-LAWS R007 Utah and Texas detail probe
+name: AI-LAWS R007 Utah current-version detail probe
 
 on:
   push:
@@ -13,39 +13,28 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Resolve current official state-law detail
+      - name: Resolve Utah current-version body
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import urllib.request,re
-          def get(url):
-              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R007'})
-              with urllib.request.urlopen(req,timeout=30) as r:
-                  return r.geturl(),r.status,r.headers.get('content-type',''),r.read()
           urls=[
-            'https://le.utah.gov/xcode/Title13/Chapter72/13-72-S101.html',
-            'https://le.utah.gov/xcode/Title13/Chapter72/13-72.html',
-            'https://le.utah.gov/xcode/Title13/Chapter72/C13-72_2026050620260506.pdf',
-            'https://le.utah.gov/xcode/Title13/Chapter72/C13-72_20260507.pdf',
-            'https://statutes.capitol.texas.gov/Docs/BC/htm/BC.552.htm',
+            'https://le.utah.gov/xcode/Title13/Chapter72/C13-72-S101_2026050620260506.html',
+            'https://le.utah.gov/xcode/Title13/Chapter72/13-72-S101_bills.html',
           ]
           for u in urls:
               print('\nURL=',u)
+              req=urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0 AI-LAWS-R007'})
               try:
-                  final,status,ctype,b=get(u)
-                  print('FINAL=',final,'STATUS=',status,'TYPE=',ctype,'BYTES=',len(b))
-                  if 'html' in ctype.lower():
-                      t=b.decode('utf-8','ignore')
+                  with urllib.request.urlopen(req,timeout=30) as r:
+                      b=r.read(); t=b.decode('utf-8','ignore')
+                      print('FINAL=',r.geturl(),'STATUS=',r.status,'TYPE=',r.headers.get('content-type'),'BYTES=',len(b))
                       print('TITLE=',re.findall(r'<title[^>]*>(.*?)</title>',t,re.I|re.S)[:1])
-                      for pat in ['Effective','5/6/2026','2026','Artificial Intelligence Policy Act','Artificial Intelligence','Chapter 552','13-72-101','generative artificial intelligence']:
-                          hits=[m.start() for m in re.finditer(re.escape(pat),t,re.I)]
-                          print(pat,'COUNT=',len(hits),'SAMPLE=',[re.sub(r'\s+',' ',t[max(0,i-120):i+260]) for i in hits[:2]])
-                      print('PDF_LINKS=',re.findall(r'href=[\"\']([^\"\']+\.pdf[^\"\']*)',t,re.I)[:20])
-                      print('SCRIPT_SRCS=',re.findall(r'<script[^>]+src=[\"\']([^\"\']+)',t,re.I)[:20])
-                  else:
-                      import hashlib
-                      print('SHA256=',hashlib.sha256(b).hexdigest())
+                      clean=re.sub(r'<[^>]+>',' ',t); clean=re.sub(r'\s+',' ',clean)
+                      for pat in ['Effective 5/6/2026','Effective','Artificial Intelligence Policy Act','13-72-101','Definitions','generative artificial intelligence','HB 452','2026']:
+                          i=clean.lower().find(pat.lower())
+                          print(pat,'FOUND=',i>=0,'SAMPLE=',clean[max(0,i-180):i+500] if i>=0 else '')
               except Exception as e:
                   print('ERROR=',type(e).__name__,str(e))
           PY
