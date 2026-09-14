@@ -1,4 +1,4 @@
-name: R014 temporary evidence procedure source probe
+name: R014 targeted current FRCP verification
 
 on:
   push:
@@ -11,96 +11,51 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     steps:
       - name: Checkout exact source state
         uses: actions/checkout@v4
 
-      - name: Extract controlled EU evidence and procedure signals
+      - name: Verify official current FRCP page and exact PDF
         shell: bash
         run: |
           set -euo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y -qq poppler-utils >/dev/null
-          ai="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*consolidated AI Act*.pdf' -print -quit)"
-          pld="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*Product Liability Directive*.pdf' -print -quit)"
-          gdpr="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname 'GDPR.pdf' -print -quit)"
-          test -n "$ai" && test -n "$pld" && test -n "$gdpr"
-          pdftotext -layout "$ai" /tmp/ai.txt
-          pdftotext -layout "$pld" /tmp/pld.txt
-          pdftotext -layout "$gdpr" /tmp/gdpr.txt
-          echo '===== SNAPSHOT HASHES ====='
-          sha256sum "$ai" "$pld" "$gdpr"
-          echo '===== AI ACT LOGGING / RECORD KEEPING ====='
-          grep -inE -C 6 'Article 12|Record-keeping|logs automatically generated|automatically generated logs|keep the logs|retain the logs|logging capabilities|Article 19|Article 26' /tmp/ai.txt | head -n 320 || true
-          echo '===== PLD DISCLOSURE / BURDEN / PRESUMPTIONS ====='
-          grep -inE -C 8 'Article 9|Disclosure of evidence|Article 10|Burden of proof|presumed|presumption|failed to disclose|technical or scientific complexity' /tmp/pld.txt | head -n 360 || true
-          echo '===== GDPR ACCOUNTABILITY / ACCESS / RECORDS ====='
-          grep -inE -C 6 'accountability|Article 15|right of access|Article 30|records of processing activities|demonstrate compliance' /tmp/gdpr.txt | head -n 320 || true
-
-      - name: Probe official US Courts current FRCP source
-        shell: bash
-        run: |
-          set -u
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils >/dev/null
-          for url in \
-            'https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-civil-procedure' \
-            'https://www.uscourts.gov/rules-policies/current-rules-practice-procedure/federal-rules-civil-procedure'; do
-            body="$(mktemp)"; hdr="$(mktemp)"
-            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
-            ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
-            bytes="$(wc -c < "$body" | tr -d ' ')"
-            echo "USCOURTS_PAGE=${url}"
-            echo "HTTP_STATUS=${status}"
-            echo "CONTENT_TYPE=${ctype}"
-            echo "BYTE_SIZE=${bytes}"
-            if [ "$bytes" -gt 0 ]; then
-              echo 'PDF_LINKS:'
-              grep -Eio 'href="[^"]+\.pdf([?#][^"]*)?"' "$body" | sed -E 's/^href="//; s/"$//' | head -n 40 || true
-              tr '\n' ' ' < "$body" | sed -E 's/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,180}(Federal Rules of Civil Procedure|December 1|effective|amendment).{0,360}' | head -n 20 || true
-            fi
-            rm -f "$body" "$hdr"
-            echo '---'
-          done
-
-      - name: Resolve and inspect current FRCP PDF from official page
-        shell: bash
-        run: |
-          set -u
           page='https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-civil-procedure'
-          body="$(mktemp)"
-          curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -o "$body" "$page" || true
-          href="$(grep -Eio 'href="[^"]+\.pdf([?#][^"]*)?"' "$body" | sed -E 's/^href="//; s/"$//' | grep -Ei 'civil|procedure|rules' | head -n 1 || true)"
-          echo "DISCOVERED_HREF=${href}"
-          if [ -n "$href" ]; then
-            case "$href" in
-              http*) pdfurl="$href" ;;
-              /*) pdfurl="https://www.uscourts.gov${href}" ;;
-              *) pdfurl="https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/${href}" ;;
-            esac
-            echo "FRCP_PDF_URL=${pdfurl}"
-            pdf="$(mktemp)"; hdr="$(mktemp)"
-            status="$(curl -L --connect-timeout 20 --max-time 120 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$pdf" -w '%{http_code}' "$pdfurl" || true)"
-            ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
-            bytes="$(wc -c < "$pdf" | tr -d ' ')"
-            sha="$(sha256sum "$pdf" | awk '{print $1}')"
-            echo "FRCP_HTTP_STATUS=${status}"
-            echo "FRCP_CONTENT_TYPE=${ctype}"
-            echo "FRCP_BYTE_SIZE=${bytes}"
-            echo "FRCP_SHA256=${sha}"
-            if echo "$ctype" | grep -qi 'pdf'; then
-              pdftotext -layout "$pdf" /tmp/frcp.txt 2>/dev/null || true
-              echo '===== FRCP RULE 26 ====='
-              grep -inE -C 8 'Rule 26\.|Duty to Disclose|electronically stored information|proportional to the needs' /tmp/frcp.txt | head -n 260 || true
-              echo '===== FRCP RULE 34 ====='
-              grep -inE -C 8 'Rule 34\.|Producing Documents|electronically stored information' /tmp/frcp.txt | head -n 260 || true
-              echo '===== FRCP RULE 37(e) ====='
-              grep -inE -C 12 'Rule 37\.|Failure to Preserve Electronically Stored Information|lost because a party failed to take reasonable steps|intent to deprive' /tmp/frcp.txt | head -n 340 || true
-            fi
-            rm -f "$pdf" "$hdr"
-          fi
-          rm -f "$body"
+          html="$(mktemp)"
+          curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -o "$html" "$page"
+          echo '===== CURRENT PAGE SIGNAL ====='
+          tr '\n' ' ' < "$html" | sed -E 's/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,220}(Civil Rules were last amended in 2025|Federal Rules of Civil Procedure Pamphlet, Dec\. 1, 2025|Federal Rules of Civil Procedure).{0,420}' | head -n 20 || true
+          href="$(grep -Eio 'href="[^"]*/federal-rules-of-civil-procedure\.pdf([?#][^"]*)?"' "$html" | sed -E 's/^href="//; s/"$//' | head -n 1)"
+          test -n "$href"
+          case "$href" in
+            http*) pdfurl="$href" ;;
+            /*) pdfurl="https://www.uscourts.gov${href}" ;;
+            *) pdfurl="https://www.uscourts.gov/${href}" ;;
+          esac
+          echo "FRCP_PDF_URL=${pdfurl}"
+          pdf="$(mktemp)"; hdr="$(mktemp)"
+          status="$(curl -L --connect-timeout 20 --max-time 120 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$pdf" -w '%{http_code}' "$pdfurl")"
+          ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2-)"
+          bytes="$(wc -c < "$pdf" | tr -d ' ')"
+          sha="$(sha256sum "$pdf" | awk '{print $1}')"
+          echo "FRCP_HTTP_STATUS=${status}"
+          echo "FRCP_CONTENT_TYPE=${ctype}"
+          echo "FRCP_BYTE_SIZE=${bytes}"
+          echo "FRCP_SHA256=${sha}"
+          test "$status" = '200'
+          echo "$ctype" | grep -qi 'pdf'
+          pdftotext -layout "$pdf" /tmp/frcp.txt
+          echo '===== FRCP TITLE / AMENDMENT SIGNAL ====='
+          head -n 100 /tmp/frcp.txt
+          echo '===== FRCP RULE 26 ====='
+          grep -inE -C 12 'Rule 26\.|Duty to Disclose|proportional to the needs|electronically stored information' /tmp/frcp.txt | head -n 360 || true
+          echo '===== FRCP RULE 34 ====='
+          grep -inE -C 12 'Rule 34\.|Producing Documents|electronically stored information|form or forms in which it is ordinarily maintained' /tmp/frcp.txt | head -n 360 || true
+          echo '===== FRCP RULE 37(e) ====='
+          grep -inE -C 16 'Rule 37\.|Failure to Preserve Electronically Stored Information|lost because a party failed to take reasonable steps|intent to deprive|presume that the lost information was unfavorable' /tmp/frcp.txt | head -n 440 || true
+          rm -f "$html" "$pdf" "$hdr"
 
       - name: Confirm bounded execution
         shell: bash
