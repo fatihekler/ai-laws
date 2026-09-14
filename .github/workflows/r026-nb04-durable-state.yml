@@ -1,0 +1,155 @@
+name: AI-LAWS R026 NB04 durable state
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r026-nb04-durable-state.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  write-state:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Write R026 durable records
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv
+          from pathlib import Path
+
+          batch = 'NB-BATCH-NB04-20260914-002'
+          rows = {
+            'TR-001': dict(filename='TÜRKİYE CUMHURİYETİ ANAYASASI.pdf', git_blob='dde49fffa58fdd4be521af26a372e59cce2ec451', sha256='58de994c36ae00e6dc86c00b886c808d7bee1a2306b9ac35bf8aec9e8d297d1f', size='685755', pages='75', pdf_version='1.7', producer='Microsoft® Word LTSC', text_chars='215372', lawno='2709', title='Constitution of the Republic of Türkiye', authority='CONSTITUTIONAL_TEXT', binding='binding constitutional law', adoption='1982-10-18', publication='1982-11-09', current='REPOSITORY_SNAPSHOT_INTERNAL_DATE_STATE_CHECKED; OFFICIAL_LIVE_CURRENTNESS_RECHECK_BLOCKED', signal='first/last pages verified; amendment table present; no 2026 amendment signal in snapshot'),
+            'TR-002': dict(filename='KİŞİSEL VERİLERİN KORUNMASI KANUNU.pdf', git_blob='a3d27d59fbf91f5f5be36ccc6a21974f19985636', sha256='1ad27253b0068d4c3d991b92b68c6bc1104439430160f4350a3f04fbb211f2b5', size='465042', pages='21', pdf_version='1.5', producer='Microsoft® Word 2013', text_chars='53510', lawno='6698', title='Personal Data Protection Law', authority='STATUTE_OR_REGULATION', binding='binding statute', adoption='2016-03-24', publication='2016-04-07', current='REPOSITORY_SNAPSHOT_INCLUDES_7499_EFFECTIVE_2024-06-01; OFFICIAL_LIVE_CURRENTNESS_RECHECK_BLOCKED', signal='last-page amendment table includes Law 7499 changes effective 2024-06-01'),
+            'TR-003': dict(filename='TÜRK BORÇLAR KANUNU.pdf', git_blob='6849b20ff8ae95732fcb9b508039cf4fe9eb5f97', sha256='052287d8111a07612974f31a71ed3c90e9743aa28d77a005846e4c392316b9d9', size='848842', pages='135', pdf_version='1.7', producer='Microsoft® Word LTSC', text_chars='311562', lawno='6098', title='Turkish Code of Obligations', authority='STATUTE_OR_REGULATION', binding='binding statute', adoption='2011-01-11', publication='2011-02-04', current='REPOSITORY_SNAPSHOT_INCLUDES_7589_EFFECTIVE_2026-07-31; OFFICIAL_LIVE_CURRENTNESS_RECHECK_BLOCKED', signal='last-page amendment table includes Law 7589 / Article 55 effective 2026-07-31'),
+            'TR-004': dict(filename='TÜRK MEDENİ KANUNU.pdf', git_blob='06ff0c361a1f32216e1039ee6b083ab89764d404', sha256='11ae3bcbdccc0dd66701eddd0edf0938e7bc88410171f28be1f6bcea36339408', size='1260952', pages='206', pdf_version='1.7', producer='Microsoft® Word LTSC', text_chars='424250', lawno='4721', title='Turkish Civil Code', authority='STATUTE_OR_REGULATION', binding='binding statute', adoption='2001-11-22', publication='2001-12-08', current='REPOSITORY_SNAPSHOT_INCLUDES_7571_EFFECTIVE_2025-12-25; OFFICIAL_LIVE_CURRENTNESS_RECHECK_BLOCKED', signal='last-page amendment table includes Law 7571 effective 2025-12-25'),
+            'TR-005': dict(filename='TÜRK CEZA KANUNU.pdf', git_blob='15ecd5c5f0bd233e4d1d9ac213f4fdd9e617694c', sha256='cf8ba250fadbc51c1815971434971182a61645740c453f8163283875b6c67326', size='1070143', pages='119', pdf_version='1.5', producer='Microsoft® Word 2016', text_chars='305675', lawno='5237', title='Turkish Penal Code', authority='STATUTE_OR_REGULATION', binding='binding statute', adoption='2004-09-26', publication='2004-10-12', current='REPOSITORY_SNAPSHOT_INCLUDES_7593_EFFECTIVE_2026-08-18; OFFICIAL_LIVE_CURRENTNESS_RECHECK_BLOCKED', signal='last-page amendment table includes Law 7589 effective 2026-07-31 and Law 7593 effective 2026-08-18'),
+            'TR-006': dict(filename='TÜKETİCİNİN KORUNMASI HAKKINDA KANUN.pdf', git_blob='c59effcf1a9cde68f56067e0b4d5e6e35b0f3cfb', sha256='943f70aa212af092d04aa9d1035f756ff513261042adb6932a98fa3a92cd2c46', size='480658', pages='53', pdf_version='1.7', producer='Microsoft® Word LTSC', text_chars='151638', lawno='6502', title='Consumer Protection Law', authority='STATUTE_OR_REGULATION', binding='binding statute', adoption='2013-11-07', publication='2013-11-28', current='REPOSITORY_SNAPSHOT_INCLUDES_7587_EFFECTIVE_2026-07-01; OFFICIAL_LIVE_CURRENTNESS_RECHECK_BLOCKED', signal='last-page amendment table includes Law 7587 / Article 63 effective 2026-07-01'),
+            'TR-007': dict(filename='İNTERNET ORTAMINDA YAPILAN YAYINLARIN DÜZENLENMESİ VE BU YAYINLAR YOLUYLA İŞLENEN SUÇLARLA MÜCADELE EDİLMESİ HAKKINDA KANUN .pdf', git_blob='e3e682804da1f6da3e28123f9fc7fda493c960f0', sha256='e4a1c9591afad92c06c4db2fbdd650fe3906fa9ab305ba5f51b0a4c83d67616c', size='425157', pages='28', pdf_version='1.7', producer='Microsoft® Word LTSC', text_chars='82124', lawno='5651', title='Law on Regulation of Publications on the Internet and Combating Crimes Committed Through Such Publications', authority='STATUTE_OR_REGULATION', binding='binding statute', adoption='2007-05-04', publication='2007-05-23', current='REPOSITORY_SNAPSHOT_INCLUDES_7590_EFFECTIVE_2026-07-31; FUTURE_EFFECTIVE_7578_2026-11-01_PRESENT; OFFICIAL_LIVE_CURRENTNESS_RECHECK_BLOCKED', signal='text contains Law 7590 amendments; final table also contains Law 7578 provisions effective 2026-11-01, which are future-effective as of 2026-09-14'),
+            'TR-008': dict(filename='SİBER GÜVENLİK KANUNU.pdf', git_blob='ff5ac0549972744425223b2e25add0c645ad72a4', sha256='8e0217ca599506d6e6a66143fac63a9c3b8525d012032aad7814083b89d3ef73', size='259697', pages='16', pdf_version='1.7', producer='Microsoft® Word LTSC', text_chars='43899', lawno='7545', title='Cybersecurity Law', authority='STATUTE_OR_REGULATION', binding='binding statute', adoption='2025-03-12', publication='2025-03-19', current='REPOSITORY_SNAPSHOT_VERIFIED_THROUGH_7590_EFFECTIVE_2026-07-31; OFFICIAL_LIVE_EXACT_BYTE_RECHECK_BLOCKED', signal='7590 appears 5 times; Article 6/16 amendment signals present; GEÇİCİ MADDE 2 and attached list present; final table states Law 7590 changed 6,16,Temporary Article 2,attached list effective 2026-07-31'),
+          }
+
+          results_path = Path('86_NOTEBOOKLM/downloads/NB04_CONTENT_IDENTITY_RESULTS.csv')
+          fields = ['source_id','repo_filename','repo_git_blob_sha','repo_sha256','repo_byte_size','pages','pdf_version','producer','text_chars','text_layer_state','expected_title_check','expected_law_number_check','first_page_check','last_page_check','currentness_signal','currentness_state','official_live_source_state','content_identity_state','notebook_upload_eligibility','notes']
+          with results_path.open('w', newline='', encoding='utf-8') as f:
+              w = csv.DictWriter(f, fieldnames=fields)
+              w.writeheader()
+              for sid, r in rows.items():
+                  eligibility = 'NOTEBOOK_UPLOAD_ELIGIBLE_AS_VERIFIED_REPOSITORY_SNAPSHOT_WITH_DATE_STATE_LABEL; PRIMARY_SOURCE_RECHECK_REQUIRED_BEFORE_MATERIAL_LEGAL_CLAIM'
+                  if sid == 'TR-008':
+                      eligibility = 'NOTEBOOK_UPLOAD_ELIGIBLE_AS_VERIFIED_REPOSITORY_SNAPSHOT; 7590_INCLUDED; OFFICIAL_EXACT_BYTE_MATCH_NOT_RUN; PRIMARY_SOURCE_RECHECK_REQUIRED_BEFORE_MATERIAL_LEGAL_CLAIM'
+                  w.writerow(dict(source_id=sid, repo_filename=r['filename'], repo_git_blob_sha=r['git_blob'], repo_sha256=r['sha256'], repo_byte_size=r['size'], pages=r['pages'], pdf_version=r['pdf_version'], producer=r['producer'], text_chars=r['text_chars'], text_layer_state='NATIVE_SEARCHABLE_TEXT_LAYER_VERIFIED', expected_title_check='VERIFIED', expected_law_number_check='VERIFIED', first_page_check='RENDERED_AND_VISUALLY_VERIFIED', last_page_check='RENDERED_AND_VISUALLY_VERIFIED', currentness_signal=r['signal'], currentness_state=r['current'], official_live_source_state='OFFICIAL_MEVZUAT_SOURCE_FAMILY_PINNED_BUT_LIVE_PORTAL_RECHECK_BLOCKED_2026-09-14', content_identity_state='CONTENT_IDENTITY_VERIFIED', notebook_upload_eligibility=eligibility, notes='Repository snapshot identity is verified from local bytes/text/render checks. This does not assert exact-byte identity with the live official Mevzuat source.'))
+
+          # Reconcile downloads registry for TR-001..TR-008.
+          reg = Path('86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv')
+          with reg.open(newline='', encoding='utf-8') as f:
+              reader = csv.DictReader(f); fieldnames = reader.fieldnames; registry = list(reader)
+          seen = set()
+          for rec in registry:
+              sid = rec.get('manifest_source_id')
+              if sid not in rows:
+                  continue
+              r = rows[sid]; seen.add(sid)
+              rec['content_identity_state'] = 'CONTENT_IDENTITY_VERIFIED'
+              rec['currentness_state'] = r['current']
+              rec['notebook_ingest_mode'] = 'VERIFIED_REPOSITORY_SNAPSHOT_ELIGIBLE_WITH_DATE_STATE_LABEL; OFFICIAL_LIVE_RECHECK_REQUIRED_BEFORE_MATERIAL_LEGAL_CLAIM'
+              if sid == 'TR-008':
+                  rec['notebook_ingest_mode'] = 'VERIFIED_REPOSITORY_SNAPSHOT_ELIGIBLE; 7590_INCLUDED; OFFICIAL_EXACT_BYTE_MATCH_NOT_RUN; PRIMARY_SOURCE_RECHECK_REQUIRED'
+              rec['action'] = f"R026 verified local PDF: SHA256 {r['sha256']}; {r['pages']} pages; searchable native text; title/law number and rendered first/last pages verified. {r['signal']}. Live official Mevzuat exact-byte/currentness recheck remains blocked."
+          if seen != set(rows):
+              raise SystemExit(f'Registry missing TR rows: {set(rows)-seen}')
+          with reg.open('w', newline='', encoding='utf-8') as f:
+              w = csv.DictWriter(f, fieldnames=fieldnames); w.writeheader(); w.writerows(registry)
+
+          # Append acquisition/validation ledger rows without replacing older interruption evidence.
+          ledger = Path('86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv')
+          with ledger.open(newline='', encoding='utf-8') as f:
+              reader = csv.DictReader(f); ledger_fields = reader.fieldnames; ledger_rows = list(reader)
+          if any(x.get('batch_id') == batch for x in ledger_rows):
+              raise SystemExit('R026 batch already exists in ledger')
+          for sid, r in rows.items():
+              url = f"https://www.mevzuat.gov.tr/mevzuat?MevzuatNo={r['lawno']}&MevzuatTur=1&MevzuatTertip=5"
+              pr = 'LIVE_OFFICIAL_MEVZUAT_CURRENTNESS_RECHECK_BLOCKED'
+              if sid == 'TR-008': pr = 'KNOWN_7590_EFFECTS_PRESENT_IN_REPOSITORY_SNAPSHOT; LIVE_OFFICIAL_EXACT_BYTE_RECHECK_BLOCKED'
+              item = {k:'' for k in ledger_fields}
+              item.update({
+                'batch_id':batch,'source_id':sid,'notebook_pack':'NB04','jurisdiction':'TR','title':r['title'],'document_id':f"Law No. {r['lawno']}" if sid!='TR-001' else 'Law No. 2709 / Constitution','issuing_authority':'Türkiye / Mevzuat Bilgi Sistemi / TBMM / Resmî Gazete','authority_class':r['authority'],'binding_state':r['binding'],'official_url':url,'retrieval_date':'2026-09-14','version_state':r['current'],'adoption_date':r['adoption'],'publication_date':r['publication'],'entry_into_force_date':'NOT_RECHECKED_IN_R026','application_date':'NOT_RECHECKED_IN_R026','authentic_language':'Turkish','translation_state':'NOT_APPLICABLE','rights_state':'OFFICIAL_LEGAL_TEXT_REUSE_BASIS_FSEK_31; USER_ADDED_REPOSITORY_SNAPSHOT','acquisition_method':'USER_MANUAL_DOWNLOAD_REPOSITORY_SNAPSHOT','local_filename_or_url':f"86_NOTEBOOKLM/downloads/{r['filename']}",'sha256':r['sha256'],'byte_size':r['size'],'content_type':'application/pdf','content_identity_checked':'YES_REPOSITORY_SNAPSHOT_TITLE_LAWNO_TEXT_LAYER_FIRST_LAST_PAGES','notebook_ingest_state':'NOT_RUN','notebook_locator_test':'NOT_RUN','primary_source_recheck_state':pr,'refresh_trigger':'official Mevzuat source accessibility or later amendment/currentness signal','human_review_required':'YES_BEFORE_MATERIAL_LEGAL_CONCLUSION','notes':f"R026 local repository inspection: {r['pages']} pages; native searchable text; title/law number and first/last page checks passed. {r['signal']}. SHA-256 proves repository snapshot identity only, not exact official-byte identity."
+              })
+              ledger_rows.append(item)
+          with ledger.open('w', newline='', encoding='utf-8') as f:
+              w = csv.DictWriter(f, fieldnames=ledger_fields); w.writeheader(); w.writerows(ledger_rows)
+
+          # Update NB04 section in upload plan.
+          plan = Path('86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md')
+          text = plan.read_text(encoding='utf-8')
+          old = '''All are currently:\n\n```text\nREPOSITORY_BINARY_PRESENT\nCONTENT_IDENTITY_UNVERIFIED\nCURRENT_CONSOLIDATED_TEXT_RECHECK_REQUIRED\n```\n\nTherefore do **not** upload these eight PDFs as the legal baseline yet.\n\nProcess each PDF using `PDF_CONTENT_IDENTITY_AND_DERIVED_TEXT_PROTOCOL.md` and the official source-pin records.\n\nFor `TR-008`, verify that Law No. 7590 amendments effective 2026-07-31 are incorporated before Notebook use.'''
+          new = '''R026 locally inspected all eight repository PDFs with `pdfinfo`, `pdftotext`, SHA-256 capture, and rendered first/last-page checks. Current repository-snapshot state is:\n\n```text\nREPOSITORY_BINARY_PRESENT = 8 / 8\nCONTENT_IDENTITY_VERIFIED = 8 / 8\nNATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nFIRST_LAST_PAGE_RENDER_CHECK = 8 / 8\nOFFICIAL_MEVZUAT_LIVE_EXACT_BYTE_MATCH = NOT_RUN / PORTAL_BLOCKED\n```\n\nThe PDFs may be used in NB04 as **verified repository snapshots** only when each source keeps its date/currentness label and `PRIMARY_SOURCE_RECHECK_REQUIRED` status. They are not asserted to be exact official Mevzuat bytes.\n\nSpecial states:\n\n- `TR-008` contains Law No. 7590 amendments, including Article 6/16 signals, `GEÇİCİ MADDE 2`, the attached list, and the effective-date table `31/7/2026`; the former 7590-incorporation blocker is resolved for this repository snapshot.\n- `TR-007` contains Law No. 7590 changes effective `31/7/2026` and also records Law No. 7578 provisions with a future effective date of `1/11/2026`; Notebook use must preserve the applicable-date distinction.\n- `TR-003`, `TR-005`, and `TR-006` contain 2026 amendment/effective-date signals in their closing tables.\n\nBefore any material legal conclusion, recheck the live official Mevzuat text when the portal becomes accessible.'''
+          if old not in text:
+              raise SystemExit('Expected old NB04 upload-plan block not found')
+          plan.write_text(text.replace(old,new), encoding='utf-8')
+
+          # Update research queue: R005 remains partial; append R026.
+          queue = Path('90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv')
+          with queue.open(newline='', encoding='utf-8') as f:
+              reader = csv.DictReader(f); qfields = reader.fieldnames; qrows = list(reader)
+          for rec in qrows:
+              if rec['work_item_id']=='AI-LAWS-R005':
+                  rec['state']='PARTIAL_SOURCE_PIN_REPOSITORY_PDF_CONTENT_VERIFIED_OFFICIAL_LIVE_RECHECK_BLOCKED'
+                  rec['stop_condition']='repository snapshot identity complete; live official currentness/exact-byte verification remains required; case law remains separate'
+          if any(r['work_item_id']=='AI-LAWS-R026' for r in qrows):
+              raise SystemExit('R026 already in queue')
+          qrows.append({'work_item_id':'AI-LAWS-R026','priority':'P0','workstream':'Notebook NB04 source validation','scope':'Validate TR-001..TR-008 repository PDF identity, text layer, first/last pages and amendment/currentness signals; specifically test Law 7590 incorporation in TR-008','state':'COMPLETE_SUPPORT_SOURCE_VALIDATION','dependencies':'R023 COMPLETE + R005 source pin','expected_output':'86_NOTEBOOKLM/downloads/NB04_CONTENT_IDENTITY_RESULTS.csv; updated registry/ledger/upload plan; R026 closeout','stop_condition':'repository snapshot content identity verified; live official Mevzuat exact-byte/currentness recheck remains blocked; no substantive R005 legal analysis or case law auto-started'})
+          with queue.open('w', newline='', encoding='utf-8') as f:
+              w=csv.DictWriter(f, fieldnames=qfields); w.writeheader(); w.writerows(qrows)
+
+          # Closeout.
+          closeout = Path('86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R026_NB04_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md')
+          closeout.write_text('''# AI-LAWS — R026 / NB04 Türkiye Repository PDF Validation Closeout\n\n**UNIT_ID:** `AI-LAWS-R026 / NB-BATCH-NB04-20260914-002`  \n**DATE:** 2026-09-14  \n**BASE_HEAD:** `47e8b7be926b4ef6031deaff20084cc95b6f0922`  \n**INSPECTION_WORKFLOW_COMMIT:** `8216741cd2c83100f464bee13508bb24b61470fc`  \n**INSPECTION_RUN_ID:** `34807607412`  \n**STATE:** `REPOSITORY_PDF_CONTENT_IDENTITY_COMPLETE / OFFICIAL_LIVE_PORTAL_RECHECK_BLOCKED`  \n**AUTO_ADVANCE:** NO\n\n## Scope\n\nThis bounded unit validated only `TR-001` through `TR-008` repository PDFs already present under `86_NOTEBOOKLM/downloads/`. It did not start substantive R005 legal analysis, R006 case-law research, or another Notebook pack.\n\n## Method\n\nA temporary read-only GitHub Actions inspection workflow checked the repository-local PDF bytes using Poppler tools. No external document download was performed by the workflow. For each PDF it captured SHA-256, byte size, page count, PDF metadata, native text extraction, expected title/law number, first-page text, final-page text, and rendered first/final pages. The workflow completed successfully and was removed after evidence capture.\n\n```text\nREPOSITORY_PDFS_INSPECTED = 8 / 8\nCONTENT_IDENTITY_VERIFIED = 8 / 8\nNATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nTITLE_CHECK = 8 / 8\nLAW_NUMBER_CHECK = 8 / 8\nFIRST_PAGE_RENDER_CHECK = 8 / 8\nLAST_PAGE_RENDER_CHECK = 8 / 8\nDERIVED_MARKDOWN_CREATED = 0\nOCR_USED = NO\nNOTEBOOK_UPLOADS = 0\n```\n\n## Critical TR-008 result\n\nThe repository `SİBER GÜVENLİK KANUNU.pdf` is a 16-page searchable-text PDF and contains the known Law No. 7590 changes. Extracted text includes:\n\n- Article 6 amendment notation referencing `24/7/2026-7590`;\n- Article 16 amendment/footnote signal;\n- `GEÇİCİ MADDE 2- (Ek:24/7/2026-7590/26 md.)`;\n- attached `(1) SAYILI LİSTE`;\n- final amendment table stating that Law No. 7590 changed `6, 16, Geçici Madde 2, Ekli (1) Sayılı Liste`, effective `31/7/2026`.\n\nTherefore:\n\n```text\nTR008_REPOSITORY_PDF_REFLECTS_7590 = YES\n7545_ORIGINAL_2025_ONLY = NO\nTR008_REPOSITORY_SNAPSHOT_CONTENT_IDENTITY = VERIFIED\nOFFICIAL_MEVZUAT_EXACT_BYTE_MATCH = NOT_RUN\n```\n\nThis resolves the prior 7590-incorporation blocker for the repository snapshot, but it does not prove byte-for-byte identity with the live official Mevzuat PDF because the official portal remains inaccessible from this execution channel.\n\n## Other date-state findings\n\n- `TR-003` closing table includes Law No. 7589 / Article 55 effective `31/7/2026`.\n- `TR-005` closing table includes Law No. 7589 effective `31/7/2026` and Law No. 7593 effective `18/8/2026`.\n- `TR-006` closing table includes Law No. 7587 / Article 63 effective `1/7/2026`.\n- `TR-007` includes Law No. 7590 changes effective `31/7/2026`; its amendment table also records Law No. 7578 provisions effective `1/11/2026`, which is a future date relative to this unit and must not be treated as already operative.\n\n## Official-source gate\n\nThe exact official Mevzuat source families remain pinned from R005, but the live portal still fails from the current execution channel. Accordingly:\n\n```text\nREPOSITORY_CONTENT_IDENTITY_VERIFIED != OFFICIAL_EXACT_BYTE_MATCH_VERIFIED\nREPOSITORY_CURRENTNESS_SIGNAL != LIVE_OFFICIAL_CURRENTNESS_RECHECK\nPDF_UPLOAD_ELIGIBLE != MATERIAL_LEGAL_CLAIM_VERIFIED\n```\n\nThe eight PDFs are eligible for Notebook use as **verified repository snapshots with explicit date/currentness labels**. Before any material legal conclusion, the relevant live official text must be rechecked when accessible.\n\n## Durable outputs\n\n- `86_NOTEBOOKLM/downloads/NB04_CONTENT_IDENTITY_RESULTS.csv`\n- updated `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`\n- updated `86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`\n- updated `86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md`\n- updated `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`\n- updated `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`\n\n`UNKNOWN_PRESERVED = YES`  \n`LEGAL_CONCLUSION = NOT_ATTEMPTED`  \n`AUTO_ADVANCE = NO`\n''', encoding='utf-8')
+
+          # Update current context conservatively.
+          ctx = Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md')
+          c = ctx.read_text(encoding='utf-8')
+          old_state='**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE'
+          new_state='**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE'
+          if old_state not in c: raise SystemExit('Current-context state line drifted')
+          c=c.replace(old_state,new_state)
+          marker='''### R025 — NB02 remaining EU source validation\n'''
+          if marker not in c: raise SystemExit('R025 marker missing')
+          insert='''### R026 — NB04 Türkiye repository PDF validation\n\nR026 locally validated all eight `TR-001..TR-008` repository PDFs using SHA-256, PDF metadata, native text extraction, expected title/law-number checks, and rendered first/final pages.\n\n```text\nNB04_REPOSITORY_PDFS_INSPECTED = 8 / 8\nNB04_REPOSITORY_CONTENT_IDENTITY_VERIFIED = 8 / 8\nNB04_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nNB04_FIRST_LAST_PAGE_CHECK = 8 / 8\nTR008_REPOSITORY_PDF_REFLECTS_7590 = YES\nNB04_OFFICIAL_LIVE_MEVZUAT_EXACT_BYTE_RECHECK = BLOCKED\nNB04_NOTEBOOK_UPLOADS = 0\n```\n\n`TR-008` now resolves the repository-snapshot 7590 incorporation question: the PDF contains the Article 6/16 amendment signals, `GEÇİCİ MADDE 2`, the attached list and the final table showing Law No. 7590 effective `31/7/2026`. This does **not** establish exact-byte identity with the inaccessible live official Mevzuat file.\n\n`TR-007` also contains a future-effective `1/11/2026` state in its amendment table; date-state must be preserved when used.\n\nDurable outputs:\n\n- `86_NOTEBOOKLM/downloads/NB04_CONTENT_IDENTITY_RESULTS.csv`;\n- updated downloads registry, acquisition ledger and Notebook upload plan;\n- `86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R026_NB04_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md`.\n\n'''
+          c=c.replace(marker,insert+marker)
+          old_tr='''The user later manually added repository PDFs for `TR-001` through `TR-008`. These files still require content/currentness checks before Notebook baseline use.\n\nSpecial warning:\n\n```text\nTR-008 / LAW 7545 ORIGINAL TEXT != AUTOMATICALLY CURRENT CONSOLIDATED TEXT\nLAW 7590 AMENDMENTS EFFECTIVE 2026-07-31 MUST BE REFLECTED\n```'''
+          new_tr='''The user later manually added repository PDFs for `TR-001` through `TR-008`. R026 verified the repository PDF identities, searchable text layers, titles/law numbers and first/final pages for all eight. Live official Mevzuat exact-byte/currentness recheck remains blocked.\n\nSpecial state:\n\n```text\nTR-008_REPOSITORY_PDF_REFLECTS_7590 = YES\nTR-008_7590_EFFECTIVE_DATE = 2026-07-31\nREPOSITORY_SNAPSHOT_VERIFIED != OFFICIAL_EXACT_BYTE_MATCH_VERIFIED\n```'''
+          if old_tr not in c: raise SystemExit('Old TR context block not found')
+          c=c.replace(old_tr,new_tr)
+          old_lane='''`TR-001` through `TR-008` remain high-priority repository binaries requiring current consolidated official-text/content verification, particularly `TR-008` after Law 7590.'''
+          new_lane='''`TR-001` through `TR-008` now have verified repository-snapshot content identity. `TR-008` is confirmed to include Law No. 7590 effects. The remaining gate is live official Mevzuat currentness/exact-byte recheck before material legal conclusions; `TR-007` also requires date-aware handling of provisions recorded with future `2026-11-01` effect.'''
+          if old_lane not in c: raise SystemExit('Old TR lane text not found')
+          c=c.replace(old_lane,new_lane)
+          c=c.replace('R025_REPOSITORY_BINARY_CONTENT_IDENTITY_PARTIAL = 7\nNB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10', 'R025_REPOSITORY_BINARY_CONTENT_IDENTITY_PARTIAL = 7\nR026_NB04_REPOSITORY_PDFS_INSPECTED = 8\nR026_NB04_CONTENT_IDENTITY_VERIFIED = 8\nR026_NB04_NATIVE_TEXT_LAYER_VERIFIED = 8\nR026_TR008_7590_INCLUDED = YES\nR026_OFFICIAL_LIVE_MEVZUAT_RECHECK = BLOCKED\nNB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10')
+          ctx.write_text(c, encoding='utf-8')
+          PY
+
+      - name: Commit R026 durable state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 86_NOTEBOOKLM/downloads/NB04_CONTENT_IDENTITY_RESULTS.csv \
+                  86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv \
+                  86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv \
+                  86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md \
+                  90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+                  86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R026_NB04_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md \
+                  00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git diff --cached --check
+          git commit -m 'validation(r026): persist NB04 repository PDF verification'
+          git push origin HEAD:main
