@@ -1,0 +1,54 @@
+name: R002 jurisdiction registry expansion
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r002-temporary-jurisdiction-registry.yml'
+      - '.github/scripts/r002_registry_expand.py'
+
+permissions:
+  contents: write
+
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact trigger state
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail closed on drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+
+      - name: Install parser dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q pandas lxml html5lib
+
+      - name: Expand and validate jurisdiction registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/r002_registry_expand.py
+          git diff --check
+
+      - name: Commit registry expansion and push
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Fatih Mehmet Ekler'
+          git config user.email '5189511+fatihekler@users.noreply.github.com'
+          git add 20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv 20_JURISDICTIONS/R002_SOURCE_ACQUISITION_RESULTS_2026-09-14.csv 20_JURISDICTIONS/R002_REGISTRY_VALIDATION_SUMMARY_2026-09-14.csv
+          git diff --cached --check
+          git commit -m 'registry(r002): expand global jurisdiction coverage'
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          git push origin HEAD:main
+          printf 'REGISTRY_HEAD=%s\nREGISTRY_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
