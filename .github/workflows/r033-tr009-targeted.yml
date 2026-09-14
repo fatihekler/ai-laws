@@ -1,0 +1,94 @@
+name: AI-LAWS R033 TR-009 targeted official endpoints
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r033-tr009-targeted.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  target:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Target official source endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "HEAD|$(git rev-parse HEAD)"
+          python3 - <<'PY'
+          import hashlib, re, subprocess, urllib.parse
+          from pathlib import Path
+
+          def get(url, stem, timeout=25):
+              p=Path('/tmp')/stem
+              cp=subprocess.run(['curl','-L','--silent','--show-error','--connect-timeout','10','--max-time',str(timeout),'-A','Mozilla/5.0 AI-LAWS source verification','-o',str(p),'-w','%{http_code}|%{content_type}|%{url_effective}',url],text=True,capture_output=True)
+              b=p.read_bytes() if p.exists() else b''
+              mime='NONE'
+              if b:
+                  try: mime=subprocess.check_output(['file','-b','--mime-type',str(p)],text=True,errors='replace').strip()
+                  except: mime='UNKNOWN'
+              print(f'GET|{stem}|url={url}|rc={cp.returncode}|curl={cp.stdout.strip()}|mime={mime}|bytes={len(b)}|sha256={hashlib.sha256(b).hexdigest() if b else "NONE"}')
+              return cp.stdout.strip(),b,p,mime
+
+          exact_candidates=[
+            'https://cbddo.gov.tr/SharedFolderServer/Genel/File/TR-UlusalYZStratejisi2021-2025.pdf',
+            'https://www.cbddo.gov.tr/SharedFolderServer/Genel/File/TR-UlusalYZStratejisi2021-2025.pdf',
+            'https://cbddo.gov.tr/SharedFolderServer/Genel/File/2024-2025-Ulusal-Yapay-Zeka-Stratejisi-Eylem-Plani.pdf',
+            'https://www.cbddo.gov.tr/SharedFolderServer/Genel/File/2024-2025-Ulusal-Yapay-Zeka-Stratejisi-Eylem-Plani.pdf',
+            'https://cbddo.gov.tr/SharedFolderServer/Genel/File/2024-2025-UlusalYZStratejisi-EylemPlani.pdf',
+            'https://www.cbddo.gov.tr/SharedFolderServer/Genel/File/2024-2025-UlusalYZStratejisi-EylemPlani.pdf',
+            'https://www.sanayi.gov.tr/assets/pdf/plan-program/UlusalYapayZekaStratejisi2021-2025.pdf',
+            'https://www.sanayi.gov.tr/assets/pdf/plan-program/2024-2025-Ulusal-Yapay-Zeka-Stratejisi-Eylem-Plani.pdf',
+          ]
+          for i,u in enumerate(exact_candidates,1):
+              meta,b,p,mime=get(u,f'candidate-{i}',20)
+              if b and mime=='application/pdf':
+                  # Poppler may already be present; if not, strings fallback.
+                  text=''
+                  try:
+                      text=subprocess.check_output(['pdftotext','-layout',str(p),'-'],text=True,errors='replace',stderr=subprocess.DEVNULL)
+                  except Exception:
+                      text=subprocess.check_output(['strings',str(p)],text=True,errors='replace')
+                  print(f'PDF_MARKERS|{i}|UYZS={"YES" if "Ulusal Yapay" in text else "NO"}|2021_2025={"YES" if "2021-2025" in text or "2021 – 2025" in text else "NO"}|2024_2025={"YES" if "2024-2025" in text or "2024 – 2025" in text else "NO"}|head={" ".join(text.split())[:800]}')
+
+          official_searches=[
+            'https://www.sanayi.gov.tr/arama?q=yapay%20zeka',
+            'https://www.sanayi.gov.tr/arama?q=ulusal%20yapay%20zeka',
+            'https://www.sanayi.gov.tr/search?q=yapay%20zeka',
+            'https://www.sanayi.gov.tr/search?searchText=yapay%20zeka',
+            'https://www.sanayi.gov.tr/medya/haberler',
+            'https://www.sanayi.gov.tr/plan-program-raporlar-ve-yayinlar',
+            'https://www.cbddo.gov.tr/uyzs',
+          ]
+          for i,u in enumerate(official_searches,1):
+              meta,b,p,mime=get(u,f'page-{i}',20)
+              if not b: continue
+              text=b.decode('utf-8','replace')
+              vis=' '.join(re.sub(r'<[^>]+>',' ',text).split())
+              print(f'PAGE_MARKERS|{i}|UYZS={"YES" if "Ulusal Yapay" in vis else "NO"}|2021_2025={"YES" if "2021-2025" in vis else "NO"}|2024_2025={"YES" if "2024-2025" in vis else "NO"}|2026={"YES" if "2026" in vis else "NO"}|head={vis[:1000]}')
+              base=meta.split('|')[-1] if '|' in meta else u
+              seen=[]
+              for raw in re.findall(r'''href=["']([^"']+)["']''',text,re.I):
+                  full=urllib.parse.urljoin(base,raw.replace('&amp;','&'))
+                  low=full.lower()
+                  if any(k in low for k in ['yapay','zeka','zekâ','uyzs','strateji','eylem']) and full not in seen:
+                      seen.append(full); print('OFFICIAL_LINK|'+full)
+
+          # Print search-engine snippets only as discovery evidence, never authority.
+          q='"Ulusal Yapay Zeka Stratejisi" 2026 Türkiye'
+          meta,b,p,mime=get('https://www.google.com/search?num=20&q='+urllib.parse.quote(q),'google-snippet',20)
+          if b:
+              t=b.decode('utf-8','replace')
+              vis=' '.join(re.sub(r'<[^>]+>',' ',t).split())
+              for key in ['2026-2030','2026','2024-2025','2021-2025','Ulusal Yapay']:
+                  print(f'GOOGLE_MARKER|{key}|{"YES" if key.lower() in vis.lower() else "NO"}')
+              print('GOOGLE_VISIBLE|'+vis[:5000])
+
+          print('ZIP_OR_ARTIFACT_CREATED=NO')
+          print('REPOSITORY_MUTATION_BY_TARGET_JOB=NO')
+          PY
