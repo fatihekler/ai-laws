@@ -76,28 +76,33 @@ CONSOLIDATED_SNAPSHOT_VERIFIED != FUTURE_CURRENTNESS_GUARANTEED
 
 ## NB03 — United States
 
-R028 inspected all eight core `US-001..US-008` repository PDFs inside GitHub and rechecked the corresponding official source layer. No ZIP/artifact, derived Markdown or Notebook upload was created.
+R028 inspected all eight core `US-001..US-008` repository PDFs. R031 then closed the residual binary/source-routing question for `US-001` and `US-005` without starting substantive R007 research. No ZIP/artifact, derived Markdown or Notebook upload was created.
 
 ```text
 NB03_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8
 NB03_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8
-NB03_CONTENT_IDENTITY_VERIFIED = 7
-NB03_CONTENT_IDENTITY_PARTIAL = 1       # US-001 webpage-print snapshot
-NB03_OFFICIAL_EXACT_BYTE_MATCH = 6      # US-002/003/004/006/007/008
+NB03_CONTENT_IDENTITY_VERIFIED = 7 / 8
+NB03_CONTENT_IDENTITY_PARTIAL = 1 / 8   # US-001 webpage-print representation
+NB03_OFFICIAL_EXACT_BYTE_MATCH = 7 / 8  # US-002/003/004/005/006/007/008
 NB03_DERIVED_MARKDOWN_REQUIRED = 0
 NB03_NOTEBOOK_UPLOADS = 0
 ```
 
-Exact official PDF matches: `US-002` America's AI Action Plan, `US-003` OMB M-25-21, `US-004` OMB M-25-22, `US-006` OMB M-26-04, `US-007` NIST AI RMF 1.0 and `US-008` NIST GenAI Profile.
+R031 residual resolution:
 
-Special routing:
+- `US-001` remains a verified White House **webpage-print snapshot** and `CONTENT_IDENTITY_PARTIAL / SUPPORTING_ONLY`. This is intentional: the official source is HTML, so byte equality with a printed PDF is not a meaningful authenticity test. Use the live White House URL as the primary source.
+- `US-005` is Federal Register document `2025-23092`, published `2025-12-16`. The repository PDF is an exact byte match to the official GovInfo PDF, SHA-256 `5a557f9a153f1f40c7bd885b660ed81f1b26d55a6363b778943dfaa65565e0cb`, 204,973 bytes. It is eligible as a verified official PDF snapshot.
 
-- `US-001` is a verified White House **webpage-print snapshot** and remains supporting-only; use the live White House page for current executive-order status.
-- `US-005` is not a webpage print: the repository PDF is a 3-page **Federal Register** publication of Executive Order 14365. Its content identity is verified, while exact-byte comparison to a currently resolved Federal Register PDF was not completed; the live White House URL remains current-status authority.
-- `US-007` is an exact byte match to the DOI-resolved NIST AI 100-1 PDF, but NIST's revision-in-progress state still requires currentness recheck before material use.
-- `US-008` is an exact byte match to the DOI-resolved NIST AI 600-1 PDF.
+Existing exact matches also remain: `US-002`, `US-003`, `US-004`, `US-006`, `US-007`, `US-008`.
 
-Do not label executive orders or OMB memoranda as Acts of Congress. NIST sources are voluntary/nonbinding frameworks/profiles.
+Do not label executive orders or OMB memoranda as Acts of Congress. NIST sources are voluntary/nonbinding frameworks/profiles. A live White House page or exact Federal Register PDF snapshot does not, by itself, prove continuing legal effect, non-revocation, preemption, or the validity of any federal-state legal theory.
+
+```text
+EXACT_OFFICIAL_PDF_BYTES != PERMANENT_CURRENTNESS
+WEBPAGE_PRINT_SNAPSHOT != LIVE_OFFICIAL_PAGE
+EXECUTIVE_ORDER != ACT_OF_CONGRESS
+SOURCE_IDENTITY_VERIFIED != LEGAL_EFFECT_CONCLUSION
+```
 
 ## NB04 — Türkiye
 

@@ -190,6 +190,11 @@ Do not build a definitive state-law notebook from memory. `AI-LAWS-R007` must pi
 
 ---
 
+
+### R031 NB03 residual verification state
+
+`US-005` is now an exact byte match to official GovInfo Federal Register document `2025-23092` (SHA-256 `5a557f9a153f1f40c7bd885b660ed81f1b26d55a6363b778943dfaa65565e0cb`). `US-001` remains a White House HTML print snapshot and supporting-only by design; exact-byte comparison is not applicable across HTML/PDF representations. NB03 official exact-byte count is therefore `7/8`, with the eighth source represented by a live official HTML URL plus supporting print snapshot. No Notebook upload was performed by R031.
+
 ## E. NB04 — Türkiye
 
 Repository binaries now exist for:
