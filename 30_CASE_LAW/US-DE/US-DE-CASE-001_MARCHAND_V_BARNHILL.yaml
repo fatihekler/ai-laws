@@ -1,0 +1,80 @@
+schema_version: 1.0.0
+case_id: US-DE-CASE-001
+jurisdiction: US-DE
+source_type: COURT_PRECEDENT
+relevance_class: ANALOGICAL_PRECEDENT
+identity:
+  court: Supreme Court of the State of Delaware
+  chamber: en_banc
+  docket_no: "No. 533, 2018; Court Below C.A. No. 2017-0586-JRS"
+  decision_no: UNKNOWN
+  decision_date: 2019-06-18
+  publication_date: 2019-06-19
+  official_decision_url: "https://courts.delaware.gov/Opinions/Download.aspx?id=291200&lang=en"
+  official_verification_source: "Official Delaware Supreme Court PDF, 39 pages; corrected June 19, 2019"
+  retrieval_date: 2026-09-14
+authority:
+  precedential_type: PUBLISHED_STATE_SUPREME_COURT_OPINION
+  binding_effect: DELAWARE_SUPREME_COURT_PRECEDENT
+  hierarchy_level: STATE_HIGHEST_COURT
+  later_treatment: NOT_EXHAUSTIVELY_RESEARCHED
+dispute:
+  subject: Director oversight / Caremark information-and-reporting systems after food-safety compliance failure
+  facts_summary: "Derivative plaintiff challenged board oversight after Blue Bell's listeria outbreak. The complaint alleged no reasonable board-level system focused on food safety, a central issue for the single-product food company."
+  parties_generalized: Stockholder derivative plaintiff; corporate directors/officers; nominal corporation
+  procedural_posture: Appeal from dismissal; pleading-stage allegations evaluated in plaintiff's favor
+legal_basis:
+  provisions:
+    - instrument: Delaware fiduciary law / Caremark line of authority
+      article: "Caremark / Stone oversight doctrine; DGCL § 141 background"
+      role: Director duty-of-loyalty / good-faith oversight framework
+court_content:
+  holding: "The complaint supported a reasonable inference that the board failed to make the required good-faith effort to establish a board-level monitoring/reporting system regarding a central compliance risk; dismissal was reversed and the matter remanded."
+  reasoning_summary: "Directors retain substantial discretion to design context- and industry-specific oversight systems, but must make a good-faith effort to put a reasonable board-level monitoring/reporting system in place and monitor it. The court treated food safety as intrinsically central to Blue Bell's single-product business."
+  result: REVERSED_AND_REMANDED_AT_PLEADING_STAGE
+  direct_quotes:
+    - quote: "make a good faith effort to implement an oversight system and then monitor it"
+      source_locator: "official PDF pp. 31-32; text lines 769-793 in 2026-09-14 verification"
+evidence_and_procedure:
+  material_facts:
+    - "Food safety was central to the company's single-product business."
+    - "Pleading alleged absence of a board-level food-safety monitoring/reporting system."
+  evidentiary_issue: Books-and-records allegations informed the pleading-stage oversight analysis
+  burden_of_proof_issue: Pleading-stage reasonable-inference standard; final merits burden not adjudicated
+  missing_records_issue: UNKNOWN
+  logging_or_preservation_issue: UNKNOWN
+liability_elements:
+  actor: Corporate directors
+  duty: Good-faith oversight / information-and-reporting system duty under Delaware fiduciary law
+  breach: PLEADING_STAGE_INFERENCE_SUFFICIENT_ONLY
+  foreseeability: NOT_SEPARATELY_ADJUDICATED_FOR_AI_ANALOGY
+  causation: NOT_FINAL_ADJUDICATION
+  damage: NOT_FINAL_ADJUDICATION
+  defences: Context-specific business judgment and demanding bad-faith standard remain material
+  allocation_among_multiple_actors: NOT_RESOLVED_FOR_AI_ANALOGY
+ai_relevance:
+  direct_ai_issue: false
+  analogy_targets:
+    - board-level AI risk reporting systems
+    - monitoring of legally significant AI risks
+    - company-specific mission-critical AI use
+  analogous_element: "Good-faith establishment and monitoring of board-level information/reporting systems for central corporate risks."
+  analogy_limit: "The case concerns food safety, not AI. It does not establish that AI is mission-critical for every company, does not prescribe an AI committee, and does not establish strict or automatic director liability for an AI incident."
+  prohibited_label_inference: "ANALOGICAL_PRECEDENT != AI_PRECEDENT"
+research:
+  search_terms:
+    - Marchand v Barnhill oversight
+    - Caremark board reporting system
+    - mission critical risk
+  full_text_verified: true
+  official_source_verified: true
+  verification_date: 2026-09-14
+  researcher: AI-LAWS_R015
+  model_assistance: OpenAI model used for source extraction and structured synthesis; official source controls
+  notes: "GitHub-hosted runner returned HTTP 200 with a 244-byte HTML body rather than the official PDF, so no repository PDF snapshot was pinned. Independent official-source retrieval verified the full PDF. SEARCH_FAILURE_IS_NOT_NO_CASE."
+confidence:
+  factual_identity: HIGH
+  legal_analogy: MEDIUM
+review:
+  human_legal_review_state: NOT_REVIEWED
+  canonical: false

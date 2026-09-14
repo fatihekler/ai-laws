@@ -1,0 +1,80 @@
+schema_version: 1.0.0
+case_id: US-DE-CASE-002
+jurisdiction: US-DE
+source_type: COURT_PRECEDENT
+relevance_class: ANALOGICAL_PRECEDENT
+identity:
+  court: Court of Chancery of the State of Delaware
+  chamber: UNKNOWN
+  docket_no: "C.A. No. 2021-0324-JTL"
+  decision_no: UNKNOWN
+  decision_date: 2023-01-26
+  publication_date: 2023-01-26
+  official_decision_url: "https://courts.delaware.gov/Opinions/Download.aspx?id=343130"
+  official_verification_source: "Official Delaware Court of Chancery PDF, 66 pages, dated January 26, 2023"
+  retrieval_date: 2026-09-14
+authority:
+  precedential_type: PUBLISHED_COURT_OF_CHANCERY_OPINION
+  binding_effect: "DELAWARE_TRIAL_COURT_PRECEDENTIAL_WEIGHT; exact stare-decisis scope not separately analyzed"
+  hierarchy_level: STATE_COURT_OF_CHANCERY
+  later_treatment: NOT_EXHAUSTIVELY_RESEARCHED
+dispute:
+  subject: Corporate officer fiduciary oversight duty and red-flags/information-system theories
+  facts_summary: "Derivative plaintiffs asserted oversight and loyalty claims against McDonald's former Global Chief People Officer David Fairhurst arising from sexual-harassment and misconduct risks."
+  parties_generalized: Stockholder derivative plaintiffs; corporate officer; nominal corporation
+  procedural_posture: Rule 12(b)(6) motion to dismiss officer claims
+legal_basis:
+  provisions:
+    - instrument: Delaware fiduciary law / Caremark and Gantler lines of authority
+      article: "Officer fiduciary duties and oversight doctrine"
+      role: Officer duty-of-loyalty / good-faith oversight analysis
+court_content:
+  holding: "The opinion clarified that corporate officers owe a duty of oversight. Application is context-driven and generally tied to the officer's area of responsibility; breach requires bad-faith/disloyal conduct. The complaint stated an oversight claim sufficient to survive Rule 12(b)(6)."
+  reasoning_summary: "Because Delaware officers owe fiduciary duties comparable to directors, the court reasoned that oversight duties extend to officers. A CEO may have company-wide responsibilities; other officers generally have duties within their remit. Officers must make a good-faith effort to establish information systems for their responsibilities and address or report relevant red flags upward."
+  result: MOTION_TO_DISMISS_DENIED_FOR_PLEADED_OFFICER_CLAIMS
+  direct_quotes:
+    - quote: "corporate officers owe a duty of oversight"
+      source_locator: "official PDF p. 2; text lines 55-76 in 2026-09-14 verification"
+evidence_and_procedure:
+  material_facts:
+    - "Complaint alleged red flags concerning sexual harassment and misconduct."
+    - "Complaint alleged facts supporting knowledge and conscious disregard in the officer's area of responsibility."
+  evidentiary_issue: Pleading-stage allegations and incorporated documents
+  burden_of_proof_issue: "Bad faith must be pleaded and later proven; good faith is presumed."
+  missing_records_issue: UNKNOWN
+  logging_or_preservation_issue: UNKNOWN
+liability_elements:
+  actor: Corporate officer
+  duty: Context/remit-specific fiduciary oversight duty
+  breach: PLEADING_STAGE_CLAIM_STATED_ONLY
+  foreseeability: NOT_SEPARATELY_ADJUDICATED_FOR_AI_ANALOGY
+  causation: NOT_FINAL_ADJUDICATION
+  damage: NOT_FINAL_ADJUDICATION
+  defences: Good-faith presumption; role/remit limitation; demanding bad-faith standard
+  allocation_among_multiple_actors: NOT_RESOLVED_FOR_AI_ANALOGY
+ai_relevance:
+  direct_ai_issue: false
+  analogy_targets:
+    - officer ownership of AI-risk domains
+    - upward reporting of AI red flags
+    - AI governance information systems within officer remit
+  analogous_element: "An officer's oversight and reporting obligations can be context-specific and bounded by assigned responsibility, with bad faith required for fiduciary breach."
+  analogy_limit: "The decision concerns workplace misconduct, not AI. It does not make every officer responsible for every AI risk, does not establish an AI-specific officer role, and the denial of dismissal is not a final personal-liability judgment."
+  prohibited_label_inference: "ANALOGICAL_PRECEDENT != AI_PRECEDENT"
+research:
+  search_terms:
+    - McDonald's officer oversight 2023
+    - Fairhurst duty of oversight
+    - officer Caremark remit
+  full_text_verified: true
+  official_source_verified: true
+  verification_date: 2026-09-14
+  researcher: AI-LAWS_R015
+  model_assistance: OpenAI model used for source extraction and structured synthesis; official source controls
+  notes: "GitHub-hosted runner returned HTTP 200 with a 244-byte HTML body rather than the official PDF, so no repository PDF snapshot was pinned. Independent official-source retrieval verified the full PDF. Procedural posture must not be converted into a final liability finding."
+confidence:
+  factual_identity: HIGH
+  legal_analogy: MEDIUM
+review:
+  human_legal_review_state: NOT_REVIEWED
+  canonical: false

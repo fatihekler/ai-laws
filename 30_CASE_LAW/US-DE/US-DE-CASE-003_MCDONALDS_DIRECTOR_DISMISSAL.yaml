@@ -1,0 +1,80 @@
+schema_version: 1.0.0
+case_id: US-DE-CASE-003
+jurisdiction: US-DE
+source_type: COURT_PRECEDENT
+relevance_class: ANALOGICAL_PRECEDENT
+identity:
+  court: Court of Chancery of the State of Delaware
+  chamber: UNKNOWN
+  docket_no: "C.A. No. 2021-0324-JTL"
+  decision_no: UNKNOWN
+  decision_date: 2023-03-01
+  publication_date: 2023-03-01
+  official_decision_url: "https://courts.delaware.gov/Opinions/Download.aspx?id=344560"
+  official_verification_source: "Official Delaware Court of Chancery PDF, 79 pages, Opinion Dismissing Claims Against Director Defendants"
+  retrieval_date: 2026-09-14
+authority:
+  precedential_type: PUBLISHED_COURT_OF_CHANCERY_OPINION
+  binding_effect: "DELAWARE_TRIAL_COURT_PRECEDENTIAL_WEIGHT; exact stare-decisis scope not separately analyzed"
+  hierarchy_level: STATE_COURT_OF_CHANCERY
+  later_treatment: NOT_EXHAUSTIVELY_RESEARCHED
+dispute:
+  subject: Director red-flags oversight claim and bad-faith threshold
+  facts_summary: "Derivative plaintiffs alleged that McDonald's directors ignored red flags concerning sexual harassment and misconduct. The opinion evaluated both directors' knowledge and their subsequent response."
+  parties_generalized: Stockholder derivative plaintiffs; corporate directors; nominal corporation
+  procedural_posture: Motion to dismiss director claims for failure to state a claim
+legal_basis:
+  provisions:
+    - instrument: Delaware fiduciary law / Caremark red-flags doctrine
+      article: "Duty-of-loyalty / bad-faith oversight standard"
+      role: Director oversight and conscious-disregard analysis
+court_content:
+  holding: "Although the pleaded facts supported an inference that directors knew of a problem, the complaint did not support an inference that they consciously failed to respond in bad faith. The director defendants' motion to dismiss was granted."
+  reasoning_summary: "A red-flags theory requires more than a weak, inadequate or even grossly negligent response. The pleading must support an inference of a serious oversight failure amounting to bad faith. The record described board engagement, outside consultants, revised policies, training and other responses, which defeated the pleaded bad-faith inference on the facts before the court."
+  result: DIRECTOR_CLAIMS_DISMISSED_AT_PLEADING_STAGE
+  direct_quotes:
+    - quote: "The Director Defendants’ motion to dismiss the claims against them is granted."
+      source_locator: "official PDF p. 5; text line 130 in 2026-09-14 verification"
+evidence_and_procedure:
+  material_facts:
+    - "Pleading supported knowledge of significant red flags."
+    - "Board response included engagement with management, outside consultants, policy revision, training and other measures."
+  evidentiary_issue: Pleading-stage allegations and incorporated documents
+  burden_of_proof_issue: Pleading must support a reasonably conceivable bad-faith oversight claim
+  missing_records_issue: UNKNOWN
+  logging_or_preservation_issue: UNKNOWN
+liability_elements:
+  actor: Corporate directors
+  duty: Red-flags oversight duty under Delaware fiduciary law
+  breach: NOT_PLAUSIBLY_PLED_ON_THE_FACTS_ADDRESSED
+  foreseeability: NOT_SEPARATELY_ADJUDICATED_FOR_AI_ANALOGY
+  causation: NOT_REACHED_AS_FINAL_LIABILITY
+  damage: NOT_REACHED_AS_FINAL_LIABILITY
+  defences: Meaningful response and business-judgment protections materially affected the analysis
+  allocation_among_multiple_actors: NOT_RESOLVED_FOR_AI_ANALOGY
+ai_relevance:
+  direct_ai_issue: false
+  analogy_targets:
+    - board response to AI incidents and regulatory warnings
+    - AI red-flag escalation
+    - distinction between imperfect response and conscious disregard
+  analogous_element: "Knowledge of a risk does not alone establish a fiduciary oversight breach; conscious disregard/bad faith and the actual governance response matter."
+  analogy_limit: "The case concerns workplace misconduct, not AI. It does not establish a safe harbor for any particular AI control set, and it does not imply that all AI incidents or regulator warnings are equivalent red flags."
+  prohibited_label_inference: "ANALOGICAL_PRECEDENT != AI_PRECEDENT"
+research:
+  search_terms:
+    - McDonald's director dismissal 2023 oversight
+    - red flags bad faith directors
+    - Caremark response directors
+  full_text_verified: true
+  official_source_verified: true
+  verification_date: 2026-09-14
+  researcher: AI-LAWS_R015
+  model_assistance: OpenAI model used for source extraction and structured synthesis; official source controls
+  notes: "GitHub-hosted runner returned HTTP 200 with a 244-byte HTML body rather than the official PDF, so no repository PDF snapshot was pinned. Independent official-source retrieval verified the full PDF. This companion opinion is retained as a counterweight to overbroad readings of the January 2023 officer opinion."
+confidence:
+  factual_identity: HIGH
+  legal_analogy: MEDIUM
+review:
+  human_legal_review_state: NOT_REVIEWED
+  canonical: false
