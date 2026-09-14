@@ -12,13 +12,27 @@ Use pack-by-pack ingestion after content-identity verification.
 
 ## NB01 — Global AI Governance
 
+R027 inspected all eight core `INT-001..INT-008` repository PDFs entirely inside GitHub. No artifact/ZIP was created.
+
+```text
+NB01_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8
+NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8
+CONTENT_IDENTITY_VERIFIED = 6
+CONTENT_IDENTITY_PARTIAL = 1  # INT-007 outcome bundle, not exact A/RES/79/1 file
+SUPERSEDED_SOURCE = 1         # INT-004 legacy 43GC volume
+DERIVED_MARKDOWN_REQUIRED = 0
+NOTEBOOK_UPLOADS = 0
+```
+
+Key corrections: `INT-001` repository PDF is the 12-page **CETS 225 treaty text**, not a treaty-status-page snapshot; live Treaty Office status remains mandatory for signatures/ratifications/reservations/declarations. `INT-005` is an OECD Council Recommendation PDF, not a webpage print. `INT-007` is a 64-page Summit of the Future outcome-document bundle containing the Pact and Global Digital Compact, but the extracted PDF does not carry the exact `A/RES/79/1` identifier; use the official adopted source for primary resolution identity. `INT-004` is verified as the legacy 43GC resolutions volume and remains superseded for current primary use by the certified-copy UNESCO URL.
+
 ### Prefer official URL over repository PDF
 
-- `INT-001` CETS 225 treaty status page — dynamic status; PDF only historical snapshot.
+- `INT-001` CETS 225 — repository PDF verified as treaty text; use the live Treaty Office URL for current party/status data.
 - `INT-002` CETS 225 Explanatory Report — URL preferred; PDF fallback after content check.
 - `INT-005` OECD AI Principles — live official page preferred.
 - `INT-006` A/RES/78/265 — UN URL preferred.
-- `INT-007` Pact for the Future / Global Digital Compact — UN official URL preferred.
+- `INT-007` Pact for the Future / Global Digital Compact — repository PDF is a verified outcome-document bundle but not the exact A/RES/79/1 file; UN official adopted source required for primary resolution identity.
 - `INT-008` Governing AI for Humanity — UN official URL preferred; repository binary not preferred due reproduction/right-state concerns.
 - `US-007` NIST AI RMF and `US-008` NIST GenAI Profile may be used as supporting framework sources where assigned, but are not binding law.
 

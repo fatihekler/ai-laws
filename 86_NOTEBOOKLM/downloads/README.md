@@ -152,13 +152,21 @@ UNKNOWN
 
 ## Important source-specific warnings
 
-### INT-001 — CETS No.225 treaty status page
+### INT-001 — CETS No.225 repository PDF
 
-The PDF is a time snapshot. Current signatures, ratifications, reservations and declarations must come from the live Council of Europe treaty-status page.
+R027 verified that the repository PDF is the **12-page treaty text itself**, not a treaty-status-page print. The repository filename is therefore misleading and the registry mapping has been corrected. Current signatures, ratifications, reservations and declarations must still come from the live Council of Europe Treaty Office page.
 
 ### INT-004 — UNESCO Neurotechnology
 
 The repository file named `Recommendation on the Ethics of Neurotechnology (2025)  43rd General Conference resolutions source.pdf` is a legacy source variant. The current preferred primary Notebook source is UNESCO's certified-copy record `pf0000397812_eng` identified in the acquisition manifest and NB06 closeout. Do not load the legacy PDF as the primary/current source.
+
+### INT-005 — OECD AI Principles
+
+R027 verified the repository PDF as the 12-page `Recommendation of the Council on Artificial Intelligence` with 2024 update signal. It is not a webpage-print snapshot. The current OECD page remains preferred for currentness.
+
+### INT-007 — Pact / Global Digital Compact
+
+R027 verified the repository file as a 64-page Summit of the Future outcome-document bundle containing the Pact for the Future and Global Digital Compact. The extracted text does not contain the exact `A/RES/79/1` identifier, so it is `CONTENT_IDENTITY_PARTIAL` for the manifest source and must not replace the exact adopted-resolution source.
 
 ### EU-001 — AI Act
 
@@ -170,7 +178,7 @@ A Directive is not proof of identical domestic implementation in every Member St
 
 ### TR-001 through TR-008
 
-The files were manually added after the prior acquisition closeouts. Treat them as `REPOSITORY_BINARY_PRESENT / CONTENT_IDENTITY_UNVERIFIED` until title, law number, current consolidated state and official-source identity are checked. `TR-008` requires special confirmation that Law No. 7590 amendments effective 2026-07-31 are reflected.
+R026 verified repository-snapshot content identity and native searchable text for all eight files. `TR-008` includes Law No. 7590 effects effective 2026-07-31. Live official Mevzuat exact-byte/currentness recheck remains required before material legal conclusions.
 
 ### Incident sources
 

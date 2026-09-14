@@ -65,11 +65,26 @@ NB00 teaches method. It is not proof of substantive law.
 
 ## B. NB01 — Global AI governance
 
+R027 repository-binary validation state:
+
+```text
+INT-001 = CONTENT_IDENTITY_VERIFIED / TREATY_TEXT_SNAPSHOT / LIVE_STATUS_URL_REQUIRED
+INT-002 = CONTENT_IDENTITY_VERIFIED
+INT-003 = CONTENT_IDENTITY_VERIFIED
+INT-004 = SUPERSEDED_SOURCE / CERTIFIED_COPY_URL_PRIMARY
+INT-005 = CONTENT_IDENTITY_VERIFIED / OECD_RECOMMENDATION_PDF
+INT-006 = CONTENT_IDENTITY_VERIFIED
+INT-007 = CONTENT_IDENTITY_PARTIAL / OUTCOME_DOCUMENT_BUNDLE_NOT_EXACT_A_RES_79_1_FILE
+INT-008 = CONTENT_IDENTITY_VERIFIED / OFFICIAL_URL_PREFERRED_DUE_RIGHTS_STATE
+```
+
+All eight have native searchable text layers; no Markdown derivative is required.
+
 ### Council of Europe
 
-- `INT-001` CETS No.225 treaty/status page  
+- `INT-001` CETS No.225  
   https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225  
-  **Use state:** live official URL required for current treaty status; repository PDF is historical snapshot only.
+  **R027 repository file state:** verified 12-page treaty text. Live official URL remains required for current signatures, ratifications, reservations and declarations.
 
 - `INT-002` CETS No.225 Explanatory Report  
   https://rm.coe.int/1680afae67  
@@ -98,9 +113,9 @@ NB00 teaches method. It is not proof of substantive law.
   https://digitallibrary.un.org/record/4043244/  
   **Use state:** official URL preferred.
 
-- `INT-007` Pact for the Future / Global Digital Compact — A/RES/79/1  
+- `INT-007` Pact for the Future / Global Digital Compact — A/RES/79/1 source family  
   https://www.un.org/pact-for-the-future/en  
-  **Use state:** adopted official URL preferred.
+  **R027 repository file state:** 64-page Summit of the Future outcome-document bundle verified; exact `A/RES/79/1` identifier is absent from the PDF, so use the adopted official source for primary resolution identity.
 
 - `INT-008` Governing AI for Humanity — UN Advisory Body final report  
   https://digitallibrary.un.org/record/4062495  
@@ -181,17 +196,7 @@ Repository binaries now exist for:
 - `TR-007` Law No. 5651
 - `TR-008` Cybersecurity Law — No. 7545
 
-These files were manually added after the prior R005/NB04 acquisition closeout. Their repository presence resolves neither content identity nor currentness.
-
-Required before Notebook baseline upload:
-
-1. open each PDF;
-2. verify exact law number/title;
-3. compare against the official Mevzuat/Resmî Gazete source pin;
-4. verify current consolidated state;
-5. record content-identity result in the ledger/registry.
-
-`TR-008` requires explicit confirmation that Law No. 7590 amendments effective 2026-07-31 are reflected.
+R026 subsequently verified repository content identity for all eight Türkiye PDFs, including native text layers, title/law-number checks and first/final pages. `TR-008` was confirmed to include Law No. 7590 effects effective 2026-07-31. These remain repository snapshots: live official Mevzuat exact-byte/currentness recheck is still required before material legal conclusions.
 
 Official portals:
 

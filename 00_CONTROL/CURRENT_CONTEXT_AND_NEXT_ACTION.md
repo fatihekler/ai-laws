@@ -3,7 +3,7 @@
 **UPDATED:** 2026-09-14  
 **REPOSITORY:** `fatihekler/ai-laws`  
 **BRANCH:** `main`  
-**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE  
+**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE  
 **AUTO_ADVANCE:** NO
 
 ## 1. Project position
@@ -41,6 +41,7 @@ AI-LAWS-R023 = COMPLETE_SUPPORT_INFRASTRUCTURE
 AI-LAWS-R024 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R025 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R026 = COMPLETE_SUPPORT_SOURCE_VALIDATION
+AI-LAWS-R027 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 ```
 
 ### R001
@@ -135,6 +136,24 @@ Durable outputs:
 - updated downloads registry, acquisition ledger and Notebook upload plan;
 - `86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R026_NB04_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md`.
 
+### R027 — NB01 global-governance repository PDF validation
+
+R027 inspected all eight core `INT-001..INT-008` repository PDFs inside GitHub, with no artifact/ZIP creation.
+
+```text
+NB01_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8
+NB01_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8
+NB01_CONTENT_IDENTITY_VERIFIED = 6
+NB01_CONTENT_IDENTITY_PARTIAL = 1
+NB01_SUPERSEDED_SOURCE = 1
+NB01_DERIVED_MARKDOWN = 0
+NB01_NOTEBOOK_UPLOADS = 0
+```
+
+Critical corrections: `INT-001` is treaty text rather than a status-page snapshot; `INT-005` is the OECD Council Recommendation PDF; `INT-007` is an outcome-document bundle rather than the exact `A/RES/79/1` file; `INT-004` remains a verified legacy 43GC source superseded for primary use by the certified-copy UNESCO URL.
+
+Durable output: `86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv` and R027 closeout/registry/ledger/control reconciliations.
+
 ### R025 — NB02 remaining EU source validation
 
 R025 processed the seven NB02 sources not already covered by R024:
@@ -184,7 +203,7 @@ OFFICIAL_URL_SOURCE_VERIFIED != REPOSITORY_PDF_BODY_VERIFIED
 
 ### NB01 — Global AI Governance
 
-`NB-BATCH-NB01-20260913-001` completed source-rights/acquisition-state reconciliation but created no binaries in that execution environment.
+`NB-BATCH-NB01-20260913-001` completed source-rights/acquisition-state reconciliation. The user later added repository PDFs; R027 validated the eight core `INT-001..INT-008` binaries and corrected their repository routing semantics. Six are `CONTENT_IDENTITY_VERIFIED`, `INT-007` is `CONTENT_IDENTITY_PARTIAL` as an outcome-document bundle rather than the exact resolution file, and `INT-004` is a genuine but superseded legacy source for primary use.
 
 ### NB03 — United States
 
@@ -228,6 +247,19 @@ NB09 = CROSS-REPO REQUIREMENTS
 Do not upload the entire `downloads/` directory blindly.
 
 Use `downloads/DOWNLOADS_REGISTRY.csv` and pack-by-pack ingestion.
+
+### NB01 current ingest state
+
+```text
+NB01_CORE_PDF_CONTENT_IDENTITY_VERIFIED = 6 / 8
+NB01_INT007_CONTENT_IDENTITY = PARTIAL_OUTCOME_BUNDLE
+NB01_INT004_PRIMARY_STATE = SUPERSEDED_SOURCE_USE_CERTIFIED_COPY_URL
+NB01_NATIVE_TEXT_LAYER = 8 / 8
+NB01_DERIVED_MARKDOWN_REQUIRED = 0
+NB01_NOTEBOOK_UPLOADS = 0
+```
+
+Use the source-specific routing in `DOWNLOADS_REGISTRY.csv`; dynamic/current official URLs remain authoritative for current status.
 
 ### NB02 current ingest state
 
@@ -339,7 +371,7 @@ The controlled NB02 official URL set is now ready for a separate Notebook ingest
 
 NB07 official sources also remain ready for a separate Notebook ingestion step.
 
-No subsequent source pack is auto-selected by R026.
+R027 completed the NB01 core repository-PDF classification. The next unprocessed primary repository pack by pack order is NB03, but it is not auto-started.
 
 ### Türkiye source-processing lane
 
@@ -379,6 +411,11 @@ R026_NB04_CONTENT_IDENTITY_VERIFIED = 8
 R026_NB04_NATIVE_TEXT_LAYER_VERIFIED = 8
 R026_TR008_7590_INCLUDED = YES
 R026_OFFICIAL_LIVE_MEVZUAT_RECHECK = BLOCKED
+R027_NB01_CORE_PDFS_INSPECTED = 8
+R027_NB01_CONTENT_IDENTITY_VERIFIED = 6
+R027_NB01_CONTENT_IDENTITY_PARTIAL = 1
+R027_NB01_SUPERSEDED_SOURCE = 1
+R027_NB01_NATIVE_TEXT_LAYER_VERIFIED = 8
 NB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10
 NB02_OFFICIAL_URL_DIRECT_READY = 10
 NB02_REPOSITORY_PDF_CONTENT_IDENTITY_PARTIAL = 10
