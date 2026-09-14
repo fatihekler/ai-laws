@@ -46,11 +46,12 @@ assert '### R017 state systems accountability baseline' not in c, 'R017 context 
 c=c.replace(marker,section+marker,1)
 cpath.write_text(c,encoding='utf-8')
 
-# Closeout research SHA reconciliation.
+# Closeout research SHA reconciliation and whitespace normalization.
 ppath=Path('95_RESEARCH/STATE_SYSTEMS/AI-LAWS-R017_CLOSEOUT_2026-09-14.md')
 p=ppath.read_text(encoding='utf-8')
 assert '**R017_RESEARCH_COMMIT:** `PENDING_RECONCILIATION`' in p
 p=p.replace('**R017_RESEARCH_COMMIT:** `PENDING_RECONCILIATION`','**R017_RESEARCH_COMMIT:** `'+RESEARCH_SHA+'`',1)
+p='\n'.join(line.rstrip() for line in p.splitlines())+'\n'
 ppath.write_text(p,encoding='utf-8')
 
 # Fail closed if control invariants were accidentally changed.
