@@ -1,0 +1,228 @@
+name: AI-LAWS R027 NB01 durable state
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r027-nb01-durable-state.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install PDF inspection tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils
+
+      - name: Verify PDFs and write R027 durable state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv, hashlib, re, subprocess
+          from pathlib import Path
+
+          batch='NB-BATCH-NB01-20260914-002'
+          base_head='93b6573f32f0508a1d965158e533cd86d3e26891'
+          inspection_commit='73b65891a14e35238f804d6781a14b4a5596f217'
+          inspection_run='34808436429'
+
+          rows={
+            'INT-001': dict(filename='CETS No.225 treaty status page .pdf', blob='5c0995be29465bb22c14ab8d158de76865683e97', sha='1ac6c8a85f55446cdb53697b57c6be3ce8757068043992955eda571e7fe52f23', size=362548, pages=12, pdfver='1.5', producer='Microsoft® Word 2013', chars=37015, title='Council of Europe Framework Convention on Artificial Intelligence and Human Rights Democracy and the Rule of Law', doc='CETS No.225', jurisdiction='COE', authority='Council of Europe', aclass='TREATY_OR_INTERNATIONAL_INSTRUMENT', binding='binding for parties subject to treaty status', official='https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225', state='TREATY_TEXT_IDENTITY_VERIFIED; LIVE_TREATY_STATUS_RECHECK_REQUIRED', cid='CONTENT_IDENTITY_VERIFIED', variant='OFFICIAL_TREATY_TEXT_SNAPSHOT', ingest='VERIFIED_TREATY_TEXT_PDF_ELIGIBLE; LIVE_OFFICIAL_URL_REQUIRED_FOR_CURRENT_SIGNATURE_RATIFICATION_RESERVATION_DECLARATION_STATUS', label='INT-001 | COE | TREATY | CETS 225 | Framework Convention | TREATY-TEXT-SNAPSHOT', canonical='INT-001__COE__CETS-225__TREATY-TEXT__2024-09-05.pdf', marker='Full 12-page treaty text verified; repository filename incorrectly implied a treaty-status page.', rights='OFFICIAL_PUBLIC_URL'),
+            'INT-002': dict(filename='CETS No.225 Explanatory Report.pdf', blob='0819ecaa14d4119a9e6b227421595b2ec6003006', sha='6494c90612172f6b6c84620ebdd7256606f58c8ab3ec4b9d29890f6305814169', size=526521, pages=33, pdfver='1.5', producer='Microsoft® Word 2013', chars=150500, title='Explanatory Report to CETS No.225', doc='CETS 225 Explanatory Report', jurisdiction='COE', authority='Council of Europe', aclass='OFFICIAL_GUIDANCE', binding='nonbinding explanatory report', official='https://rm.coe.int/1680afae67', state='FIXED_2024_EXPLANATORY_REPORT_IDENTITY_VERIFIED; OFFICIAL_URL_PREFERRED', cid='CONTENT_IDENTITY_VERIFIED', variant='OFFICIAL_EXPLANATORY_REPORT_PDF_SNAPSHOT', ingest='PDF_ELIGIBLE_AFTER_R027_CONTENT_CHECK; OFFICIAL_URL_PREFERRED', label='INT-002 | COE | OFFICIAL_GUIDANCE | CETS 225 Explanatory Report | VERIFIED-PDF', canonical='INT-002__COE__CETS-225__EXPLANATORY-REPORT.pdf', marker='33-page explanatory report verified; first page identifies CETS 225 and 5.IX.2024; final page continues Articles 34-35 commentary.', rights='OFFICIAL_PUBLIC_URL'),
+            'INT-003': dict(filename='Recommendation on the Ethics of Artificial Intelligence (2021).pdf', blob='36c8ad22607ff74e27ecf81456f443a581e1fac9', sha='e7ca2b48eed56a390c6b0c900d9e8ec4d665b2ac71bcbf4b066fa277c0a3ded2', size=1065406, pages=44, pdfver='1.4', producer='Adobe PDF Library 15.0; modified using iText Core 9.1.0', chars=130101, title='Recommendation on the Ethics of Artificial Intelligence', doc='UNESCO 41 C/Recommendation 2021', jurisdiction='UNESCO', authority='UNESCO General Conference', aclass='SOFT_LAW_RECOMMENDATION', binding='nonbinding recommendation', official='https://unesdoc.unesco.org/ark:/48223/pf0000381137', state='REPOSITORY_PDF_IDENTITY_VERIFIED; ADOPTED_2021-11-23; OFFICIAL_EXACT_BYTE_MATCH_NOT_RUN', cid='CONTENT_IDENTITY_VERIFIED', variant='OFFICIAL_OPEN_ACCESS_RECOMMENDATION_PDF', ingest='PDF_UPLOAD_ELIGIBLE_AS_VERIFIED_REPOSITORY_SNAPSHOT; OFFICIAL_SOURCE_RECHECK_REQUIRED_BEFORE_MATERIAL_CLAIM', label='INT-003 | UNESCO | SOFT-LAW | AI Ethics Recommendation | 2021 | VERIFIED-PDF', canonical='INT-003__UNESCO__AI-ETHICS-RECOMMENDATION__2021.pdf', marker='44-page searchable PDF; first page states Recommendation on the Ethics of Artificial Intelligence and Adopted on 23 November 2021; UNESCO closing page present.', rights='CC-BY-NC-SA 3.0 IGO per verified publication record'),
+            'INT-004': dict(filename='Recommendation on the Ethics of Neurotechnology (2025)  43rd General Conference resolutions source.pdf', blob='96b71d75dd445681b855c5ae5728fc3748a99521', sha='028d0fd8472412091e05617b542b6ea41a60d9602cdb7df2a1dfdeb7c86505ae', size=2338963, pages=137, pdfver='1.4', producer='Adobe PDF Library 25.1.5; modified using iText Core 9.1.0', chars=699004, title='Recommendation on the Ethics of Neurotechnology - legacy 43rd General Conference resolutions source', doc='UNESCO 43rd General Conference 2025 / Annex II', jurisdiction='UNESCO', authority='UNESCO General Conference', aclass='SOFT_LAW_RECOMMENDATION', binding='nonbinding recommendation', official='https://unesdoc.unesco.org/ark:/48223/pf0000397812_eng', state='LEGACY_43GC_SOURCE_IDENTITY_VERIFIED; SUPERSEDED_FOR_PRIMARY_USE_BY_CERTIFIED_COPY_2026', cid='SUPERSEDED_SOURCE', variant='LEGACY_43GC_RESOLUTIONS_VOLUME', ingest='DO_NOT_UPLOAD_AS_CURRENT_PRIMARY; USE_CERTIFIED_COPY_URL_pf0000397812_eng; HISTORICAL_SUPPORTING_ONLY_IF_NEEDED', label='INT-004-LEGACY | UNESCO | SOFT-LAW | Neurotechnology | 43GC Resolutions | SUPERSEDED-SOURCE', canonical='INT-004__UNESCO__NEUROTECH__43GC-RESOLUTIONS__LEGACY.pdf', marker='137-page 43rd General Conference resolutions volume verified; Annex II contains the Recommendation. Current primary remains the certified-copy UNESCO source.', rights='OFFICIAL_PUBLIC_URL_REPO_VENDORING_RIGHTS_NOT_PINNED'),
+            'INT-005': dict(filename='OECD AI Principles (updated 2024).pdf', blob='5beed266ccf239f0d079187005a42372339f484d', sha='88227000e69be9aad5864155bd3e06ebead1e76c5b7cf662d63c1605408e5060', size=679046, pages=12, pdfver='1.7', producer='Microsoft® Word 2024', chars=36807, title='OECD Recommendation of the Council on Artificial Intelligence', doc='OECD Recommendation on AI updated 2024', jurisdiction='OECD', authority='OECD', aclass='SOFT_LAW_RECOMMENDATION', binding='intergovernmental recommendation', official='https://www.oecd.org/en/topics/ai-principles.html', state='UPDATED_2024_RECOMMENDATION_PDF_IDENTITY_VERIFIED; LIVE_OECD_CURRENTNESS_RECHECK_REQUIRED', cid='CONTENT_IDENTITY_VERIFIED', variant='OFFICIAL_OECD_LEGAL_INSTRUMENT_PDF_SNAPSHOT', ingest='VERIFIED_PDF_SUPPORTING_ELIGIBLE; CURRENT_OFFICIAL_OECD_URL_PREFERRED', label='INT-005 | OECD | SOFT-LAW | Council Recommendation on AI | updated 2024 | VERIFIED-PDF', canonical='INT-005__OECD__COUNCIL-RECOMMENDATION-AI__UPDATED-2024.pdf', marker='12-page Recommendation of the Council on Artificial Intelligence verified; 2024 update signal present. Prior webpage-print classification was incorrect.', rights='OFFICIAL_PUBLIC_URL'),
+            'INT-006': dict(filename='A RES 78 265 — Safe, secure and trustworthy AI systems for sustainable development.pdf', blob='9e6bccbf8563e099d48a9f0b40016a53dbb417d4', sha='83887bee43ad1d5065de9f48c8ad5b7e81807944a3d2ec89023e3da3f61159d9', size=275137, pages=8, pdfver='1.7', producer='Microsoft® Word for Microsoft 365', chars=36094, title='Seizing the opportunities of safe secure and trustworthy artificial intelligence systems for sustainable development', doc='A/RES/78/265', jurisdiction='UN', authority='United Nations General Assembly', aclass='TREATY_OR_INTERNATIONAL_INSTRUMENT', binding='UN General Assembly resolution; not treaty', official='https://digitallibrary.un.org/record/4043244/', state='FIXED_RESOLUTION_IDENTITY_VERIFIED; OFFICIAL_URL_PREFERRED', cid='CONTENT_IDENTITY_VERIFIED', variant='UNGA_RESOLUTION_PDF_SNAPSHOT', ingest='VERIFIED_REPOSITORY_SNAPSHOT_SUPPORTING_ONLY; OFFICIAL_UN_URL_PREFERRED_DUE_RIGHTS_STATE', label='INT-006 | UN | UNGA_RESOLUTION | A/RES/78/265 | VERIFIED-PDF', canonical='INT-006__UN__A-RES-78-265__2024-04-01.pdf', marker='8-page A/RES/78/265 resolution verified; first page carries document ID, adoption date 21 March 2024 and General Assembly heading.', rights='OFFICIAL_PUBLIC_URL_REPRODUCTION_PERMISSION_NOT_ESTABLISHED'),
+            'INT-007': dict(filename='Pact for the Future  Global Digital Compact — A RES 79 1 .pdf', blob='a5dffeaa1c0a7f46f01461ac3d00372d84fe22ac', sha='74f42f32e349b9e71b70995cff9c10cf7e133d9a83141f906f052ba9de922a8e', size=957333, pages=64, pdfver='1.7', producer='Adobe PDF Library 17.0', chars=292890, title='Summit of the Future Outcome Documents - Pact for the Future Global Digital Compact and Declaration on Future Generations', doc='Outcome-document bundle related to A/RES/79/1', jurisdiction='UN', authority='United Nations', aclass='TREATY_OR_INTERNATIONAL_INSTRUMENT', binding='UN General Assembly outcome-document context; not treaty', official='https://www.un.org/pact-for-the-future/en', state='OUTCOME_DOCUMENT_BUNDLE_IDENTITY_VERIFIED; EXACT_A_RES_79_1_DOCUMENT_ID_NOT_PRESENT_IN_PDF', cid='CONTENT_IDENTITY_PARTIAL', variant='UN_SUMMIT_OUTCOME_DOCUMENT_BUNDLE', ingest='SUPPORTING_BUNDLE_ONLY; OFFICIAL_ADOPTED_A_RES_79_1_SOURCE_REQUIRED_FOR_PRIMARY_RESOLUTION_IDENTITY', label='INT-007 | UN | OUTCOME-DOCUMENT-BUNDLE | Pact + GDC | 2024 | SUPPORTING', canonical='INT-007__UN__SUMMIT-OUTCOME-DOCUMENTS__2024.pdf', marker='64-page Summit of the Future outcome-document publication verified; title includes Pact for the Future and Global Digital Compact, but A/RES/79/1 identifier is absent from extracted text.', rights='OFFICIAL_PUBLIC_URL'),
+            'INT-008': dict(filename='Governing AI for Humanity — UN Advisory Body final report.pdf', blob='1957c763b515ab3edcdcee6ac013e6763c41a82e', sha='08923cc8a90f724b0cb91d65b02bad5612c68883327f9e34518a5818a4fb4908', size=4340014, pages=101, pdfver='1.4', producer='macOS Quartz PDFContext', chars=608474, title='Governing AI for Humanity - Final Report', doc='UN Advisory Body on AI 2024 Final Report', jurisdiction='UN', authority='United Nations Secretary-General High-level Advisory Body on Artificial Intelligence', aclass='OFFICIAL_GUIDANCE', binding='advisory report; nonbinding', official='https://digitallibrary.un.org/record/4062495', state='FINAL_REPORT_REPOSITORY_PDF_IDENTITY_VERIFIED; OFFICIAL_URL_PREFERRED_DUE_RIGHTS_STATE', cid='CONTENT_IDENTITY_VERIFIED', variant='UN_ADVISORY_BODY_FINAL_REPORT_PDF_SNAPSHOT', ingest='VERIFIED_REPOSITORY_SNAPSHOT_BUT_REPO_BINARY_NOT_PREFERRED_FOR_NOTEBOOK; USE_OFFICIAL_UN_URL', label='INT-008 | UN | ADVISORY_REPORT | Governing AI for Humanity | 2024 | VERIFIED-PDF', canonical='INT-008__UN__AI-ADVISORY-BODY__GOVERNING-AI__2024.pdf', marker='101-page searchable final report verified; first page states September 2024 GOVERNING AI FOR HUMANITY; final page carries report title.', rights='UN_COPYRIGHT_RESTRICTIONS_REPO_VENDORING_NOT_AUTHORIZED'),
+          }
+
+          # Re-verify local bytes and key identity markers on the exact current checkout.
+          markers={
+            'INT-001':['Council of Europe Framework Convention on Artificial Intelligence','CETS 225'],
+            'INT-002':['Explanatory Report','Framework Convention on Artificial Intelligence'],
+            'INT-003':['Recommendation on the Ethics of Artificial Intelligence','Adopted on 23 November 2021'],
+            'INT-004':['Resolutions of the 43rd session of the General Conference','ethics of neurotechnology'],
+            'INT-005':['Recommendation of the Council on Artificial Intelligence','2024'],
+            'INT-006':['A/RES/78/265','Seizing the opportunities'],
+            'INT-007':['Pact for the Future','Global Digital Compact'],
+            'INT-008':['GOVERNING AI FOR HUMANITY','2024'],
+          }
+          for sid,r in rows.items():
+            p=Path('86_NOTEBOOKLM/downloads')/r['filename']
+            assert p.exists(), (sid,'missing')
+            actual=hashlib.sha256(p.read_bytes()).hexdigest()
+            assert actual==r['sha'], (sid,actual,r['sha'])
+            pages=subprocess.check_output(['pdfinfo',str(p)],text=True,errors='replace')
+            m=re.search(r'^Pages:\s+(\d+)',pages,re.M)
+            assert m and int(m.group(1))==r['pages'], (sid,'pages')
+            text=subprocess.check_output(['pdftotext','-layout',str(p),'-'],text=True,errors='replace')
+            assert len(text)>1000, (sid,'text layer')
+            low=text.lower()
+            for marker in markers[sid]:
+                assert marker.lower() in low, (sid,'marker',marker)
+            if sid=='INT-007':
+                assert 'A/RES/79/1' not in text, 'INT-007 classification changed; exact doc ID now present'
+
+          # Results matrix.
+          results=Path('86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv')
+          fields=['source_id','repo_filename','repo_git_blob_sha','repo_sha256','repo_byte_size','pages','pdf_version','producer','text_chars','text_layer_state','binary_variant','content_identity_state','currentness_state','rights_or_use_state','derivation_required','notebook_upload_eligibility','notes']
+          with results.open('w',newline='',encoding='utf-8') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader()
+            for sid,r in rows.items():
+              w.writerow(dict(source_id=sid,repo_filename=r['filename'],repo_git_blob_sha=r['blob'],repo_sha256=r['sha'],repo_byte_size=r['size'],pages=r['pages'],pdf_version=r['pdfver'],producer=r['producer'],text_chars=r['chars'],text_layer_state='NATIVE_SEARCHABLE_TEXT_LAYER_VERIFIED',binary_variant=r['variant'],content_identity_state=r['cid'],currentness_state=r['state'],rights_or_use_state=r['rights'],derivation_required='NO',notebook_upload_eligibility=r['ingest'],notes=r['marker']))
+
+          # Downloads registry reconciliation.
+          reg=Path('86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv')
+          with reg.open(newline='',encoding='utf-8') as f:
+            reader=csv.DictReader(f); reg_fields=reader.fieldnames; data=list(reader)
+          seen=set()
+          for rec in data:
+            sid=rec.get('manifest_source_id')
+            if sid not in rows: continue
+            r=rows[sid]; seen.add(sid)
+            rec['document_id']=r['doc']
+            rec['binary_variant']=r['variant']
+            rec['content_identity_state']=r['cid']
+            rec['currentness_state']=r['state']
+            rec['notebook_ingest_mode']=r['ingest']
+            rec['recommended_notebook_label']=r['label']
+            rec['recommended_canonical_filename']=r['canonical']
+            rec['action']=f"R027 GitHub-local validation: SHA256 {r['sha']}; {r['pages']} pages; native searchable text; {r['marker']}"
+          assert seen==set(rows), ('registry missing',set(rows)-seen)
+          with reg.open('w',newline='',encoding='utf-8') as f:
+            w=csv.DictWriter(f,fieldnames=reg_fields,lineterminator='\n'); w.writeheader(); w.writerows(data)
+
+          # Acquisition/validation ledger: append rather than overwrite historical R021 evidence.
+          ledger=Path('86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv')
+          with ledger.open(newline='',encoding='utf-8') as f:
+            reader=csv.DictReader(f); lf=reader.fieldnames; lr=list(reader)
+          assert not any(x.get('batch_id')==batch for x in lr), 'R027 ledger batch already exists'
+          for sid,r in rows.items():
+            item={k:'' for k in lf}
+            primary='OFFICIAL_SOURCE_RECHECK_REQUIRED_BEFORE_MATERIAL_CLAIM'
+            if sid=='INT-001': primary='LIVE_TREATY_STATUS_RECHECK_REQUIRED_BEFORE_COUNTRY_EFFECT_CLAIM'
+            if sid=='INT-004': primary='CERTIFIED_COPY_URL_IS_PRIMARY; LEGACY_PDF_NOT_CURRENT_PRIMARY'
+            if sid=='INT-007': primary='EXACT_A_RES_79_1_PRIMARY_SOURCE_RECHECK_REQUIRED; REPOSITORY_FILE_IS_BUNDLE'
+            item.update({'batch_id':batch,'source_id':sid,'notebook_pack':'NB01','jurisdiction':r['jurisdiction'],'title':r['title'],'document_id':r['doc'],'issuing_authority':r['authority'],'authority_class':r['aclass'],'binding_state':r['binding'],'official_url':r['official'],'retrieval_date':'2026-09-14','version_state':r['state'],'adoption_date':'NOT_RECHECKED_IN_R027','publication_date':'NOT_RECHECKED_IN_R027','entry_into_force_date':'NOT_RECHECKED_IN_R027','application_date':'NOT_RECHECKED_IN_R027','authentic_language':'English where present; treaty also French authentic per text','translation_state':'NOT_RECHECKED_IN_R027','rights_state':r['rights'],'acquisition_method':'USER_MANUAL_DOWNLOAD_REPOSITORY_SNAPSHOT','local_filename_or_url':f"86_NOTEBOOKLM/downloads/{r['filename']}",'sha256':r['sha'],'byte_size':str(r['size']),'content_type':'application/pdf','content_identity_checked':r['cid'],'notebook_ingest_state':'NOT_RUN','notebook_locator_test':'NOT_RUN','primary_source_recheck_state':primary,'refresh_trigger':'official source replacement/currentness change; dynamic treaty/OECD status where applicable','human_review_required':'YES_BEFORE_MATERIAL_LEGAL_CONCLUSION','notes':f"R027 GitHub-local PDF inspection: {r['pages']} pages; native searchable text; {r['marker']} SHA-256 proves repository snapshot identity only; no Notebook upload occurred."})
+            lr.append(item)
+          with ledger.open('w',newline='',encoding='utf-8') as f:
+            w=csv.DictWriter(f,fieldnames=lf,lineterminator='\n'); w.writeheader(); w.writerows(lr)
+
+          # Upload plan: add R027 state and correct INT-001/INT-007 semantics.
+          plan=Path('86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md')
+          t=plan.read_text(encoding='utf-8')
+          anchor='## NB01 — Global AI Governance\n\n'
+          assert anchor in t
+          block='''## NB01 — Global AI Governance\n\nR027 inspected all eight core `INT-001..INT-008` repository PDFs entirely inside GitHub. No artifact/ZIP was created.\n\n```text\nNB01_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8\nNATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nCONTENT_IDENTITY_VERIFIED = 6\nCONTENT_IDENTITY_PARTIAL = 1  # INT-007 outcome bundle, not exact A/RES/79/1 file\nSUPERSEDED_SOURCE = 1         # INT-004 legacy 43GC volume\nDERIVED_MARKDOWN_REQUIRED = 0\nNOTEBOOK_UPLOADS = 0\n```\n\nKey corrections: `INT-001` repository PDF is the 12-page **CETS 225 treaty text**, not a treaty-status-page snapshot; live Treaty Office status remains mandatory for signatures/ratifications/reservations/declarations. `INT-005` is an OECD Council Recommendation PDF, not a webpage print. `INT-007` is a 64-page Summit of the Future outcome-document bundle containing the Pact and Global Digital Compact, but the extracted PDF does not carry the exact `A/RES/79/1` identifier; use the official adopted source for primary resolution identity. `INT-004` is verified as the legacy 43GC resolutions volume and remains superseded for current primary use by the certified-copy UNESCO URL.\n\n'''
+          t=t.replace(anchor,block,1)
+          t=t.replace('- `INT-001` CETS 225 treaty status page — dynamic status; PDF only historical snapshot.','- `INT-001` CETS 225 — repository PDF verified as treaty text; use the live Treaty Office URL for current party/status data.')
+          t=t.replace('- `INT-007` Pact for the Future / Global Digital Compact — UN official URL preferred.','- `INT-007` Pact for the Future / Global Digital Compact — repository PDF is a verified outcome-document bundle but not the exact A/RES/79/1 file; UN official adopted source required for primary resolution identity.')
+          plan.write_text(t,encoding='utf-8')
+
+          # Human-readable download/upload list: add R027 state; correct NB01 and stale NB04 wording.
+          dl=Path('86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md')
+          t=dl.read_text(encoding='utf-8')
+          nb01='## B. NB01 — Global AI governance\n\n'
+          assert nb01 in t
+          nb01block='''## B. NB01 — Global AI governance\n\nR027 repository-binary validation state:\n\n```text\nINT-001 = CONTENT_IDENTITY_VERIFIED / TREATY_TEXT_SNAPSHOT / LIVE_STATUS_URL_REQUIRED\nINT-002 = CONTENT_IDENTITY_VERIFIED\nINT-003 = CONTENT_IDENTITY_VERIFIED\nINT-004 = SUPERSEDED_SOURCE / CERTIFIED_COPY_URL_PRIMARY\nINT-005 = CONTENT_IDENTITY_VERIFIED / OECD_RECOMMENDATION_PDF\nINT-006 = CONTENT_IDENTITY_VERIFIED\nINT-007 = CONTENT_IDENTITY_PARTIAL / OUTCOME_DOCUMENT_BUNDLE_NOT_EXACT_A_RES_79_1_FILE\nINT-008 = CONTENT_IDENTITY_VERIFIED / OFFICIAL_URL_PREFERRED_DUE_RIGHTS_STATE\n```\n\nAll eight have native searchable text layers; no Markdown derivative is required.\n\n'''
+          t=t.replace(nb01,nb01block,1)
+          t=t.replace('- `INT-001` CETS No.225 treaty/status page  \n  https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225  \n  **Use state:** live official URL required for current treaty status; repository PDF is historical snapshot only.','- `INT-001` CETS No.225  \n  https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225  \n  **R027 repository file state:** verified 12-page treaty text. Live official URL remains required for current signatures, ratifications, reservations and declarations.')
+          t=t.replace('- `INT-007` Pact for the Future / Global Digital Compact — A/RES/79/1  \n  https://www.un.org/pact-for-the-future/en  \n  **Use state:** adopted official URL preferred.','- `INT-007` Pact for the Future / Global Digital Compact — A/RES/79/1 source family  \n  https://www.un.org/pact-for-the-future/en  \n  **R027 repository file state:** 64-page Summit of the Future outcome-document bundle verified; exact `A/RES/79/1` identifier is absent from the PDF, so use the adopted official source for primary resolution identity.')
+          old='''These files were manually added after the prior R005/NB04 acquisition closeout. Their repository presence resolves neither content identity nor currentness.\n\nRequired before Notebook baseline upload:\n\n1. open each PDF;\n2. verify exact law number/title;\n3. compare against the official Mevzuat/Resmî Gazete source pin;\n4. verify current consolidated state;\n5. record content-identity result in the ledger/registry.\n\n`TR-008` requires explicit confirmation that Law No. 7590 amendments effective 2026-07-31 are reflected.'''
+          new='''R026 subsequently verified repository content identity for all eight Türkiye PDFs, including native text layers, title/law-number checks and first/final pages. `TR-008` was confirmed to include Law No. 7590 effects effective 2026-07-31. These remain repository snapshots: live official Mevzuat exact-byte/currentness recheck is still required before material legal conclusions.'''
+          assert old in t
+          t=t.replace(old,new)
+          dl.write_text(t,encoding='utf-8')
+
+          # Downloads README: fix INT-001 semantics, add NB01 warnings, reconcile stale TR warning.
+          rd=Path('86_NOTEBOOKLM/downloads/README.md')
+          t=rd.read_text(encoding='utf-8')
+          old='''### INT-001 — CETS No.225 treaty status page\n\nThe PDF is a time snapshot. Current signatures, ratifications, reservations and declarations must come from the live Council of Europe treaty-status page.'''
+          new='''### INT-001 — CETS No.225 repository PDF\n\nR027 verified that the repository PDF is the **12-page treaty text itself**, not a treaty-status-page print. The repository filename is therefore misleading and the registry mapping has been corrected. Current signatures, ratifications, reservations and declarations must still come from the live Council of Europe Treaty Office page.'''
+          assert old in t
+          t=t.replace(old,new)
+          insert='''### INT-005 — OECD AI Principles\n\nR027 verified the repository PDF as the 12-page `Recommendation of the Council on Artificial Intelligence` with 2024 update signal. It is not a webpage-print snapshot. The current OECD page remains preferred for currentness.\n\n### INT-007 — Pact / Global Digital Compact\n\nR027 verified the repository file as a 64-page Summit of the Future outcome-document bundle containing the Pact for the Future and Global Digital Compact. The extracted text does not contain the exact `A/RES/79/1` identifier, so it is `CONTENT_IDENTITY_PARTIAL` for the manifest source and must not replace the exact adopted-resolution source.\n\n'''
+          marker='### EU-001 — AI Act\n'
+          assert marker in t
+          t=t.replace(marker,insert+marker,1)
+          oldtr='''### TR-001 through TR-008\n\nThe files were manually added after the prior acquisition closeouts. Treat them as `REPOSITORY_BINARY_PRESENT / CONTENT_IDENTITY_UNVERIFIED` until title, law number, current consolidated state and official-source identity are checked. `TR-008` requires special confirmation that Law No. 7590 amendments effective 2026-07-31 are reflected.'''
+          newtr='''### TR-001 through TR-008\n\nR026 verified repository-snapshot content identity and native searchable text for all eight files. `TR-008` includes Law No. 7590 effects effective 2026-07-31. Live official Mevzuat exact-byte/currentness recheck remains required before material legal conclusions.'''
+          assert oldtr in t
+          t=t.replace(oldtr,newtr)
+          rd.write_text(t,encoding='utf-8')
+
+          # Queue.
+          q=Path('90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv')
+          with q.open(newline='',encoding='utf-8') as f:
+            reader=csv.DictReader(f); qf=reader.fieldnames; qr=list(reader)
+          assert not any(x['work_item_id']=='AI-LAWS-R027' for x in qr)
+          qr.append({'work_item_id':'AI-LAWS-R027','priority':'P0','workstream':'Notebook NB01 repository source validation','scope':'Validate INT-001..INT-008 repository PDF content identity/text layers and correct binary routing semantics without external downloads or artifacts','state':'COMPLETE_SUPPORT_SOURCE_VALIDATION','dependencies':'R023 COMPLETE + NB01 source manifest/acquisition records','expected_output':'86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv; corrected downloads registry/readme/upload plan/download list; ledger rows; R027 closeout','stop_condition':'NB01 core repository binaries classified; current official/dynamic source rechecks remain source-specific; no Notebook upload or substantive R004/R011 research auto-started'})
+          with q.open('w',newline='',encoding='utf-8') as f:
+            w=csv.DictWriter(f,fieldnames=qf,lineterminator='\n'); w.writeheader(); w.writerows(qr)
+
+          # Closeout.
+          close=Path('86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R027_NB01_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md')
+          close.write_text(f'''# AI-LAWS — R027 / NB01 Global Governance Repository PDF Validation Closeout\n\n**UNIT_ID:** `AI-LAWS-R027 / {batch}`  \n**DATE:** 2026-09-14  \n**BASE_HEAD:** `{base_head}`  \n**INSPECTION_COMMIT:** `{inspection_commit}`  \n**INSPECTION_RUN_ID:** `{inspection_run}`  \n**EXECUTION_CHANNEL:** GitHub only  \n**ZIP_OR_ARTIFACT_CREATED:** NO  \n**AUTO_ADVANCE:** NO\n\n## Scope\n\nThis bounded unit validated only the eight core NB01 repository PDFs `INT-001..INT-008`. It did not upload to NotebookLM, create derived Markdown, start R004 treaty-status substantive research, or start R011 human-sovereignty analysis.\n\n## Result\n\n```text\nNB01_CORE_PDFS_INSPECTED = 8 / 8\nNATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nCONTENT_IDENTITY_VERIFIED = 6\nCONTENT_IDENTITY_PARTIAL = 1\nSUPERSEDED_SOURCE = 1\nDERIVED_MARKDOWN_CREATED = 0\nNOTEBOOK_UPLOADS = 0\nZIP_OR_ARTIFACT_CREATED = 0\n```\n\n### Critical corrections\n\n- `INT-001`: repository filename suggested a treaty-status-page PDF, but the bytes are the 12-page **CETS 225 treaty text**. Registry semantics were corrected. Live Treaty Office status remains mandatory for party/status claims.\n- `INT-005`: repository PDF is the 12-page OECD `Recommendation of the Council on Artificial Intelligence` with 2024 update signal, not a webpage-print snapshot.\n- `INT-007`: repository PDF is a 64-page `SUMMIT OF THE FUTURE OUTCOME DOCUMENTS` bundle containing the Pact for the Future and Global Digital Compact. The exact `A/RES/79/1` identifier is absent from extracted text, so the file is `CONTENT_IDENTITY_PARTIAL` relative to the manifest source and cannot replace the exact adopted-resolution source.\n- `INT-004`: 137-page 43rd General Conference resolutions volume is genuine and contains the Neurotechnology Recommendation in Annex II, but remains `SUPERSEDED_SOURCE` for current primary use. The certified-copy UNESCO source `pf0000397812_eng` remains primary.\n\n### Other verified repository snapshots\n\n- `INT-002`: CETS 225 Explanatory Report, 33 pages.\n- `INT-003`: UNESCO AI Ethics Recommendation, 44 pages, adopted 23 Nov 2021 visible on first page.\n- `INT-006`: exact A/RES/78/265 resolution, 8 pages.\n- `INT-008`: Governing AI for Humanity final report, 101 pages; official URL remains preferred due rights/reproduction state.\n\n## Authority/currentness firewall\n\n```text\nREPOSITORY_PDF_IDENTITY_VERIFIED != LIVE_DYNAMIC_STATUS_VERIFIED\nOUTCOME_DOCUMENT_BUNDLE != EXACT_A_RES_79_1_RESOLUTION_FILE\nLEGACY_43GC_VOLUME != CURRENT_CERTIFIED_COPY\nHASH_MATCH != OFFICIAL_EXACT_BYTE_MATCH\nNOTEBOOK_UPLOAD_ELIGIBLE != LEGAL_CONCLUSION_VERIFIED\n```\n\n## Durable outputs\n\n- `86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv`\n- updated `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`\n- updated `86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md`\n- updated `86_NOTEBOOKLM/downloads/README.md`\n- updated `86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md`\n- updated `86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`\n- updated `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`\n- updated `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`\n\n`LEGAL_CONCLUSION = NOT_ATTEMPTED`  \n`UNKNOWN_PRESERVED = YES`  \n`AUTO_ADVANCE = NO`\n''',encoding='utf-8')
+
+          # Current context.
+          ctx=Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md')
+          c=ctx.read_text(encoding='utf-8')
+          old='**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE'
+          new='**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE'
+          assert old in c
+          c=c.replace(old,new,1)
+          c=c.replace('AI-LAWS-R026 = COMPLETE_SUPPORT_SOURCE_VALIDATION\n```','AI-LAWS-R026 = COMPLETE_SUPPORT_SOURCE_VALIDATION\nAI-LAWS-R027 = COMPLETE_SUPPORT_SOURCE_VALIDATION\n```',1)
+          marker='### R025 — NB02 remaining EU source validation\n'
+          assert marker in c
+          section='''### R027 — NB01 global-governance repository PDF validation\n\nR027 inspected all eight core `INT-001..INT-008` repository PDFs inside GitHub, with no artifact/ZIP creation.\n\n```text\nNB01_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8\nNB01_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nNB01_CONTENT_IDENTITY_VERIFIED = 6\nNB01_CONTENT_IDENTITY_PARTIAL = 1\nNB01_SUPERSEDED_SOURCE = 1\nNB01_DERIVED_MARKDOWN = 0\nNB01_NOTEBOOK_UPLOADS = 0\n```\n\nCritical corrections: `INT-001` is treaty text rather than a status-page snapshot; `INT-005` is the OECD Council Recommendation PDF; `INT-007` is an outcome-document bundle rather than the exact `A/RES/79/1` file; `INT-004` remains a verified legacy 43GC source superseded for primary use by the certified-copy UNESCO URL.\n\nDurable output: `86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv` and R027 closeout/registry/ledger/control reconciliations.\n\n'''
+          c=c.replace(marker,section+marker,1)
+          oldnb='''### NB01 — Global AI Governance\n\n`NB-BATCH-NB01-20260913-001` completed source-rights/acquisition-state reconciliation but created no binaries in that execution environment.'''
+          newnb='''### NB01 — Global AI Governance\n\n`NB-BATCH-NB01-20260913-001` completed source-rights/acquisition-state reconciliation. The user later added repository PDFs; R027 validated the eight core `INT-001..INT-008` binaries and corrected their repository routing semantics. Six are `CONTENT_IDENTITY_VERIFIED`, `INT-007` is `CONTENT_IDENTITY_PARTIAL` as an outcome-document bundle rather than the exact resolution file, and `INT-004` is a genuine but superseded legacy source for primary use.'''
+          assert oldnb in c
+          c=c.replace(oldnb,newnb,1)
+          nb02='### NB02 current ingest state\n'
+          assert nb02 in c
+          nb01state='''### NB01 current ingest state\n\n```text\nNB01_CORE_PDF_CONTENT_IDENTITY_VERIFIED = 6 / 8\nNB01_INT007_CONTENT_IDENTITY = PARTIAL_OUTCOME_BUNDLE\nNB01_INT004_PRIMARY_STATE = SUPERSEDED_SOURCE_USE_CERTIFIED_COPY_URL\nNB01_NATIVE_TEXT_LAYER = 8 / 8\nNB01_DERIVED_MARKDOWN_REQUIRED = 0\nNB01_NOTEBOOK_UPLOADS = 0\n```\n\nUse the source-specific routing in `DOWNLOADS_REGISTRY.csv`; dynamic/current official URLs remain authoritative for current status.\n\n'''
+          c=c.replace(nb02,nb01state+nb02,1)
+          c=c.replace('No subsequent source pack is auto-selected by R026.','R027 completed the NB01 core repository-PDF classification. The next unprocessed primary repository pack by pack order is NB03, but it is not auto-started.',1)
+          c=c.replace('R026_OFFICIAL_LIVE_MEVZUAT_RECHECK = BLOCKED\nNB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10','R026_OFFICIAL_LIVE_MEVZUAT_RECHECK = BLOCKED\nR027_NB01_CORE_PDFS_INSPECTED = 8\nR027_NB01_CONTENT_IDENTITY_VERIFIED = 6\nR027_NB01_CONTENT_IDENTITY_PARTIAL = 1\nR027_NB01_SUPERSEDED_SOURCE = 1\nR027_NB01_NATIVE_TEXT_LAYER_VERIFIED = 8\nNB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10',1)
+          ctx.write_text(c,encoding='utf-8')
+
+          # Structural assertions.
+          with results.open(newline='',encoding='utf-8') as f: assert len(list(csv.DictReader(f)))==8
+          with reg.open(newline='',encoding='utf-8') as f:
+            rr=list(csv.DictReader(f)); assert sum(1 for x in rr if x.get('manifest_source_id') in rows)==8
+          with ledger.open(newline='',encoding='utf-8') as f:
+            ll=list(csv.DictReader(f)); assert sum(1 for x in ll if x.get('batch_id')==batch)==8
+          with q.open(newline='',encoding='utf-8') as f: assert sum(1 for x in csv.DictReader(f) if x.get('work_item_id')=='AI-LAWS-R027')==1
+          PY
+
+      - name: Commit R027 durable state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            86_NOTEBOOKLM/downloads/NB01_CONTENT_IDENTITY_RESULTS.csv \
+            86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv \
+            86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md \
+            86_NOTEBOOKLM/downloads/README.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv \
+            86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R027_NB01_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md \
+            90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+            00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git diff --cached --stat
+          git commit -m 'validation(r027): persist NB01 repository PDF verification'
+          git push origin HEAD:main
