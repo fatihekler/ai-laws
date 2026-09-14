@@ -29,6 +29,22 @@ jobs:
       - name: Generate controlled R004 durable state
         run: python3 .github/scripts/r004_persist.py
 
+      - name: Normalize newly generated R004 Markdown
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          for rel in [
+              '20_JURISDICTIONS/COE/CETS_225_CURRENT_TREATY_STATUS_MAP_2026-09-14.md',
+              '95_RESEARCH/COE/AI-LAWS-R004_CLOSEOUT_2026-09-14.md',
+          ]:
+              p = Path(rel)
+              text = p.read_text(encoding='utf-8')
+              text = '\n'.join(line.rstrip() for line in text.splitlines()).rstrip() + '\n'
+              p.write_text(text, encoding='utf-8')
+          PY
+
       - name: Validate and commit R004 durable outputs
         shell: bash
         run: |
