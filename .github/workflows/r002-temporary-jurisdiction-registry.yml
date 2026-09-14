@@ -1,18 +1,17 @@
-name: R002 jurisdiction registry expansion
+name: R002 final reconciliation cleanup
 
 on:
   push:
     paths:
       - '.github/workflows/r002-temporary-jurisdiction-registry.yml'
-      - '.github/scripts/r002_registry_expand.py'
 
 permissions:
   contents: write
 
 jobs:
-  expand:
+  reconcile:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - name: Checkout exact trigger state
         uses: actions/checkout@v4
@@ -26,29 +25,24 @@ jobs:
           git fetch origin main
           test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
 
-      - name: Install parser dependencies
+      - name: Reconcile controlled state
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m pip install -q pandas lxml html5lib
-
-      - name: Expand and validate jurisdiction registry
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 .github/scripts/r002_registry_expand.py
+          python3 .github/scripts/r002_reconcile.py
           git diff --check
 
-      - name: Commit registry expansion and push
+      - name: Commit reconciliation cleanup and push
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'Fatih Mehmet Ekler'
           git config user.email '5189511+fatihekler@users.noreply.github.com'
-          git add 20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv 20_JURISDICTIONS/R002_SOURCE_ACQUISITION_RESULTS_2026-09-14.csv 20_JURISDICTIONS/R002_REGISTRY_VALIDATION_SUMMARY_2026-09-14.csv
+          git rm .github/workflows/r002-temporary-jurisdiction-registry.yml .github/scripts/r002_registry_expand.py .github/scripts/r002_reconcile.py
+          git add 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv 95_RESEARCH/JURISDICTION_REGISTRY/AI-LAWS-R002_CLOSEOUT_2026-09-14.md
           git diff --cached --check
-          git commit -m 'registry(r002): expand global jurisdiction coverage'
+          git commit -m 'control(r002): reconcile registry state and cleanup helpers'
           git fetch origin main
           test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
           git push origin HEAD:main
-          printf 'REGISTRY_HEAD=%s\nREGISTRY_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
+          printf 'FINAL_HEAD=%s\nFINAL_TREE=%s\nWORKFLOW_PRESENT=%s\nEXPAND_SCRIPT_PRESENT=%s\nRECONCILE_SCRIPT_PRESENT=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" "$(test -e .github/workflows/r002-temporary-jurisdiction-registry.yml && echo YES || echo NO)" "$(test -e .github/scripts/r002_registry_expand.py && echo YES || echo NO)" "$(test -e .github/scripts/r002_reconcile.py && echo YES || echo NO)"
