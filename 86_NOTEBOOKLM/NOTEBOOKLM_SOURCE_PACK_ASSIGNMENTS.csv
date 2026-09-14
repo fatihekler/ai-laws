@@ -91,3 +91,5 @@ NB05,JP-002,RECOMMENDED,Current Japanese personal-data baseline relevant to AI p
 NB05,JP-003,REQUIRED,Current Japanese national AI policy-plan layer separated from binding law
 NB05,JP-004,RECOMMENDED,Official appropriateness-guideline layer required to separate guidance from statute
 NB05,JP-005,RECOMMENDED,Current cross-ministry AI business guidance baseline
+NB06,EU-001,RECOMMENDED,Binding EU AI Act layer for manipulation vulnerability emotion-recognition biometric-categorisation and transparency; phased application labels required
+NB06,INT-001,RECOMMENDED,AI human-rights dignity autonomy remedies and procedural-safeguards treaty interface; R004 entry-into-force state must remain explicit
