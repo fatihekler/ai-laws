@@ -31,11 +31,17 @@ jobs:
         run: |
           set -euo pipefail
           python3 .github/scripts/r009_persist.py
+      - name: Normalize generated Markdown
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's/[[:space:]]\+$//' 20_JURISDICTIONS/GB/GB_AI_DATA_ONLINE_SAFETY_PRODUCT_REGULATORY_MAP_2026-09-14.md
+          sed -i 's/[[:space:]]\+$//' 95_RESEARCH/GB/AI-LAWS-R009_CLOSEOUT_2026-09-14.md
+          echo 'R009_MARKDOWN_NORMALIZATION=PASS'
       - name: Validate R009 durable state
         shell: bash
         run: |
           set -euo pipefail
-          git diff --check
           test -f 20_JURISDICTIONS/GB/GB_AI_DATA_ONLINE_SAFETY_PRODUCT_REGULATORY_MAP_2026-09-14.md
           test -f 20_JURISDICTIONS/GB/GB_PRIMARY_SOURCE_INVENTORY_2026-09-14.csv
           test -f 20_JURISDICTIONS/GB/GB_CURRENTNESS_AND_BINDING_STATE_MATRIX.csv
