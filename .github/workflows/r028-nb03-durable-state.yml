@@ -1,0 +1,225 @@
+name: AI-LAWS R028 NB03 durable source validation
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r028-nb03-durable-state.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install verification tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils curl
+
+      - name: Verify and write R028 durable state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv, hashlib, re, subprocess
+          from pathlib import Path
+
+          batch='NB-BATCH-NB03-20260914-002'
+          base_head='e24e723a826f9be30b34b48be154a19e4fc020e5'
+          inspection_commit='34249566599da5a5e1868e33e45e497c115722fb'
+          inspection_run='34809440305'
+          resolver_commit='75b10e986c042f97a838be803f9903d2df929bef'
+          resolver_run='34809497656'
+          d=Path('86_NOTEBOOKLM/downloads')
+
+          rows={
+            'US-001': dict(filename='Executive Order 14179 — Removing Barriers to American Leadership in AI.pdf', blob='b4eb5feb51607ca8d8b3c80e3d3a3e6139342fd6', sha='53b1d268c02cddb9eaaf57cf7429c7151cca56c454f9d36126699350c3b9a6ef', size=492512, pages=2, pdfver='1.4', producer='Skia/PDF m153', chars=5608, variant='WHITE_HOUSE_WEBPAGE_PRINT_SNAPSHOT', cid='CONTENT_IDENTITY_PARTIAL', exact='NOT_APPLICABLE_HTML_SOURCE', current='WHITE_HOUSE_OFFICIAL_PAGE_RECHECKED_2026-09-14; REPOSITORY_WEBPAGE_PRINT_SNAPSHOT_2026-09-14; LIVE_URL_PREFERRED', ingest='OFFICIAL_URL_PREFERRED; REPOSITORY_WEBPAGE_PRINT_SUPPORTING_ONLY', label='US-001 | US | EXECUTIVE_ORDER | EO 14179 | White House print snapshot | SUPPORTING', canonical='US-001__US__WHITE-HOUSE__EO-14179__WEBPAGE-PRINT__2026-09-14.pdf', notes='2-page White House webpage print snapshot; repository title/content markers verified; live White House page returned HTTP 200 on 2026-09-14. Not an Act of Congress.'),
+            'US-002': dict(filename="America's AI Action Plan.pdf", blob='3384dd2b54fa6d1cc3cef3a349b24e823e0ed23e', sha='91d56ab3ddefe43f395bde31e1c3923fb37f47091275aaf2a0d7da500ff547f4', size=521617, pages=28, pdfver='1.6', producer='macOS Quartz PDFContext', chars=73800, variant='OFFICIAL_WHITE_HOUSE_PDF_EXACT_MATCH', cid='CONTENT_IDENTITY_VERIFIED', exact='YES', current='OFFICIAL_WHITE_HOUSE_PDF_EXACT_BYTE_MATCH_2026-09-14; JULY_2025_PLAN', ingest='VERIFIED_OFFICIAL_PDF_ELIGIBLE; POLICY_PLAN_NOT_STATUTE', label="US-002 | US | OFFICIAL_GUIDANCE | America's AI Action Plan | EXACT-OFFICIAL-PDF", canonical='US-002__US__WHITE-HOUSE__AI-ACTION-PLAN__2025-07.pdf', notes='28-page searchable PDF exactly matches the current manifest White House PDF bytes on 2026-09-14.'),
+            'US-003': dict(filename='OMB M-25-21.pdf', blob='c398d1458074ab9bda63872beb5932a321792cc3', sha='0aab0aa4eaeac969ed93894d3940c5dc9d0b7377048171b164a439e8b9e49813', size=2629748, pages=25, pdfver='1.6', producer='Adobe Acrobat Pro 25 Paper Capture Plug-in', chars=72381, variant='OFFICIAL_OMB_PDF_EXACT_MATCH', cid='CONTENT_IDENTITY_VERIFIED', exact='YES', current='OFFICIAL_OMB_M-25-21_EXACT_BYTE_MATCH_2026-09-14; MEMO_DATE_2025-04-03', ingest='VERIFIED_OFFICIAL_PDF_ELIGIBLE; EXECUTIVE_BRANCH_SCOPE_LABEL_REQUIRED', label='US-003 | US | OMB_MEMO | M-25-21 | Federal AI Use | EXACT-OFFICIAL-PDF', canonical='US-003__US__OMB__M-25-21.pdf', notes='25-page searchable OMB memo exactly matches the manifest official White House-hosted PDF bytes on 2026-09-14.'),
+            'US-004': dict(filename='OMB M-25-22.pdf', blob='dd4a245fb3e252b107104b84bf850f7b00ffec97', sha='e157538371eb9665fabdacff748788fc6afc0575bb3661d15b146f3138084cd8', size=1399862, pages=13, pdfver='1.6', producer='Adobe Acrobat Pro 25 Paper Capture Plug-in', chars=39160, variant='OFFICIAL_OMB_PDF_EXACT_MATCH', cid='CONTENT_IDENTITY_VERIFIED', exact='YES', current='OFFICIAL_OMB_M-25-22_EXACT_BYTE_MATCH_2026-09-14; MEMO_DATE_2025-04-03', ingest='VERIFIED_OFFICIAL_PDF_ELIGIBLE; FEDERAL_ACQUISITION_SCOPE_LABEL_REQUIRED', label='US-004 | US | OMB_MEMO | M-25-22 | AI Acquisition | EXACT-OFFICIAL-PDF', canonical='US-004__US__OMB__M-25-22.pdf', notes='13-page searchable OMB memo exactly matches the manifest official White House-hosted PDF bytes on 2026-09-14.'),
+            'US-005': dict(filename='Executive Order 14365 — Ensuring a National Policy Framework for AI.pdf', blob='78f2ac94143de652c2b73d8d094f8b87178e37fe', sha='5a557f9a153f1f40c7bd885b660ed81f1b26d55a6363b778943dfaa65565e0cb', size=204973, pages=3, pdfver='1.7', producer='iText Core 9.2.0 / Government Publishing Office', chars=24604, variant='FEDERAL_REGISTER_PDF_SNAPSHOT', cid='CONTENT_IDENTITY_VERIFIED', exact='OFFICIAL_EXACT_BYTE_MATCH_NOT_RUN', current='EO_14365_IDENTITY_VERIFIED; WHITE_HOUSE_OFFICIAL_PAGE_RECHECKED_2026-09-14; FEDERAL_REGISTER_PDF_EXACT_BYTE_RECHECK_NOT_COMPLETED', ingest='VERIFIED_REPOSITORY_FEDERAL_REGISTER_SNAPSHOT_ELIGIBLE; LIVE_WHITE_HOUSE_URL_PREFERRED_FOR_CURRENT_STATUS', label='US-005 | US | EXECUTIVE_ORDER | EO 14365 | Federal Register snapshot | VERIFIED', canonical='US-005__US__EO-14365__FEDERAL-REGISTER__2025-12-16.pdf', notes='3-page Federal Register Vol. 90 No. 239 Presidential Documents text; EO 14365 signed 2025-12-11 and published 2025-12-16 visible in PDF; live White House page returned HTTP 200 on 2026-09-14. Prior WEBPAGE_PDF_SNAPSHOT classification was incorrect.'),
+            'US-006': dict(filename='OMB M-26-04 — Unbiased AI Principles.pdf', blob='f92f4baab2d3522949d547a0e691ea1fb37bd036', sha='d33b0277d720baac843babc5f24269e4c0b8777447870a36309d8b4f3d9c79bc', size=261386, pages=7, pdfver='1.6', producer='Adobe Acrobat 25 Paper Capture Plug-in', chars=19292, variant='OFFICIAL_OMB_PDF_EXACT_MATCH', cid='CONTENT_IDENTITY_VERIFIED', exact='YES', current='OFFICIAL_OMB_M-26-04_EXACT_BYTE_MATCH_2026-09-14; MEMO_DATE_2025-12-11', ingest='VERIFIED_OFFICIAL_PDF_ELIGIBLE; FEDERAL_LLM_POLICY_SCOPE_LABEL_REQUIRED', label='US-006 | US | OMB_MEMO | M-26-04 | Unbiased AI Principles | EXACT-OFFICIAL-PDF', canonical='US-006__US__OMB__M-26-04.pdf', notes='7-page searchable OMB memo exactly matches the manifest official White House-hosted PDF bytes on 2026-09-14.'),
+            'US-007': dict(filename='NIST AI RMF 1.0.pdf', blob='f3bda6699f5170951541ae8edd6e5f3d649ca897', sha='7576edb531d9848825814ee88e28b1795d3a84b435b4b797d3670eafdc4a89f1', size=1946127, pages=48, pdfver='1.7', producer='pdfTeX-1.40.24', chars=122270, variant='OFFICIAL_NIST_PDF_EXACT_MATCH', cid='CONTENT_IDENTITY_VERIFIED', exact='YES', current='OFFICIAL_NIST_AI_100-1_EXACT_BYTE_MATCH_2026-09-14; AI_RMF_1_0_REVISION_IN_PROGRESS_RECHECK_BEFORE_MATERIAL_USE', ingest='VERIFIED_OFFICIAL_PDF_ELIGIBLE; VOLUNTARY_FRAMEWORK_NONBINDING_LABEL_REQUIRED', label='US-007 | US | NIST_FRAMEWORK | AI 100-1 | AI RMF 1.0 | EXACT-OFFICIAL-PDF', canonical='US-007__US__NIST__AI-100-1__AI-RMF-1.0.pdf', notes='48-page searchable NIST AI 100-1 exactly matches DOI-resolved and direct nvlpubs official PDF bytes on 2026-09-14; revision-in-progress state remains material.'),
+            'US-008': dict(filename='NIST GenAI Profile.pdf', blob='b25cedeaf5d4880f2ec7edfd5c2c8bdd5604aaaf', sha='6e73620ab6b64e90ef2c04bf0e0d6246185a2f4b1b13cab0df494496cff89b6a', size=1174643, pages=64, pdfver='1.6', producer='Adobe PDF Library 24.2.159', chars=205495, variant='OFFICIAL_NIST_PDF_EXACT_MATCH', cid='CONTENT_IDENTITY_VERIFIED', exact='YES', current='OFFICIAL_NIST_AI_600-1_EXACT_BYTE_MATCH_2026-09-14; NIST_PUBLICATION_PAGE_RECHECKED', ingest='VERIFIED_OFFICIAL_PDF_ELIGIBLE; VOLUNTARY_PROFILE_NONBINDING_LABEL_REQUIRED', label='US-008 | US | NIST_PROFILE | AI 600-1 | GenAI Profile | EXACT-OFFICIAL-PDF', canonical='US-008__US__NIST__AI-600-1__GENAI-PROFILE.pdf', notes='64-page searchable NIST AI 600-1 exactly matches DOI-resolved and direct nvlpubs official PDF bytes on 2026-09-14.'),
+          }
+
+          expected={
+            'US-001':['removing barriers','artificial intelligence'],
+            'US-002':['ai action plan'],
+            'US-003':['m-25-21','federal use of ai'],
+            'US-004':['m-25-22','acquisition of artificial intelligence'],
+            'US-005':['executive order 14365','national policy framework'],
+            'US-006':['m-26-04','unbiased ai principles'],
+            'US-007':['nist ai 100-1','artificial intelligence risk management framework'],
+            'US-008':['nist ai 600-1','generative artificial intelligence profile'],
+          }
+
+          def run(cmd): return subprocess.check_output(cmd,text=True,errors='replace')
+          def curl_bytes(url):
+              out=Path('/tmp')/('verify-'+hashlib.sha256(url.encode()).hexdigest()[:16])
+              meta=run(['curl','-L','--silent','--show-error','--fail-with-body','--connect-timeout','15','--max-time','60','--retry','1','-A','Mozilla/5.0 AI-LAWS source verification','-o',str(out),'-w','%{http_code}|%{content_type}|%{url_effective}',url]).strip()
+              return meta,out.read_bytes()
+
+          # Re-verify exact current repository bytes, pages, text layer and markers.
+          for sid,r in rows.items():
+              p=d/r['filename']; assert p.exists(), (sid,'missing')
+              b=p.read_bytes(); assert len(b)==r['size'], (sid,'size')
+              assert hashlib.sha256(b).hexdigest()==r['sha'], (sid,'sha')
+              assert run(['git','hash-object',str(p)]).strip()==r['blob'], (sid,'git blob')
+              info=run(['pdfinfo',str(p)])
+              m=re.search(r'^Pages:\s+(\d+)',info,re.M); assert m and int(m.group(1))==r['pages'], (sid,'pages')
+              text=run(['pdftotext','-layout',str(p),'-']); assert len(text)>1000, (sid,'text layer')
+              norm=' '.join(text.lower().split())
+              for marker in expected[sid]: assert ' '.join(marker.lower().split()) in norm, (sid,'marker',marker)
+
+          # Same-run official-source checks. Six repository PDFs must exactly match official current PDF bytes.
+          with Path('86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv').open(newline='',encoding='utf-8') as f:
+              manifest={x['source_id']:x for x in csv.DictReader(f) if x['source_id'] in rows}
+          exact_urls={
+            'US-002':manifest['US-002']['official_url'],
+            'US-003':manifest['US-003']['official_url'],
+            'US-004':manifest['US-004']['official_url'],
+            'US-006':manifest['US-006']['official_url'],
+            'US-007':'https://doi.org/10.6028/NIST.AI.100-1',
+            'US-008':'https://doi.org/10.6028/NIST.AI.600-1',
+          }
+          for sid,url in exact_urls.items():
+              meta,ob=curl_bytes(url)
+              assert meta.startswith('200|application/pdf'), (sid,meta)
+              assert hashlib.sha256(ob).hexdigest()==rows[sid]['sha'], (sid,'official exact byte mismatch')
+
+          # Live official HTML identity/currentness recheck for EO URL-primary sources.
+          for sid,needle in [('US-001','Removing Barriers to American Leadership in Artificial Intelligence'),('US-005','Ensuring a National Policy Framework for Artificial Intelligence')]:
+              meta,ob=curl_bytes(manifest[sid]['official_url'])
+              assert meta.startswith('200|text/html'), (sid,meta)
+              txt=ob.decode('utf-8','replace')
+              assert needle.lower() in txt.lower(), (sid,'official html title marker')
+
+          # Results matrix.
+          results=d/'NB03_CONTENT_IDENTITY_RESULTS.csv'
+          fields=['source_id','repo_filename','repo_git_blob_sha','repo_sha256','repo_byte_size','pages','pdf_version','producer','text_chars','text_layer_state','binary_variant','content_identity_state','official_source_recheck','official_exact_byte_match','currentness_state','derivation_required','notebook_upload_eligibility','notes']
+          with results.open('w',newline='',encoding='utf-8') as f:
+              w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader()
+              for sid,r in rows.items():
+                  w.writerow(dict(source_id=sid,repo_filename=r['filename'],repo_git_blob_sha=r['blob'],repo_sha256=r['sha'],repo_byte_size=r['size'],pages=r['pages'],pdf_version=r['pdfver'],producer=r['producer'],text_chars=r['chars'],text_layer_state='NATIVE_SEARCHABLE_TEXT_LAYER_VERIFIED',binary_variant=r['variant'],content_identity_state=r['cid'],official_source_recheck='RECHECKED_2026-09-14',official_exact_byte_match=r['exact'],currentness_state=r['current'],derivation_required='NO',notebook_upload_eligibility=r['ingest'],notes=r['notes']))
+
+          # Downloads registry reconciliation.
+          reg=d/'DOWNLOADS_REGISTRY.csv'
+          with reg.open(newline='',encoding='utf-8') as f:
+              reader=csv.DictReader(f); rf=reader.fieldnames; data=list(reader)
+          seen=set()
+          for rec in data:
+              sid=rec.get('manifest_source_id')
+              if sid not in rows: continue
+              r=rows[sid]; seen.add(sid)
+              rec['binary_variant']=r['variant']; rec['content_identity_state']=r['cid']; rec['currentness_state']=r['current']; rec['notebook_ingest_mode']=r['ingest']; rec['recommended_notebook_label']=r['label']; rec['recommended_canonical_filename']=r['canonical']; rec['action']=f"R028 GitHub validation: SHA256 {r['sha']}; {r['pages']} pages; native searchable text; official exact-byte state {r['exact']}; {r['notes']}"
+          assert seen==set(rows), ('registry missing',set(rows)-seen)
+          with reg.open('w',newline='',encoding='utf-8') as f:
+              w=csv.DictWriter(f,fieldnames=rf,lineterminator='\n'); w.writeheader(); w.writerows(data)
+
+          # Append validation ledger without rewriting prior acquisition history.
+          ledger=Path('86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv')
+          with ledger.open(newline='',encoding='utf-8') as f:
+              reader=csv.DictReader(f); lf=reader.fieldnames; lr=list(reader)
+          assert not any(x.get('batch_id')==batch for x in lr), 'R028 ledger batch already exists'
+          rights='US_GOVERNMENT_WORK_BASIS; EMBEDDED_OR_THIRD_PARTY_ELEMENTS_NOT_SEPARATELY_ASSESSED'
+          for sid,r in rows.items():
+              m=manifest[sid]; item={k:'' for k in lf}
+              issuer={'US-001':'The White House / President of the United States','US-002':'The White House','US-003':'Office of Management and Budget','US-004':'Office of Management and Budget','US-005':'The White House / President of the United States','US-006':'Office of Management and Budget','US-007':'National Institute of Standards and Technology','US-008':'National Institute of Standards and Technology'}[sid]
+              method='USER_MANUAL_DOWNLOAD_REPOSITORY_SNAPSHOT'
+              if sid=='US-001': method='USER_MANUAL_WEBPAGE_PRINT_SNAPSHOT'
+              if sid=='US-005': method='USER_MANUAL_FEDERAL_REGISTER_PDF_SNAPSHOT'
+              primary='OFFICIAL_EXACT_BYTE_MATCH_VERIFIED_2026-09-14; CURRENTNESS_RECHECK_REQUIRED_BEFORE_MATERIAL_LEGAL_CLAIM' if r['exact']=='YES' else 'LIVE_OFFICIAL_URL_RECHECKED_2026-09-14; OFFICIAL_EXACT_BYTE_MATCH_NOT_ESTABLISHED_FOR_REPOSITORY_VARIANT'
+              item.update({'batch_id':batch,'source_id':sid,'notebook_pack':'NB03','jurisdiction':'US','title':m['title'],'document_id':m['document_id'],'issuing_authority':issuer,'authority_class':m['authority_class'],'binding_state':m['binding_state'],'official_url':m['official_url'],'retrieval_date':'2026-09-14','version_state':r['current'],'adoption_date':'NOT_RECHECKED_IN_R028','publication_date':'NOT_RECHECKED_IN_R028','entry_into_force_date':'NOT_RECHECKED_IN_R028','application_date':'NOT_RECHECKED_IN_R028','authentic_language':'English','translation_state':'NOT_APPLICABLE','rights_state':rights,'acquisition_method':method,'local_filename_or_url':f"86_NOTEBOOKLM/downloads/{r['filename']}",'sha256':r['sha'],'byte_size':str(r['size']),'content_type':'application/pdf','content_identity_checked':r['cid'],'notebook_ingest_state':'NOT_RUN','notebook_locator_test':'NOT_RUN','primary_source_recheck_state':primary,'refresh_trigger':'official source replacement/rescission/revision/currentness change; NIST revision state where applicable','human_review_required':'YES_BEFORE_MATERIAL_LEGAL_CONCLUSION','notes':f"R028 GitHub-only validation: {r['pages']} pages; native searchable text; official exact-byte state={r['exact']}. {r['notes']} No Notebook upload occurred."})
+              lr.append(item)
+          with ledger.open('w',newline='',encoding='utf-8') as f:
+              w=csv.DictWriter(f,fieldnames=lf,lineterminator='\n'); w.writeheader(); w.writerows(lr)
+
+          # Upload plan: replace NB03 block.
+          plan=d/'NOTEBOOK_UPLOAD_PLAN.md'; t=plan.read_text(encoding='utf-8')
+          start=t.index('## NB03 — United States\n'); end=t.index('## NB04 — Türkiye\n',start)
+          nb03='''## NB03 — United States\n\nR028 inspected all eight core `US-001..US-008` repository PDFs inside GitHub and rechecked the corresponding official source layer. No ZIP/artifact, derived Markdown or Notebook upload was created.\n\n```text\nNB03_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8\nNB03_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nNB03_CONTENT_IDENTITY_VERIFIED = 7\nNB03_CONTENT_IDENTITY_PARTIAL = 1       # US-001 webpage-print snapshot\nNB03_OFFICIAL_EXACT_BYTE_MATCH = 6      # US-002/003/004/006/007/008\nNB03_DERIVED_MARKDOWN_REQUIRED = 0\nNB03_NOTEBOOK_UPLOADS = 0\n```\n\nExact official PDF matches: `US-002` America's AI Action Plan, `US-003` OMB M-25-21, `US-004` OMB M-25-22, `US-006` OMB M-26-04, `US-007` NIST AI RMF 1.0 and `US-008` NIST GenAI Profile.\n\nSpecial routing:\n\n- `US-001` is a verified White House **webpage-print snapshot** and remains supporting-only; use the live White House page for current executive-order status.\n- `US-005` is not a webpage print: the repository PDF is a 3-page **Federal Register** publication of Executive Order 14365. Its content identity is verified, while exact-byte comparison to a currently resolved Federal Register PDF was not completed; the live White House URL remains current-status authority.\n- `US-007` is an exact byte match to the DOI-resolved NIST AI 100-1 PDF, but NIST's revision-in-progress state still requires currentness recheck before material use.\n- `US-008` is an exact byte match to the DOI-resolved NIST AI 600-1 PDF.\n\nDo not label executive orders or OMB memoranda as Acts of Congress. NIST sources are voluntary/nonbinding frameworks/profiles.\n\n'''
+          plan.write_text(t[:start]+nb03+t[end:],encoding='utf-8')
+
+          # Human-readable download/upload list.
+          dl=Path('86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md'); t=dl.read_text(encoding='utf-8')
+          start=t.index('## D. NB03 — United States\n'); end=t.index('## E. NB04 — Türkiye\n',start)
+          block='''## D. NB03 — United States\n\nR028 repository validation state:\n\n```text\nUS-001 = CONTENT_IDENTITY_PARTIAL / WHITE_HOUSE_WEBPAGE_PRINT / LIVE_URL_PRIMARY\nUS-002 = CONTENT_IDENTITY_VERIFIED / EXACT_OFFICIAL_PDF\nUS-003 = CONTENT_IDENTITY_VERIFIED / EXACT_OFFICIAL_PDF\nUS-004 = CONTENT_IDENTITY_VERIFIED / EXACT_OFFICIAL_PDF\nUS-005 = CONTENT_IDENTITY_VERIFIED / FEDERAL_REGISTER_PDF_SNAPSHOT / EXACT_BYTE_NOT_RUN\nUS-006 = CONTENT_IDENTITY_VERIFIED / EXACT_OFFICIAL_PDF\nUS-007 = CONTENT_IDENTITY_VERIFIED / EXACT_NIST_DOI_PDF / REVISION_RECHECK_REQUIRED\nUS-008 = CONTENT_IDENTITY_VERIFIED / EXACT_NIST_DOI_PDF\n```\n\nAll eight repository files have native searchable text layers; no Markdown derivative is required. For current executive-policy status use the live White House/OMB sources. NIST materials remain voluntary/nonbinding. Do not describe executive orders or OMB memoranda as Acts of Congress.\n\n### State law\n\nDo not build a definitive state-law notebook from memory. `AI-LAWS-R007` must pin current enacted/amended text state-by-state. `US-009` remains outside this R028 core-PDF unit and requires current Utah codification handling.\n\n---\n\n'''
+          dl.write_text(t[:start]+block+t[end:],encoding='utf-8')
+
+          # Research queue.
+          q=Path('90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv')
+          with q.open(newline='',encoding='utf-8') as f:
+              reader=csv.DictReader(f); qf=reader.fieldnames; qr=list(reader)
+          assert not any(x['work_item_id']=='AI-LAWS-R028' for x in qr)
+          qr.append({'work_item_id':'AI-LAWS-R028','priority':'P0','workstream':'Notebook NB03 repository source validation','scope':'Validate US-001..US-008 repository PDF identity/text layers and recheck official White House/OMB/NIST counterparts including exact-byte comparison where official PDFs are available','state':'COMPLETE_SUPPORT_SOURCE_VALIDATION','dependencies':'R023 COMPLETE + NB03 acquisition records + R024 selected US source rechecks','expected_output':'86_NOTEBOOKLM/downloads/NB03_CONTENT_IDENTITY_RESULTS.csv; corrected registry/ledger/upload plan/download list; R028 closeout','stop_condition':'NB03 core repository binaries classified; US-009 state-law currentness remains separate; no Notebook upload or substantive R007 legal inventory auto-started'})
+          with q.open('w',newline='',encoding='utf-8') as f:
+              w=csv.DictWriter(f,fieldnames=qf,lineterminator='\n'); w.writeheader(); w.writerows(qr)
+
+          # Closeout.
+          close=Path('86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R028_NB03_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md')
+          close.write_text(f'''# AI-LAWS — R028 / NB03 United States Repository PDF Validation Closeout\n\n**UNIT_ID:** `AI-LAWS-R028 / {batch}`  \n**DATE:** 2026-09-14  \n**BASE_HEAD:** `{base_head}`  \n**INSPECTION_COMMIT / RUN:** `{inspection_commit}` / `{inspection_run}`  \n**OFFICIAL_RESOLVER_COMMIT / RUN:** `{resolver_commit}` / `{resolver_run}`  \n**EXECUTION_CHANNEL:** GitHub only  \n**ZIP_OR_ARTIFACT_CREATED:** NO  \n**AUTO_ADVANCE:** NO\n\n## Scope\n\nThis bounded unit validated only the eight core NB03 repository PDFs `US-001..US-008` and their directly corresponding White House/OMB/NIST official source layer. `US-009` Utah state law, Notebook ingestion and substantive `AI-LAWS-R007` federal/state legal inventory were not started.\n\n## Result\n\n```text\nNB03_CORE_PDFS_INSPECTED = 8 / 8\nNATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nCONTENT_IDENTITY_VERIFIED = 7\nCONTENT_IDENTITY_PARTIAL = 1\nOFFICIAL_EXACT_BYTE_MATCH = 6\nDERIVED_MARKDOWN_CREATED = 0\nNOTEBOOK_UPLOADS = 0\nZIP_OR_ARTIFACT_CREATED = 0\n```\n\n### Exact official PDF matches\n\n- `US-002` — America's AI Action Plan: SHA-256 `91d56ab3ddefe43f395bde31e1c3923fb37f47091275aaf2a0d7da500ff547f4`, 28 pages.\n- `US-003` — OMB M-25-21: SHA-256 `0aab0aa4eaeac969ed93894d3940c5dc9d0b7377048171b164a439e8b9e49813`, 25 pages.\n- `US-004` — OMB M-25-22: SHA-256 `e157538371eb9665fabdacff748788fc6afc0575bb3661d15b146f3138084cd8`, 13 pages.\n- `US-006` — OMB M-26-04: SHA-256 `d33b0277d720baac843babc5f24269e4c0b8777447870a36309d8b4f3d9c79bc`, 7 pages.\n- `US-007` — NIST AI 100-1: SHA-256 `7576edb531d9848825814ee88e28b1795d3a84b435b4b797d3670eafdc4a89f1`, 48 pages; exact match through DOI and nvlpubs.\n- `US-008` — NIST AI 600-1: SHA-256 `6e73620ab6b64e90ef2c04bf0e0d6246185a2f4b1b13cab0df494496cff89b6a`, 64 pages; exact match through DOI and nvlpubs.\n\n### Corrected variants\n\n- `US-001`: 2-page White House webpage-print snapshot. Live official page returned HTTP 200 and identity markers matched, but HTML source and printed PDF are different byte representations. State remains `CONTENT_IDENTITY_PARTIAL / SUPPORTING_ONLY`.\n- `US-005`: prior registry classification `WEBPAGE_PDF_SNAPSHOT` was wrong. The repository file is a 3-page Federal Register publication of Executive Order 14365; content identity is verified from the PDF and the live White House page, while exact Federal Register byte comparison was not completed in this unit.\n\n## Authority/currentness firewall\n\n```text\nEXECUTIVE_ORDER != ACT_OF_CONGRESS\nOMB_MEMORANDUM != STATUTE\nNIST_FRAMEWORK != BINDING_LAW\nEXACT_PDF_BYTES != PERMANENT_CURRENTNESS\nWEBPAGE_PRINT_SNAPSHOT != LIVE_OFFICIAL_PAGE\nREPOSITORY_PDF_IDENTITY_VERIFIED != LEGAL_CONCLUSION\n```\n\n## Durable outputs\n\n- `86_NOTEBOOKLM/downloads/NB03_CONTENT_IDENTITY_RESULTS.csv`\n- updated `86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv`\n- updated `86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv`\n- updated `86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md`\n- updated `86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md`\n- updated `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`\n- updated `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`\n\n`LEGAL_CONCLUSION = NOT_ATTEMPTED`  \n`UNKNOWN_PRESERVED = YES`  \n`AUTO_ADVANCE = NO`\n''',encoding='utf-8')
+
+          # Current context.
+          ctx=Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md'); c=ctx.read_text(encoding='utf-8')
+          old='**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE'
+          new='**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / R028_NB03_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE'
+          assert old in c; c=c.replace(old,new,1)
+          assert 'AI-LAWS-R027 = COMPLETE_SUPPORT_SOURCE_VALIDATION\n```' in c
+          c=c.replace('AI-LAWS-R027 = COMPLETE_SUPPORT_SOURCE_VALIDATION\n```','AI-LAWS-R027 = COMPLETE_SUPPORT_SOURCE_VALIDATION\nAI-LAWS-R028 = COMPLETE_SUPPORT_SOURCE_VALIDATION\n```',1)
+          marker='### R025 — NB02 remaining EU source validation\n'; assert marker in c
+          section='''### R028 — NB03 United States repository PDF validation\n\nR028 inspected `US-001..US-008` inside GitHub and rechecked their direct White House/OMB/NIST official-source counterparts.\n\n```text\nNB03_CORE_REPOSITORY_PDFS_INSPECTED = 8 / 8\nNB03_NATIVE_SEARCHABLE_TEXT_LAYER = 8 / 8\nNB03_CONTENT_IDENTITY_VERIFIED = 7\nNB03_CONTENT_IDENTITY_PARTIAL = 1\nNB03_OFFICIAL_EXACT_BYTE_MATCH = 6\nNB03_DERIVED_MARKDOWN = 0\nNB03_NOTEBOOK_UPLOADS = 0\n```\n\nExact official byte matches were established for `US-002`, `US-003`, `US-004`, `US-006`, `US-007` and `US-008`. `US-001` remains a supporting White House webpage-print snapshot. `US-005` was corrected from webpage-snapshot semantics to a verified Federal Register PDF snapshot of EO 14365; exact Federal Register byte comparison remains unverified.\n\nDurable output: `86_NOTEBOOKLM/downloads/NB03_CONTENT_IDENTITY_RESULTS.csv` plus registry/ledger/upload-plan/download-list/queue reconciliation.\n\n'''
+          c=c.replace(marker,section+marker,1)
+          oldnb='''### NB03 — United States\n\n`NB-BATCH-NB03-20260913-001` verified core federal source identities and preserved the Utah current-whole-chapter blocker. R024 later rechecked selected OMB/NIST sources for NB07 reuse.'''
+          newnb='''### NB03 — United States\n\n`NB-BATCH-NB03-20260913-001` verified core federal source identities and preserved the Utah current-whole-chapter blocker. R024 later rechecked selected OMB/NIST sources for NB07 reuse. R028 then validated the eight repository PDFs `US-001..US-008`: seven have verified content identity, six are exact byte matches to current official PDF endpoints, and `US-001` remains a supporting webpage-print snapshot. `US-009` remains a separate state-law currentness task.'''
+          assert oldnb in c; c=c.replace(oldnb,newnb,1)
+          nb02='### NB02 current ingest state\n'; assert nb02 in c
+          state='''### NB03 current ingest state\n\n```text\nNB03_CORE_PDF_CONTENT_IDENTITY_VERIFIED = 7 / 8\nNB03_US001_CONTENT_IDENTITY = PARTIAL_WEBPAGE_PRINT_SUPPORTING_ONLY\nNB03_OFFICIAL_EXACT_BYTE_MATCH = 6 / 8\nNB03_US005_VARIANT = VERIFIED_FEDERAL_REGISTER_PDF_SNAPSHOT_EXACT_BYTE_NOT_RUN\nNB03_NATIVE_TEXT_LAYER = 8 / 8\nNB03_DERIVED_MARKDOWN_REQUIRED = 0\nNB03_NOTEBOOK_UPLOADS = 0\n```\n\nUse `DOWNLOADS_REGISTRY.csv` for exact routing. Live White House/OMB currentness and NIST revision state remain authoritative beyond the pinned snapshots.\n\n'''
+          c=c.replace(nb02,state+nb02,1)
+          oldnext='R027 completed the NB01 core repository-PDF classification. The next unprocessed primary repository pack by pack order is NB03, but it is not auto-started.'
+          newnext='R028 completed the NB03 core repository-PDF classification. No further primary repository pack is auto-started by this unit; NB08 incident PDFs remain a separate controlled lane and NB05 has no dedicated primary binary set among the current 38 PDFs.'
+          assert oldnext in c; c=c.replace(oldnext,newnext,1)
+          integrity='R027_NB01_NATIVE_TEXT_LAYER_VERIFIED = 8\nNB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10'
+          repl='R027_NB01_NATIVE_TEXT_LAYER_VERIFIED = 8\nR028_NB03_CORE_PDFS_INSPECTED = 8\nR028_NB03_CONTENT_IDENTITY_VERIFIED = 7\nR028_NB03_CONTENT_IDENTITY_PARTIAL = 1\nR028_NB03_OFFICIAL_EXACT_BYTE_MATCH = 6\nR028_NB03_NATIVE_TEXT_LAYER_VERIFIED = 8\nNB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10'
+          assert integrity in c; c=c.replace(integrity,repl,1)
+          ctx.write_text(c,encoding='utf-8')
+
+          # Structural assertions.
+          with results.open(newline='',encoding='utf-8') as f: assert len(list(csv.DictReader(f)))==8
+          with reg.open(newline='',encoding='utf-8') as f:
+              rr=list(csv.DictReader(f)); assert sum(1 for x in rr if x.get('manifest_source_id') in rows)==8
+          with ledger.open(newline='',encoding='utf-8') as f:
+              ll=list(csv.DictReader(f)); assert sum(1 for x in ll if x.get('batch_id')==batch)==8
+          with q.open(newline='',encoding='utf-8') as f: assert sum(1 for x in csv.DictReader(f) if x.get('work_item_id')=='AI-LAWS-R028')==1
+          PY
+
+      - name: Commit R028 durable state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            86_NOTEBOOKLM/downloads/NB03_CONTENT_IDENTITY_RESULTS.csv \
+            86_NOTEBOOKLM/downloads/DOWNLOADS_REGISTRY.csv \
+            86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv \
+            86_NOTEBOOKLM/downloads/NOTEBOOK_UPLOAD_PLAN.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_DOWNLOAD_AND_UPLOAD_LIST.md \
+            86_NOTEBOOKLM/acquisition_runs/AI-LAWS-R028_NB03_REPOSITORY_PDF_VALIDATION_CLOSEOUT_2026-09-14.md \
+            90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+            00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git diff --cached --check
+          git commit -m 'validation(r028): persist NB03 repository PDF verification'
+          git push origin HEAD:main
+
+      - name: Confirm no artifact
+        run: |
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
+          echo 'NOTEBOOK_UPLOAD_COUNT=0'
+          echo 'DERIVED_MARKDOWN_CREATED=0'
