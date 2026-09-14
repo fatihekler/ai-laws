@@ -1,0 +1,129 @@
+name: AI-LAWS R003 EU AI Act current-state verification
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r003-eu-ai-act-verify.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install deterministic PDF tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils curl file >/dev/null
+
+      - name: Verify live EUR-Lex currentness and extract controlling provisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "BASE_HEAD=$(git rev-parse HEAD)"
+          echo "BASE_TREE=$(git rev-parse HEAD^{tree})"
+          python3 - <<'PY'
+          import hashlib, pathlib, re, subprocess, sys
+
+          repo_ai = pathlib.Path('86_NOTEBOOKLM/downloads/Current consolidated AI Act.pdf')
+          repo_omnibus = pathlib.Path('86_NOTEBOOKLM/downloads/Regulation (EU) 2026 1744 — Digital Omnibus on AI  .pdf')
+          if not repo_ai.exists() or not repo_omnibus.exists():
+              raise SystemExit('required repository EU PDFs missing')
+
+          def sha(p):
+              return hashlib.sha256(p.read_bytes()).hexdigest()
+
+          print('REPO_EU001_SHA256='+sha(repo_ai))
+          print('REPO_EU001_BYTES='+str(repo_ai.stat().st_size))
+          print('REPO_EU002_SHA256='+sha(repo_omnibus))
+          print('REPO_EU002_BYTES='+str(repo_omnibus.stat().st_size))
+
+          def curl(url, out):
+              cp=subprocess.run([
+                  'curl','-L','--fail','--silent','--show-error',
+                  '--connect-timeout','15','--max-time','90','--retry','2',
+                  '-A','Mozilla/5.0 AI-LAWS legal-source verification',
+                  '-o',str(out),'-w','%{http_code}|%{content_type}|%{url_effective}',url
+              ], text=True, capture_output=True)
+              print('CURL_META|'+url+'|rc='+str(cp.returncode)+'|'+cp.stdout.strip())
+              if cp.returncode != 0:
+                  print('CURL_ERR|'+url+'|'+cp.stderr.strip().replace('\n',' '))
+              return cp.returncode == 0
+
+          eli=pathlib.Path('/tmp/ai-act-eli.html')
+          ok_eli=curl('https://eur-lex.europa.eu/eli/reg/2024/1689',eli)
+          if ok_eli:
+              raw=eli.read_text('utf-8','replace')
+              flat=' '.join(re.sub(r'<[^>]+>',' ',raw).split())
+              dates=sorted(set(re.findall(r'\b(?:0?[1-9]|[12][0-9]|3[01])/(?:0?[1-9]|1[0-2])/20\d{2}\b',flat)))
+              print('ELI_HAS_2026_07_27=' + ('YES' if ('27/07/2026' in flat or '27 July 2026' in flat) else 'NO'))
+              print('ELI_HAS_2026_1744=' + ('YES' if '2026/1744' in flat else 'NO'))
+              print('ELI_DATE_TOKENS='+';'.join(dates[-30:]))
+              for needle in ['Current consolidated version','27/07/2026','2026/1744','In force']:
+                  i=flat.lower().find(needle.lower())
+                  if i>=0:
+                      print('ELI_CONTEXT|'+needle+'|'+flat[max(0,i-250):i+700])
+
+          off_ai=pathlib.Path('/tmp/eu001-official.pdf')
+          off_omnibus=pathlib.Path('/tmp/eu002-official.pdf')
+          ok_ai=curl('https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:02024R1689-20260727',off_ai)
+          ok_om=curl('https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32026R1744',off_omnibus)
+          if ok_ai:
+              print('OFFICIAL_EU001_SHA256='+sha(off_ai))
+              print('OFFICIAL_EU001_BYTES='+str(off_ai.stat().st_size))
+              print('EU001_EXACT_BYTE_MATCH=' + ('YES' if off_ai.read_bytes()==repo_ai.read_bytes() else 'NO'))
+          if ok_om:
+              print('OFFICIAL_EU002_SHA256='+sha(off_omnibus))
+              print('OFFICIAL_EU002_BYTES='+str(off_omnibus.stat().st_size))
+              print('EU002_EXACT_BYTE_MATCH=' + ('YES' if off_omnibus.read_bytes()==repo_omnibus.read_bytes() else 'NO'))
+
+          ai_txt=subprocess.check_output(['pdftotext','-layout',str(repo_ai),'-'],text=True,errors='replace')
+          om_txt=subprocess.check_output(['pdftotext','-layout',str(repo_omnibus),'-'],text=True,errors='replace')
+          print('EU001_TEXT_CHARS='+str(len(ai_txt)))
+          print('EU002_TEXT_CHARS='+str(len(om_txt)))
+
+          def extract_article(text, num):
+              # Prefer article heading followed by the exact number and stop at the next article heading.
+              pat=re.compile(r'(?ms)^\s*Article\s+'+re.escape(str(num))+r'\s*\n(.*?)(?=^\s*Article\s+\d+[a-zA-Z]?\s*$|\Z)')
+              m=pat.search(text)
+              if not m:
+                  # fallback for headings separated by title line or form-feed noise
+                  pat2=re.compile(r'(?mis)\bArticle\s+'+re.escape(str(num))+r'\b(.*?)(?=\bArticle\s+\d+[a-zA-Z]?\b|\Z)')
+                  m=pat2.search(text)
+              if not m:
+                  print(f'ARTICLE_{num}_FOUND=NO')
+                  return ''
+              body=('Article '+str(num)+'\n'+m.group(1)).strip()
+              print(f'ARTICLE_{num}_FOUND=YES')
+              print(f'ARTICLE_{num}_BEGIN')
+              print(body[:14000])
+              print(f'ARTICLE_{num}_END')
+              return body
+
+          for n in [1,2,3,4,5,6,50,51,53,55,99,111,112,113]:
+              extract_article(ai_txt,n)
+
+          # Pull the amending regulation provisions that mention the AI Act application/transitional architecture.
+          print('OMNIBUS_DATE_CONTEXT_BEGIN')
+          lines=om_txt.splitlines()
+          for idx,line in enumerate(lines):
+              low=line.lower()
+              if any(k in low for k in ['article 113','article 111','2 august 2026','2 august 2027','2 february 2025','2 august 2025','six months','twelve months','harmonised standards','common specifications']):
+                  lo=max(0,idx-4); hi=min(len(lines),idx+10)
+                  print('---')
+                  print('\n'.join(lines[lo:hi]))
+          print('OMNIBUS_DATE_CONTEXT_END')
+
+          # Deterministic timeline token inventory from consolidated AI Act.
+          date_tokens=sorted(set(re.findall(r'\b\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+20\d{2}\b',ai_txt)))
+          print('AI_ACT_DATE_TOKENS='+';'.join(date_tokens))
+          print('ZIP_OR_ARTIFACT_CREATED=NO')
+          print('REPOSITORY_MUTATION_BY_VERIFY_JOB=NO')
+          PY
