@@ -1,0 +1,90 @@
+name: AI-LAWS R031 NB03 residual source inspection
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r031-nb03-residual-inspect.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils curl jq file
+      - name: Inspect US-001 and resolve US-005 Federal Register PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv, hashlib, json, re, subprocess, urllib.parse
+          from pathlib import Path
+
+          d=Path('86_NOTEBOOKLM/downloads')
+          with (d/'DOWNLOADS_REGISTRY.csv').open(newline='',encoding='utf-8') as f:
+              reg={r['manifest_source_id']:r for r in csv.DictReader(f) if r['manifest_source_id'] in {'US-001','US-005'}}
+          assert set(reg)=={'US-001','US-005'}
+
+          def sh(cmd):
+              return subprocess.check_output(cmd,text=True,errors='replace').strip()
+          def sha(b): return hashlib.sha256(b).hexdigest()
+          def fetch(url,out):
+              p=Path('/tmp')/out
+              meta=sh(['curl','-L','--silent','--show-error','--fail-with-body','--connect-timeout','15','--max-time','90','--retry','3','--retry-delay','2','-A','Mozilla/5.0 AI-LAWS source verification','-o',str(p),'-w','%{http_code}|%{content_type}|%{url_effective}',url])
+              b=p.read_bytes() if p.exists() else b''
+              return meta,b,p
+
+          for sid in ('US-001','US-005'):
+              r=reg[sid]; p=d/r['repo_filename']; b=p.read_bytes()
+              info=sh(['pdfinfo',str(p)]); txt=sh(['pdftotext','-layout',str(p),'-'])
+              pages=re.search(r'^Pages:\s+(\d+)',info,re.M).group(1)
+              print(f'REPO|{sid}|file={r["repo_filename"]}|blob={sh(["git","hash-object",str(p)])}|sha256={sha(b)}|bytes={len(b)}|pages={pages}|textchars={len(txt)}')
+              print(f'HEAD|{sid}|{" ".join(txt[:4000].split())[:1200]}')
+
+          wh1='https://www.whitehouse.gov/presidential-actions/2025/01/removing-barriers-to-american-leadership-in-artificial-intelligence/'
+          wh5='https://www.whitehouse.gov/presidential-actions/2025/12/eliminating-state-law-obstruction-of-national-artificial-intelligence-policy/'
+          for sid,url in [('US-001',wh1),('US-005',wh5)]:
+              meta,b,p=fetch(url,sid+'-whitehouse.html')
+              text=b.decode('utf-8','replace')
+              visible=' '.join(re.sub(r'<[^>]+>',' ',text).split())
+              print(f'WHITEHOUSE|{sid}|curl={meta}|bytes={len(b)}|eo14179={"YES" if "14179" in visible else "NO"}|eo14365={"YES" if "14365" in visible else "NO"}|title_marker={"YES" if ("Removing Barriers" in visible or "National Policy Framework" in visible or "State Law Obstruction" in visible) else "NO"}')
+
+          # Federal Register API searches for EO 14365 / title fragments.
+          queries=['14365','Ensuring a National Policy Framework for Artificial Intelligence','Eliminating State Law Obstruction of National Artificial Intelligence Policy']
+          candidates={}
+          for q in queries:
+              url='https://www.federalregister.gov/api/v1/documents.json?per_page=100&conditions%5Bterm%5D='+urllib.parse.quote(q)
+              meta,b,p=fetch(url,'fr-'+hashlib.md5(q.encode()).hexdigest()+'.json')
+              data=json.loads(b.decode('utf-8'))
+              print(f'FR_SEARCH|q={q}|curl={meta}|count={data.get("count")}|results={len(data.get("results",[]))}')
+              for x in data.get('results',[]):
+                  title=x.get('title','')
+                  if '14365' in str(x.get('executive_order_number','')) or 'Artificial Intelligence' in title or 'artificial intelligence' in title:
+                      key=x.get('document_number') or x.get('html_url')
+                      candidates[key]=x
+
+          print(f'FR_CANDIDATE_COUNT|{len(candidates)}')
+          repo=(d/reg['US-005']['repo_filename']).read_bytes()
+          for key,x in sorted(candidates.items()):
+              print('FR_CANDIDATE|'+json.dumps({k:x.get(k) for k in ['document_number','title','type','publication_date','executive_order_number','html_url','pdf_url','raw_text_url']},sort_keys=True))
+              pdf=x.get('pdf_url')
+              if pdf:
+                  try:
+                      meta,b,p=fetch(pdf,'fr-'+str(key).replace('/','_')+'.pdf')
+                      mime=sh(['file','-b','--mime-type',str(p)]) if b else 'NONE'
+                      print(f'FR_PDF|doc={key}|curl={meta}|mime={mime}|bytes={len(b)}|sha256={sha(b) if b else "NONE"}|repo_sha256={sha(repo)}|exact_repo={"YES" if b==repo else "NO"}')
+                  except Exception as e:
+                      print(f'FR_PDF|doc={key}|ERROR={type(e).__name__}:{e}')
+          PY
+      - name: Confirm no mutation artifact
+        run: |
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
+          echo 'REPOSITORY_MUTATION_BY_INSPECTION_JOB=NO'
