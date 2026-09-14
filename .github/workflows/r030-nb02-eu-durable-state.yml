@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/r030-nb02-eu-durable-state.yml'
+      - '.github/scripts/r030_persist.py'
 
 permissions:
   contents: write
