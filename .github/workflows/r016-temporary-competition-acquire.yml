@@ -1,0 +1,55 @@
+name: R016 competition source verification
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r016-temporary-competition-acquire.yml'
+      - '.github/scripts/r016_acquire.py'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact trigger state
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail closed on drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+
+      - name: Install verification tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils >/dev/null
+
+      - name: Verify official competition sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/r016_acquire.py
+          git diff --check
+
+      - name: Commit verification record and push
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Fatih Mehmet Ekler'
+          git config user.email '5189511+fatihekler@users.noreply.github.com'
+          git add 76_COMPETITION/source_acquisition/AI-LAWS-R016_SOURCE_ACQUISITION_RESULTS_2026-09-14.csv
+          git diff --cached --check
+          git commit -m 'sources(r016): record competition source verification'
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          git push origin HEAD:main
+          printf 'SOURCE_HEAD=%s\nSOURCE_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
