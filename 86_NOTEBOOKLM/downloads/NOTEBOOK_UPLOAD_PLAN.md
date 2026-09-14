@@ -205,7 +205,7 @@ For each pack:
 
 1. select sources using `DOWNLOADS_REGISTRY.csv`;
 2. run content-identity checks;
-3. rename only the **local Notebook-upload copy** using `recommended_canonical_filename` if useful;
+3. preserve the R034 canonical readable repository filename; use `NOTEBOOK_SOURCE_LABELS.csv` for a shorter Notebook title when useful;
 4. upload/add URL;
 5. record Notebook source title using `recommended_notebook_label`;
 6. run source-identity/locator test;

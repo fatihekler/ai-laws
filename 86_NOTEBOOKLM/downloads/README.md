@@ -104,31 +104,27 @@ UNKNOWN
 
 Do not collapse these labels into a single `LAW` label.
 
-## Existing PDF naming
+## Existing PDF naming — R034 controlled namespace
 
-Do **not** rename the existing binaries in GitHub merely to improve appearance. Renaming binary files creates unnecessary history churn and can break references.
+R034 supersedes the earlier appearance-only no-rename preference for one controlled repository-wide namespace normalization. Existing PDFs may be renamed only when a pre/post SHA-256 equality check proves binary content is unchanged.
 
-Instead:
-
-1. keep the current repository filename;
-2. use `DOWNLOADS_REGISTRY.csv` as the canonical mapping layer;
-3. if a local copy is prepared for Notebook upload, rename that local copy using the `recommended_canonical_filename` field;
-4. preserve the repository path and Git blob identity in any derived-text record.
-
-## Canonical local filename format
+Canonical readable filename format:
 
 ```text
-SOURCE_ID__JURISDICTION__DOCUMENT_ID__VERSION_OR_STATE.ext
+<SOURCE_ID> [<JURISDICTION>] [<INSTITUTION>] [<DOCUMENT_TYPE>] [<VERSION_OR_DOCUMENT_ID>] — <ORIGINAL_HUMAN_TITLE>.pdf
 ```
 
-Examples:
+Mandatory invariants:
 
 ```text
-EU-001__EU__REG-2024-1689__CONSOLIDATED-2026-07-27.pdf
-US-003__US__OMB__M-25-21.pdf
-TR-002__TR__LAW-6698__KVKK__CURRENT-SNAPSHOT.pdf
-INC-002__US-GLOBAL__REDWOOD-METR__HF-INCIDENT__2026-08-26.pdf
+ORIGINAL_HUMAN_TITLE = PRESERVE
+PRE_RENAME_SHA256 == POST_RENAME_SHA256
+PDF_CONTENT_MODIFIED = NO
+SOURCE_ID_CHANGED = NO
+AUTHORITY_CLASS_CHANGED = NO
 ```
+
+Use `RENAME_MANIFEST.csv` for the audited mapping and `ORIGINAL_FILENAME_INDEX.csv` for backward lookup. The shorter Notebook title is stored in `NOTEBOOK_SOURCE_LABELS.csv`.
 
 ## State tags
 
