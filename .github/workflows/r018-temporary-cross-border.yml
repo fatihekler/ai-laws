@@ -1,0 +1,54 @@
+name: R018 cross-border official-source verification
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r018-temporary-cross-border.yml'
+      - '.github/scripts/r018_cross_border_acquire.py'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact trigger state
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail closed on drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+
+      - name: Install extraction dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v pdftotext >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
+
+      - name: Verify official and controlled sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/r018_cross_border_acquire.py
+          git diff --check
+
+      - name: Commit acquisition record and push
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Fatih Mehmet Ekler'
+          git config user.email '5189511+fatihekler@users.noreply.github.com'
+          git add 78_CROSS_BORDER/source_acquisition/AI-LAWS-R018_SOURCE_ACQUISITION_RESULTS_2026-09-14.csv
+          git diff --cached --check
+          git commit -m 'source(r018): verify cross-border legal sources'
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          git push origin HEAD:main
+          printf 'SOURCE_HEAD=%s\nSOURCE_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
