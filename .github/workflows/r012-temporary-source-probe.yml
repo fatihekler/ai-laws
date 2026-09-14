@@ -1,4 +1,4 @@
-name: R012 temporary source probe
+name: R012 persist comparative liability baseline
 
 on:
   push:
@@ -6,87 +6,504 @@ on:
       - '.github/workflows/r012-temporary-source-probe.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  probe:
+  persist:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - name: Checkout controlled repository state
+      - name: Checkout exact trigger state
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Probe controlled official sources
-        shell: bash
-        run: |
-          set -u
-          probe() {
-            id="$1"
-            url="$2"
-            tmp_body="$(mktemp)"
-            tmp_headers="$(mktemp)"
-            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -D "$tmp_headers" -o "$tmp_body" -w '%{http_code}' "$url" || true)"
-            ctype="$(grep -i '^content-type:' "$tmp_headers" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
-            final_url="$(curl -L --connect-timeout 20 --max-time 90 -sS -o /dev/null -w '%{url_effective}' "$url" || true)"
-            bytes="$(wc -c < "$tmp_body" | tr -d ' ')"
-            sha="$(sha256sum "$tmp_body" | awk '{print $1}')"
-            printf 'SOURCE_ID=%s\nHTTP_STATUS=%s\nCONTENT_TYPE=%s\nFINAL_URL=%s\nBYTE_SIZE=%s\nSHA256=%s\n---\n' "$id" "$status" "$ctype" "$final_url" "$bytes" "$sha"
-            rm -f "$tmp_body" "$tmp_headers"
-          }
-
-          probe EU-001 'https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:02024R1689-20260727'
-          probe EU-003 'https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32024L2853'
-          probe EU-005 'https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R0679'
-          probe US-003 'https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf'
-          probe US-004 'https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-22-Driving-Efficient-Acquisition-of-Artificial-Intelligence-in-Government.pdf'
-          probe US-007 'https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10'
-          probe US-008 'https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence'
-          probe US-009-S101 'https://le.utah.gov/xcode/Title13/Chapter72/C13-72-S101_2026050620260506.pdf'
-
-      - name: Extract R012 liability provisions from verified repository snapshots
+      - name: Fail closed on unexpected branch drift
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils >/dev/null
-          pld="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*Product Liability Directive*.pdf' -print -quit)"
-          gdpr="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname 'GDPR.pdf' -print -quit)"
-          ai="$(find 86_NOTEBOOKLM/downloads -maxdepth 1 -type f -iname '*consolidated AI Act*.pdf' -print -quit)"
-          test -n "$pld" && test -n "$gdpr" && test -n "$ai"
-          printf 'PLD_FILE=%s\nGDPR_FILE=%s\nAI_ACT_FILE=%s\n' "$pld" "$gdpr" "$ai"
-          sha256sum "$pld" "$gdpr" "$ai"
-          pdftotext -raw "$pld" /tmp/pld.txt
-          pdftotext -raw "$gdpr" /tmp/gdpr.txt
-          pdftotext -raw "$ai" /tmp/ai.txt
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          printf 'BASE_HEAD=%s\nBASE_TREE=%s\n' "$GITHUB_SHA" "$(git rev-parse "$GITHUB_SHA^{tree}")"
+
+      - name: Write R012 durable research and reconcile controls
+        shell: bash
+        run: |
+          set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import re
 
-          def article(text, n, next_n=None):
-              starts = [rf'(?m)^Article {n}\s*$', rf'(?m)^Article {n}\b']
-              m = None
-              for pat in starts:
-                  m = re.search(pat, text)
-                  if m: break
-              if not m:
-                  print(f'ARTICLE_{n}=NOT_FOUND')
-                  return
-              if next_n is None:
-                  next_n = n + 1
-              e = re.search(rf'(?m)^Article {next_n}\b', text[m.end():])
-              end = m.end() + e.start() if e else min(len(text), m.end()+12000)
-              body = text[m.start():end].strip()
-              print(f'===== ARTICLE {n} =====')
-              print(body[:12000])
+          baseline = r'''# AI-LAWS-R012 — Comparative Liability Baseline
 
-          pld = Path('/tmp/pld.txt').read_text(errors='replace')
-          gdpr = Path('/tmp/gdpr.txt').read_text(errors='replace')
-          ai = Path('/tmp/ai.txt').read_text(errors='replace')
-          print('===== EU-003 PRODUCT LIABILITY DIRECTIVE =====')
-          for n in [4,5,6,7,8,9,10,11,13,14,15,16,17,22]:
-              article(pld, n)
-          print('===== EU-005 GDPR =====')
-          article(gdpr, 82)
-          print('===== EU-001 AI ACT ROLE DEFINITIONS =====')
-          article(ai, 3)
+**UNIT_ID:** `AI-LAWS-R012`  
+**RESEARCH_DATE:** 2026-09-14  
+**STATE:** `COMPLETE_RESEARCH_BASELINE_L1_L2_LIABILITY_MODEL_JURISDICTION_DEPENDENCIES_OPEN`  
+**ROLE:** `COMPARATIVE_LAW_RESEARCHER`  
+**LEGAL_ADVICE:** NO  
+**MODEL_OUTPUT_CANONICAL:** NO  
+**NOTEBOOK_OUTPUT_CANONICAL:** NO  
+**AUTO_ADVANCE:** NO
+
+## 1. Bounded scope
+
+R012 creates a source-backed comparative liability grammar for AI actors without inventing a global liability rule. The bounded positive-law comparison is intentionally narrow:
+
+- European Union: controlled `EU-001` AI Act, `EU-003` Product Liability Directive and `EU-005` GDPR;
+- United States: controlled federal executive/OMB/NIST sources plus the already pinned Utah Chapter 72 Section 101 current-source anchor, used mainly to mark what the controlled source set does **not** establish about private civil liability.
+
+Türkiye R005/R006 blockers are not reopened. R019 incident intake is not started. Other jurisdictions remain outside this bounded unit.
+
+## 2. Source/currentness state
+
+The repository snapshots for `EU-001`, `EU-003` and `EU-005` were previously verified as exact official EUR-Lex PDF byte matches. R012 re-extracted liability-relevant provisions from those exact repository snapshots.
+
+Fresh GitHub-runner probes on 2026-09-14 returned `HTTP 202` with empty bodies for the tested EUR-Lex PDF endpoints. This repeats the known access limitation and is not evidence of amendment or repeal.
+
+The same probe returned current accessible official endpoints for `US-003`, `US-004`, `US-007`, `US-008` and Utah `US-009` Section 101. The OMB PDF hashes matched the already verified repository copies. NIST pages remained live. Utah Section 101 returned a current PDF body for the previously pinned version.
+
+```text
+LIVE_FETCH_FAILURE != SOURCE_CHANGE
+EXACT_SNAPSHOT_IDENTITY != PERMANENT_CURRENTNESS
+DIRECTIVE_TEXT_VERIFIED != MEMBER_STATE_TRANSPOSITION_VERIFIED
+CONTROLLED_SOURCE_GAP != NO_LIABILITY_LAW
+```
+
+## 3. Actor translation firewall
+
+The AI Act defines provider, deployer, importer, distributor, authorised representative, product manufacturer and the collective term operator. These regulatory roles are useful for actor identification, but they do not automatically identify the civil-liability defendant.
+
+The Product Liability Directive uses a different chain: manufacturer of a product or component, provider of a related service, authorised representative, importer, fulfilment service provider, distributor, specified online-platform provider, and a person that substantially modifies a product in the defined circumstances.
+
+GDPR uses controller and processor roles for its Article 82 compensation route.
+
+Therefore:
+
+```text
+AI_ACT_PROVIDER != AUTOMATIC_PLD_MANUFACTURER
+AI_ACT_DEPLOYER != AUTOMATIC_TORT_DEFENDANT
+TOOL_PROVIDER != AUTOMATIC_COMPONENT_MANUFACTURER
+AGENT_OPERATOR != AUTOMATIC_CONTROLLER_OR_PROCESSOR
+ROLE_MAPPING_REQUIRES_FACTS_AND_APPLICABLE_LAW
+```
+
+## 4. EU product-liability architecture
+
+### Product and software
+
+`EU-003` Article 4 includes software within the Directive's definition of product. Its manufacturer-control concept expressly addresses integration/supply of components, software updates/upgrades, modification and the ability to supply updates/upgrades. This makes software lifecycle control legally relevant within the Directive's architecture; it does not make every AI service a defective product.
+
+### Defectiveness
+
+Article 7 uses the safety a person is entitled to expect or that Union/national law requires, assessed across all circumstances. The controlled text expressly includes reasonably foreseeable use, a product's ability to continue learning or acquire features after market placement/service, foreseeable effects of interconnection, timing/control, product-safety and cybersecurity requirements, interventions/recalls and user-group needs.
+
+```text
+AI_OUTPUT_ERROR != DEFECT_AUTOMATICALLY
+REGULATORY_NONCOMPLIANCE != CIVIL_LIABILITY_AUTOMATICALLY
+BETTER_MODEL_EXISTS != DEFECT_AUTOMATICALLY
+```
+
+### Potential liable economic operators
+
+Article 8 sets a product-chain allocation architecture. Depending on its conditions, liability may attach to the manufacturer of a defective product, a causally relevant defective component manufacturer, and defined Union-side operators where a manufacturer is outside the Union. A substantial modifier may be treated as manufacturer. Distributor and specified online-platform routes depend on the Directive's identification and platform conditions.
+
+This is a legal role map, not a finding that a model developer, deployer, agent operator or tool provider satisfies any one role in a concrete case.
+
+### Causation and evidence
+
+Article 10 retains a claimant's baseline requirement to prove defectiveness, damage and causal link, while establishing rebuttable presumptions in specified circumstances. Those include defined failures to disclose evidence, non-compliance with mandatory product-safety requirements protecting against the relevant risk, obvious malfunction, typical consistency between defect and damage, and technically/scientifically complex proof situations meeting the Directive's likelihood threshold.
+
+Article 9 creates controlled disclosure mechanisms subject to plausibility, necessity, proportionality, confidentiality/trade-secret protection and national procedural law.
+
+R012 records these elements but does not replace the dedicated R014 evidence/procedure unit.
+
+### Damage and remedy
+
+Articles 5–6 establish the Directive's compensation route for defined damage caused by a defective product, including death/personal injury, medically recognised psychological injury, specified property damage and destruction/corruption of non-professional data, with national-law dependencies for some losses and other liability regimes preserved.
+
+### Defences and allocation
+
+Article 11 states defined exemptions and limits them in specified software/update/control circumstances. Articles 12–15 address multiple liable economic operators, contribution/recourse, injured-person fault and non-excludability against the injured person. These rules remain instrument-specific and transposition-dependent.
+
+Article 8(5) permits Member States to use existing or establish national compensation schemes in specified non-recovery/insolvency circumstances. It does **not** establish a mandatory EU-wide AI catastrophe fund.
+
+## 5. Product Liability Directive date-state gate
+
+`EU-003` Article 22 requires Member States to transpose by **2026-12-09**. Article 21 repeals Directive 85/374/EEC from that date while preserving the earlier Directive for products placed on the market or put into service before that date.
+
+On the R012 research date, 2026-09-14:
+
+```text
+PLD_2024_TEXT = VERIFIED_PRIMARY_SOURCE
+TRANSPOSITION_DEADLINE = FUTURE_2026-12-09
+MEMBER_STATE_TRANSPOSITION_MAP = NOT_ATTEMPTED
+UNIFORM_CURRENT_NATIONAL_IMPLEMENTATION = NOT_INFERRED
+```
+
+R012 therefore uses the Directive to map the Union legislative architecture but does not state that every Member State already applies its new rules identically.
+
+## 6. GDPR Article 82 route
+
+`EU-005` Article 82 supplies a distinct compensation/liability route for material or non-material damage resulting from infringement of the GDPR. Controllers and processors have different liability triggers; Article 82 also contains a responsibility-based exemption, whole-damage protection where multiple responsible actors are involved, and recourse allocation.
+
+This route is not interchangeable with product liability:
+
+```text
+GDPR_INFRINGEMENT != PRODUCT_DEFECT
+GDPR_DAMAGE != PLAINLY_PLD_DAMAGE
+GDPR_ART82_ROUTE != AI_ACT_FINE_ARCHITECTURE
+MULTIPLE_RESPONSIBLE_CONTROLLERS != EVERY_AI_SUPPLY_CHAIN_ACTOR
+```
+
+A concrete AI dispute may engage more than one legal regime, but each route requires its own scope, actor, breach/infringement, causation, damage and remedy analysis.
+
+## 7. AI Act duty interface
+
+`EU-001` supplies actor definitions and current regulatory duties, but R003 already established the controlling boundary:
+
+```text
+AI_ACT_VIOLATION != PRIVATE_RIGHT_OF_ACTION
+REGULATORY_FINE_ARCHITECTURE != CIVIL_DAMAGES_RULE
+AI_ACT_COMPLIANCE != PRODUCT_LIABILITY_DEFENCE
+```
+
+A mandatory AI/product-safety rule may be relevant to defect or evidence analysis only where the exact system, actor, provision, applicability date, protected risk and applicable private-law route are established. R012 does not infer that interface generically.
+
+## 8. United States controlled-source result
+
+The controlled federal `US-001..US-008` layer is composed of executive orders, policy plans, OMB memoranda and voluntary NIST material. R007 expressly did not build an exhaustive federal/state tort, product-liability or private-right-of-action corpus.
+
+Fresh R012 probes confirm that selected OMB/NIST endpoints remain accessible, but source availability does not convert those instruments into generally applicable civil-liability statutes.
+
+Utah Chapter 72 Section 101 remains a verified current source anchor at the previously bounded level. Whole-chapter section-by-section currentness and any private liability/remedy route remain open.
+
+Accordingly:
+
+```text
+US_GENERAL_AI_TORT_RULE = NOT_ESTABLISHED_BY_CONTROLLED_R012_SET
+NIST_FRAMEWORK != STATUTE
+OMB_MEMORANDUM != GENERAL_PRIVATE_TORT_DUTY
+EXECUTIVE_POLICY != PRIVATE_RIGHT_OF_ACTION
+UTAH_SECTION101_CURRENT != WHOLE_CHAPTER_LIABILITY_ANALYSIS_COMPLETE
+```
+
+This is a controlled-source insufficiency finding, **not** a finding that U.S. tort/product/consumer/privacy law cannot apply to AI harms.
+
+## 9. Comparative liability chain
+
+For every future concrete record, preserve:
+
+```text
+ACTOR
+DUTY
+BREACH
+CAUSATION
+DAMAGE
+REMEDY
+DEFENCE
+EVIDENCE
+JURISDICTION
+DATE_STATE
+```
+
+The R012 matrix records only what the controlled sources can support. A missing element remains `UNKNOWN` or `NOT_ATTEMPTED` rather than being borrowed from another regime.
+
+## 10. Open dependencies
+
+R012 does not resolve:
+
+- EU Member-State transposition of Directive (EU) 2024/2853;
+- national civil-procedure, damages, contribution and recourse details beyond the controlled EU texts;
+- CJEU/national case law applying the new Product Liability Directive to AI/software;
+- exhaustive U.S. federal or 50-state tort/product/privacy/consumer liability;
+- actor-specific duties for an actual model developer, deployer, agent operator or tool provider;
+- a concrete breach, defect, infringement, causal chain, compensable damage or remedy entitlement;
+- Türkiye R005/R006 blockers;
+- incident-specific R019 analysis;
+- insurance/catastrophe-fund analysis reserved for R013;
+- full evidence/procedure comparison reserved for R014.
+
+## 11. R012 close state
+
+```text
+CONTROLLED_SOURCE_RECORDS = 8
+EU_PRIMARY_LIABILITY_SOURCES = 3
+EU_PLD_SOFTWARE_AS_PRODUCT = VERIFIED
+EU_PLD_TRANSPOSITION_DEADLINE = 2026-12-09
+EU_PLD_MEMBER_STATE_TRANSPOSITION_MAP = NOT_ATTEMPTED
+GDPR_ARTICLE_82_ROUTE = VERIFIED_PRIMARY_TEXT
+US_GENERAL_AI_TORT_RULE = NOT_ESTABLISHED_BY_CONTROLLED_SET
+EURLEX_LIVE_RECHECK = HTTP_202_EMPTY_BODY
+NOTEBOOK_UPLOADS = 0
+NEW_SOURCE_BINARIES = 0
+DERIVED_MARKDOWN_CREATED = 0
+GLOBAL_LIABILITY_RULE = NOT_INFERRED
+LEGAL_CONCLUSION = NOT_ATTEMPTED
+AUTO_ADVANCE = NO
+STOP = YES
+```
+'''
+
+          actor_matrix = '''jurisdiction,actor_class,source_basis,duty_or_liability_route,breach_or_defect_gate,causation_gate,damage_gate,remedy,defence,evidence,date_state,unknown_or_limit
+EU,AI_ACT_PROVIDER,EU-001,"regulatory provider duties where exact AI Act scope/application applies","provision-specific noncompliance required; not civil breach automatically","not supplied by AI Act fine architecture","not supplied by AI Act fine architecture","regulatory enforcement/penalties; private civil route separate","scope exclusions/transitions and provision-specific exceptions","AI Act documentation/log/incident material may be relevant but civil evidentiary effect separate","2026-07-27 controlled consolidation; phased application","civil defendant status under PLD/GDPR/national law requires separate role mapping"
+EU,AI_ACT_DEPLOYER,EU-001,"regulatory deployer duties where exact AI Act scope/application applies","provision-specific noncompliance required; not civil breach automatically","UNKNOWN for private liability from selected AI Act source","UNKNOWN for private liability from selected AI Act source","regulatory remedies; private civil route separate","scope exclusions and provision-specific exceptions","facts/logs/use context required","date-specific phased application","may separately be GDPR controller/processor or national-law actor depending facts; not inferred"
+EU,SOFTWARE_OR_PRODUCT_MANUFACTURER,EU-003,"product-liability route where software/product and manufacturer conditions are met after applicable national transposition","defectiveness under Article 7; software/update/control facts material","claimant baseline proof plus Article 10 rebuttable presumptions where conditions met","Article 6 damage categories","Article 5 compensation route through national implementation","Article 11 exemptions; Articles 13-15 allocation/limits","Article 9 disclosure plus Article 10 presumptions; national procedure applies","Directive text verified; transposition deadline 2026-12-09","member-state implementation and concrete product/actor classification not mapped"
+EU,COMPONENT_MANUFACTURER,EU-003,"Article 8 component route where defective component was integrated/interconnected within manufacturer control and causally made product defective","component defect plus Article 8 conditions","defect/product/damage causal links required subject Article 10","Article 6 categories","Directive compensation route after applicable transposition","Article 11 component-specific defence and other exemptions","Article 9-10","transposition dependent","whether AI model/tool is a component is fact-specific"
+EU,SUBSTANTIAL_MODIFIER,EU-003,"Article 8(2) treats qualifying substantial modifier as manufacturer","Article 4 substantial-modification definition plus defect","Article 10 framework","Article 6 categories","Directive compensation route after applicable transposition","Article 11(1)(g) modification-related defence","Article 9-10","transposition dependent","whether post-deployment fine-tuning/integration is substantial modification requires facts and product-safety law"
+EU,IMPORTER_AUTH_REP_FULFILMENT_DISTRIBUTOR_PLATFORM,EU-003,"defined Article 8 supply-chain routes","role-specific statutory conditions","Article 10 where applicable","Article 6 categories","Directive compensation route after applicable transposition","Article 11 and role-specific conditions","Article 9-10","transposition dependent","no automatic mapping from AI Act distribution role"
+EU,GDPR_CONTROLLER,EU-005,"Article 82 compensation for damage resulting from GDPR infringement","processing infringement and controller involvement","damage must result from infringement","material or non-material GDPR damage","compensation under Article 82","Article 82(3) no-responsibility defence","processing records and case evidence required; procedural forum Article 79(2)","GDPR directly applicable; current official snapshot verified","AI system role does not establish controller status automatically"
+EU,GDPR_PROCESSOR,EU-005,"Article 82 route limited to processor-specific obligations or acting outside/contrary to lawful controller instructions","processor-specific infringement trigger","damage must result from qualifying infringement","material or non-material GDPR damage","compensation under Article 82","Article 82(3) no-responsibility defence","processing/instruction evidence required","GDPR directly applicable; current official snapshot verified","tool/model provider may or may not be processor"
+EU,AGENT_OPERATOR_OR_TOOL_PROVIDER,EU-001;EU-003;EU-005,"no standalone universal liability role in selected texts; possible mapping to deployer/provider/manufacturer/component/related-service/controller/processor only if legal facts establish it","UNKNOWN until role and applicable regime established","UNKNOWN","UNKNOWN","UNKNOWN","regime-specific","system identity contracts control facts processing role and product integration evidence required","source-specific","do not infer liability from technical label"
+US,FEDERAL_MODEL_PROVIDER_OR_DEPLOYER,US-001..US-008,"controlled set contains executive/OMB/NIST governance sources but no generally applicable private AI tort rule verified in R012","UNKNOWN from controlled set","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","state/federal private-law and case evidence required","2026-09-14 controlled source recheck","controlled-source gap is not no-law finding"
+US,FEDERAL_AGENCY_OR_VENDOR_CONTEXT,US-003;US-004,"OMB operational/procurement duties within memorandum scope","memo-specific compliance question; not general private tort breach","not established by memo alone","not established by memo alone","administrative/procurement consequences may exist; private remedy not inferred","scope/contract/statutory authorities control","agency records procurement contract and facts required","official PDFs fresh accessible and exact-match state preserved","no general civil-liability conclusion"
+US,NIST_FRAMEWORK_USER,US-007;US-008,"voluntary risk-management framework/profile","noncompliance is not legal breach automatically","not established","not established","none created by framework itself","not a statutory safe harbour automatically","may be contextual evidence only if applicable law gives relevance","official pages accessible 2026-09-14; RMF revision warning preserved","standard-of-care relevance requires jurisdiction-specific law/case facts"
+US-UT,UTAH_CHAPTER72_ACTOR,US-009-S101,"current Section 101 identity/definitions anchor only","whole-chapter duty/breach analysis not performed","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","current whole-chapter text and case/enforcement sources required","Section 101 version effective 2026-05-06; future-change signal 2027-07-01","R007/R012 do not infer private liability from Section 101 alone"
+'''
+
+          source_matrix = '''source_id,jurisdiction,authority_class,binding_or_scope_state,r012_role,repository_identity_state,fresh_probe_2026_09_14,date_state,known,unknown,limitation
+EU-001,EU,STATUTE_OR_REGULATION,BINDING_WITH_PHASED_APPLICATION,AI actor definitions and regulatory-duty interface,"exact official EUR-Lex bytes; SHA256 1ccd38d1c78482cf2053b70110115adcc5080700acc8bd7bead8cb3579143ccf","HTTP_202_EMPTY_BODY",controlled consolidation 2026-07-27,"provider/deployer/operator definitions and phased regulatory architecture","concrete system classification; private civil-liability effect","AI Act violation is not automatic private liability"
+EU-003,EU,DIRECTIVE_OR_FRAMEWORK_LAW,BINDING_DIRECTIVE_TRANSPOSITION_DEPENDENT,product/software liability architecture,"exact official EUR-Lex bytes; SHA256 86982bf66ec10cce529fa5030096422a35cb9c88beb855c3129389dcb4562057","HTTP_202_EMPTY_BODY","official text 2024-11-18; transposition deadline 2026-12-09","software included as product; defect/economic-operator/evidence/causation/remedy architecture verified","Member-State transposition and case-law application","directive text is not uniform current national implementation"
+EU-005,EU,STATUTE_OR_REGULATION,BINDING,GDPR Article 82 compensation route,"exact official EUR-Lex bytes; SHA256 bd84e63f5b622b739a83389afc3b30d240f792bb88d8eb03a816c9a82b0c2499","HTTP_202_EMPTY_BODY",current controlled GDPR snapshot,"Article 82 controller/processor liability-compensation structure verified","actor-specific controller/processor status and concrete causation/damage","GDPR route remains distinct from AI Act and PLD"
+US-003,US,REGULATORY_GUIDANCE,EXECUTIVE_BRANCH_OPERATIONAL_MEMORANDUM_WITHIN_SCOPE,federal agency governance comparison,"exact official PDF bytes previously verified","HTTP_200_PDF; 2629748 bytes; SHA256 0aab0aa4eaeac969ed93894d3940c5dc9d0b7377048171b164a439e8b9e49813",memo dated 2025-04-03,"official source remains accessible","general private tort duty","OMB memo is not generally applicable civil statute"
+US-004,US,REGULATORY_GUIDANCE,FEDERAL_ACQUISITION_MEMORANDUM_WITHIN_SCOPE,procurement/vendor responsibility comparison,"exact official PDF bytes previously verified","HTTP_200_PDF; 1399862 bytes; SHA256 e157538371eb9665fabdacff748788fc6afc0575bb3661d15b146f3138084cd8",memo dated 2025-04-03,"official source remains accessible","private right of action and general tort effect","procurement memo is not Act of Congress"
+US-007,US,OFFICIAL_STANDARD_OR_FRAMEWORK,VOLUNTARY,nonbinding risk-management comparison,"exact official NIST PDF bytes previously verified","HTTP_200_HTML",AI RMF 1.0; revision in progress,"official publication page accessible","legal standard-of-care effect","framework is not statute or automatic defence"
+US-008,US,OFFICIAL_STANDARD_OR_FRAMEWORK,VOLUNTARY,GenAI risk-management comparison,"exact official NIST PDF bytes previously verified","HTTP_200_HTML",NIST AI 600-1 profile,"official publication page accessible","legal standard-of-care effect","profile is not statute or automatic duty"
+US-009-S101,US-UT,STATUTE_OR_REGULATION,STATE_LAW_SOURCE_ANCHOR,current Utah chapter/definition anchor,"current Section 101 source previously verified","HTTP_200_PDF; 6938 bytes; SHA256 b1c2432dd364c6342b7f393410dcfbfda5b2859dd651d692f2cc44f3e357c328","Section 101 effective 2026-05-06; future change signal 2027-07-01","current Section 101 body accessible","whole Chapter 72 duties remedies private-liability effect","section identity does not complete chapter liability analysis"
+'''
+
+          closeout = r'''# AI-LAWS-R012 — Comparative Liability Closeout
+
+**UNIT_ID:** `AI-LAWS-R012`  
+**DATE:** 2026-09-14  
+**BASE_HEAD:** `646a60fe9e05f81a53543c5b862dee3931aede37`  
+**DURABLE_COMMIT:** `PENDING_R012_RESEARCH_COMMIT`  
+**STATE:** `COMPLETE_RESEARCH_BASELINE_L1_L2_LIABILITY_MODEL_JURISDICTION_DEPENDENCIES_OPEN`  
+**LEGAL_ADVICE:** NO  
+**AUTO_ADVANCE:** NO
+
+## Scope completed
+
+R012 produced a bounded EU/US comparative liability baseline using current controlled repository sources and fresh GitHub-runner source probes. The unit did not attempt a global liability rule or concrete actor liability determination.
+
+## Durable outputs
+
+- `40_LIABILITY/AI-LAWS-R012_COMPARATIVE_LIABILITY_BASELINE_2026-09-14.md`
+- `40_LIABILITY/AI-LAWS-R012_ACTOR_LIABILITY_CHAIN_MATRIX_2026-09-14.csv`
+- `40_LIABILITY/AI-LAWS-R012_SOURCE_AND_CURRENTNESS_MATRIX_2026-09-14.csv`
+- `95_RESEARCH/LIABILITY/AI-LAWS-R012_CLOSEOUT_2026-09-14.md`
+- reconciled `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`
+- reconciled `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`
+
+## Verification record
+
+```text
+SOURCE_RECORDS_RECHECKED = 8
+EU_EXACT_OFFICIAL_REPOSITORY_SNAPSHOTS_USED = EU-001; EU-003; EU-005
+EU_PDF_LIVE_PROBE = HTTP_202_EMPTY_BODY
+EU_REPOSITORY_SNAPSHOT_EXTRACTION = SUCCESS
+US003_FRESH_ACCESS = HTTP_200_PDF_EXACT_KNOWN_HASH
+US004_FRESH_ACCESS = HTTP_200_PDF_EXACT_KNOWN_HASH
+US007_FRESH_ACCESS = HTTP_200_OFFICIAL_PAGE
+US008_FRESH_ACCESS = HTTP_200_OFFICIAL_PAGE
+US009_S101_FRESH_ACCESS = HTTP_200_PDF
+NOTEBOOK_UPLOADS = 0
+NEW_SOURCE_BINARIES = 0
+DERIVED_MARKDOWN_CREATED = 0
+ZIP_OR_ARTIFACT_CREATED = NO
+```
+
+The live EUR-Lex `202 + empty body` result is preserved as an access/currentness limitation; it is not interpreted as a source change. The same-day exact official repository snapshots remain the controlled source bodies for this bounded extraction, subject to future refresh.
+
+## Core findings with limits
+
+```text
+EU_PLD_SOFTWARE_AS_PRODUCT = VERIFIED_PRIMARY_TEXT
+EU_PLD_ACTOR_DEFECT_CAUSATION_EVIDENCE_REMEDY_ARCHITECTURE = VERIFIED_PRIMARY_TEXT
+EU_PLD_TRANSPOSITION_DEADLINE = 2026-12-09
+EU_PLD_MEMBER_STATE_TRANSPOSITION_MAP = NOT_ATTEMPTED
+GDPR_ARTICLE_82_COMPENSATION_ROUTE = VERIFIED_PRIMARY_TEXT
+AI_ACT_ROLE_DEFINITIONS = VERIFIED_CURRENT_CONTROLLED_TEXT
+AI_ACT_VIOLATION_EQUALS_CIVIL_LIABILITY = NO_INFERENCE
+US_GENERAL_AI_TORT_RULE = NOT_ESTABLISHED_BY_CONTROLLED_R012_SET
+GLOBAL_AI_LIABILITY_RULE = NOT_INFERRED
+LEGAL_CONCLUSION = NOT_ATTEMPTED
+```
+
+## Preserved blockers and UNKNOWNs
+
+- `R005` remains `PARTIAL_SOURCE_PIN_REPOSITORY_PDF_CONTENT_VERIFIED_OFFICIAL_LIVE_RECHECK_BLOCKED`.
+- `R006` remains `BLOCKED_BY_OFFICIAL_SOURCE_AVAILABILITY`.
+- `R019` remains `READY_FOR_EXPLICIT_AUTHORIZATION` and was not started.
+- EU Member-State PLD transposition/current national implementation remains open.
+- U.S. state/private tort, product, privacy, consumer and case-law liability remains open beyond the controlled R012 set.
+- concrete actor role, duty, breach/defect, causation, damage, defence, evidence and remedy remain fact- and jurisdiction-specific.
+
+## Helper discipline
+
+Temporary GitHub Actions source-probe/extraction workflow was used only inside R012. It is removed in the cleanup commit after this research commit. No workflow artifact was produced.
+
+## Stop
+
+```text
+NEXT_BOUNDED_UNIT = NONE_AUTO_SELECTED
+UNKNOWN_PRESERVED = YES
+AUTO_ADVANCE = NO
+STOP = YES
+```
+'''
+
+          files = {
+              '40_LIABILITY/AI-LAWS-R012_COMPARATIVE_LIABILITY_BASELINE_2026-09-14.md': baseline,
+              '40_LIABILITY/AI-LAWS-R012_ACTOR_LIABILITY_CHAIN_MATRIX_2026-09-14.csv': actor_matrix,
+              '40_LIABILITY/AI-LAWS-R012_SOURCE_AND_CURRENTNESS_MATRIX_2026-09-14.csv': source_matrix,
+              '95_RESEARCH/LIABILITY/AI-LAWS-R012_CLOSEOUT_2026-09-14.md': closeout,
+          }
+          for path, content in files.items():
+              p = Path(path)
+              p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(content, encoding='utf-8')
+
+          queue_path = Path('90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv')
+          queue = queue_path.read_text(encoding='utf-8').splitlines()
+          matches = [i for i, line in enumerate(queue) if line.startswith('AI-LAWS-R012,')]
+          if len(matches) != 1:
+              raise SystemExit(f'R012 queue row count unexpected: {len(matches)}')
+          queue[matches[0]] = 'AI-LAWS-R012,P0,Liability,"Comparative actor/duty/breach/causation/damage/remedy model for model developer, provider, deployer, agent operator and tool provider",COMPLETE_RESEARCH_BASELINE_L1_L2_LIABILITY_MODEL_JURISDICTION_DEPENDENCIES_OPEN,jurisdiction profiles,40_LIABILITY/AI-LAWS-R012_COMPARATIVE_LIABILITY_BASELINE_2026-09-14.md; 40_LIABILITY/AI-LAWS-R012_ACTOR_LIABILITY_CHAIN_MATRIX_2026-09-14.csv; 40_LIABILITY/AI-LAWS-R012_SOURCE_AND_CURRENTNESS_MATRIX_2026-09-14.csv; 95_RESEARCH/LIABILITY/AI-LAWS-R012_CLOSEOUT_2026-09-14.md,"bounded EU/US comparative liability baseline complete; EU Member-State PLD transposition and national procedures; US state/private-law duties and case law; concrete breach causation damage remedy; other jurisdictions remain open; no global liability rule inferred"'
+          queue_path.write_text('\n'.join(queue) + '\n', encoding='utf-8')
+
+          ctx_path = Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md')
+          ctx = ctx_path.read_text(encoding='utf-8')
+
+          old = ' / R011_HUMAN_SOVEREIGNTY_L1_L2_COMPLETE_SCOPE_LIMITS_OPEN / R021_COMPLETE'
+          new = ' / R011_HUMAN_SOVEREIGNTY_L1_L2_COMPLETE_SCOPE_LIMITS_OPEN / R012_COMPARATIVE_LIABILITY_BASELINE_COMPLETE_DEPENDENCIES_OPEN / R021_COMPLETE'
+          if old not in ctx:
+              raise SystemExit('context state marker missing')
+          ctx = ctx.replace(old, new, 1)
+
+          old = 'AI-LAWS-R011 = COMPLETE_RESEARCH_BASELINE_L1_L2_RIGHTS_MAP_SCOPE_LIMITS_OPEN\nAI-LAWS-R021 = COMPLETE_SUPPORT_INFRASTRUCTURE'
+          new = 'AI-LAWS-R011 = COMPLETE_RESEARCH_BASELINE_L1_L2_RIGHTS_MAP_SCOPE_LIMITS_OPEN\nAI-LAWS-R012 = COMPLETE_RESEARCH_BASELINE_L1_L2_LIABILITY_MODEL_JURISDICTION_DEPENDENCIES_OPEN\nAI-LAWS-R021 = COMPLETE_SUPPORT_INFRASTRUCTURE'
+          if old not in ctx:
+              raise SystemExit('completed-unit marker missing')
+          ctx = ctx.replace(old, new, 1)
+
+          section = r'''### R012 — Comparative liability baseline
+
+R012 established a bounded actor/duty/breach-or-defect/causation/damage/remedy/defence/evidence comparison from the controlled EU liability sources and the current controlled U.S. source set.
+
+```text
+R012_CONTROLLED_SOURCE_RECORDS = 8
+R012_EU_PRIMARY_LIABILITY_SOURCES = 3
+R012_EU_PLD_SOFTWARE_AS_PRODUCT = VERIFIED
+R012_EU_PLD_TRANSPOSITION_DEADLINE = 2026-12-09
+R012_EU_PLD_MEMBER_STATE_TRANSPOSITION_MAP = NOT_ATTEMPTED
+R012_GDPR_ARTICLE_82_COMPENSATION_ROUTE = VERIFIED_PRIMARY_TEXT
+R012_AI_ACT_ROLE_TO_CIVIL_DEFENDANT_MAPPING = FACT_SPECIFIC_NOT_INFERRED
+R012_US_GENERAL_AI_TORT_RULE = NOT_ESTABLISHED_BY_CONTROLLED_SOURCE_SET
+R012_EURLEX_LIVE_RECHECK = HTTP_202_EMPTY_BODY
+R012_NOTEBOOK_UPLOADS = 0
+R012_GLOBAL_LIABILITY_RULE = NOT_INFERRED
+R012_LEGAL_CONCLUSION = NOT_ATTEMPTED
+```
+
+The Product Liability Directive source expressly includes software in its product definition and contains software/update/control, defectiveness, economic-operator, disclosure, burden/presumption, causation, damage, defence and allocation rules. Its Member-State transposition deadline is 2026-12-09, so current national implementation was not inferred. GDPR Article 82 was separately verified as a controller/processor compensation route. The AI Act remains a regulatory-duty layer and is not converted into a private civil-liability rule.
+
+For the United States, the controlled federal source set remains executive/OMB/NIST-centric and does not establish a generally applicable private AI tort rule. This is a bounded source-gap result, not a negative finding that U.S. tort/product/privacy/consumer law cannot apply.
+
+Durable outputs are under `40_LIABILITY/` plus `95_RESEARCH/LIABILITY/AI-LAWS-R012_CLOSEOUT_2026-09-14.md`.
+
+'''
+          marker = '### R021\n'
+          if marker not in ctx:
+              raise SystemExit('R021 insertion marker missing')
+          ctx = ctx.replace(marker, section + marker, 1)
+
+          next_section = r'''### R012 comparative liability baseline
+
+```text
+AI-LAWS-R012 — COMPARATIVE LIABILITY
+STATE = COMPLETE_RESEARCH_BASELINE_L1_L2_LIABILITY_MODEL_JURISDICTION_DEPENDENCIES_OPEN
+NEXT_BOUNDED_UNIT = NONE_AUTO_SELECTED
+```
+
+R012 is complete only at its bounded comparative baseline. EU Member-State PLD transposition, U.S. private/state liability law and case law, other jurisdictions, and concrete actor/causation/damage/remedy determinations remain open. The queue remains authoritative; no successor unit is auto-selected.
+
+'''
+          marker = '### Notebook/source-processing lane\n'
+          if marker not in ctx:
+              raise SystemExit('notebook-lane marker missing')
+          ctx = ctx.replace(marker, next_section + marker, 1)
+
+          old = 'R011_LIABILITY_CONCLUSION = NOT_ATTEMPTED\nNOTEBOOK_UPLOAD_COUNT = 0'
+          new = '''R011_LIABILITY_CONCLUSION = NOT_ATTEMPTED
+R012_CONTROLLED_SOURCE_RECORDS = 8
+R012_EU_PRIMARY_LIABILITY_SOURCES = 3
+R012_EU_PLD_SOFTWARE_AS_PRODUCT = VERIFIED
+R012_EU_PLD_TRANSPOSITION_DEADLINE = 2026-12-09
+R012_EU_PLD_MEMBER_STATE_TRANSPOSITION_MAP = NOT_ATTEMPTED
+R012_GDPR_ARTICLE_82_COMPENSATION_ROUTE = VERIFIED_PRIMARY_TEXT
+R012_US_GENERAL_AI_TORT_RULE = NOT_ESTABLISHED_BY_CONTROLLED_SOURCE_SET
+R012_EURLEX_LIVE_RECHECK = HTTP_202_EMPTY_BODY
+R012_NOTEBOOK_UPLOADS = 0
+R012_DERIVED_MARKDOWN_CREATED = 0
+R012_GLOBAL_LIABILITY_RULE = NOT_INFERRED
+NOTEBOOK_UPLOAD_COUNT = 0'''
+          if old not in ctx:
+              raise SystemExit('integrity marker missing')
+          ctx = ctx.replace(old, new, 1)
+
+          ctx_path.write_text(ctx, encoding='utf-8')
           PY
+
+          git diff --check
+          git status --short
+
+      - name: Commit durable R012 research
+        id: research
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Fatih Mehmet Ekler'
+          git config user.email '5189511+fatihekler@users.noreply.github.com'
+          git add 40_LIABILITY/AI-LAWS-R012_COMPARATIVE_LIABILITY_BASELINE_2026-09-14.md \
+                  40_LIABILITY/AI-LAWS-R012_ACTOR_LIABILITY_CHAIN_MATRIX_2026-09-14.csv \
+                  40_LIABILITY/AI-LAWS-R012_SOURCE_AND_CURRENTNESS_MATRIX_2026-09-14.csv \
+                  95_RESEARCH/LIABILITY/AI-LAWS-R012_CLOSEOUT_2026-09-14.md \
+                  90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+                  00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git commit -m 'research(r012): complete comparative liability baseline'
+          echo "durable=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "tree=$(git rev-parse HEAD^{tree})" >> "$GITHUB_OUTPUT"
+
+      - name: Finalize closeout and remove temporary helper
+        shell: bash
+        env:
+          DURABLE: ${{ steps.research.outputs.durable }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          p = Path('95_RESEARCH/LIABILITY/AI-LAWS-R012_CLOSEOUT_2026-09-14.md')
+          t = p.read_text(encoding='utf-8')
+          old = '`PENDING_R012_RESEARCH_COMMIT`'
+          new = f'`{os.environ["DURABLE"]}`'
+          if old not in t:
+              raise SystemExit('closeout durable placeholder missing')
+          p.write_text(t.replace(old, new, 1), encoding='utf-8')
+          PY
+          git rm .github/workflows/r012-temporary-source-probe.yml
+          git add 95_RESEARCH/LIABILITY/AI-LAWS-R012_CLOSEOUT_2026-09-14.md
+          git diff --cached --check
+          git commit -m 'chore(r012): remove temporary source probe'
+
+      - name: Recheck remote and push bounded result
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          git push origin HEAD:main
+          printf 'DURABLE_RESEARCH_COMMIT=%s\nFINAL_LOCAL_HEAD=%s\nFINAL_LOCAL_TREE=%s\nTEMPORARY_HELPER_PRESENT=%s\n' \
+            '${{ steps.research.outputs.durable }}' \
+            "$(git rev-parse HEAD)" \
+            "$(git rev-parse HEAD^{tree})" \
+            "$(test -e .github/workflows/r012-temporary-source-probe.yml && echo YES || echo NO)"
