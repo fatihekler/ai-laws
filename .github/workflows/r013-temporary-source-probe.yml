@@ -31,7 +31,6 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-
           research_commit = '9b81d64ec73358dfe978feb80233be32a225a8a2'
 
           qpath = Path('90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv')
@@ -44,7 +43,6 @@ jobs:
 
           cpath = Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md')
           ctx = cpath.read_text(encoding='utf-8')
-
           old = ' / R012_COMPARATIVE_LIABILITY_BASELINE_COMPLETE_DEPENDENCIES_OPEN / R021_COMPLETE'
           new = ' / R012_COMPARATIVE_LIABILITY_BASELINE_COMPLETE_DEPENDENCIES_OPEN / R013_FINANCIAL_RESPONSIBILITY_BASELINE_COMPLETE_LIMITS_OPEN / R021_COMPLETE'
           if old not in ctx:
@@ -57,44 +55,38 @@ jobs:
               raise SystemExit('completed-unit marker missing')
           ctx = ctx.replace(old, new, 1)
 
-          section = '''### R013 financial responsibility baseline
-
-```text
-AI-LAWS-R013 — FINANCIAL RESPONSIBILITY
-STATE = COMPLETE_RESEARCH_BASELINE_L1_L2_FINANCIAL_RESPONSIBILITY_CURRENT_LAW_MARKET_PROPOSAL_LIMITS_OPEN
-NEXT_BOUNDED_UNIT = NONE_AUTO_SELECTED
-```
-
-R013 separates binding financial-responsibility rules, commercial insurance-market evidence, and proposal/withdrawn-procedure material. The current controlled AI Act contains a scoped liability-insurance requirement for notified bodies; it was not generalized to providers or deployers. Directive (EU) 2024/2853 permits specified Member-State compensation-scheme architecture and requires future evaluation of product-liability-insurance availability, while Member-State transposition and actual schemes remain open.
-
-The European Parliament Legislative Observatory records AI Liability Directive procedure `2022/0303(COD)` as lapsed or withdrawn, with Commission withdrawal on `2025-10-06`. Armilla live commercial pages establish current AI-insurance market-source identity, but policy wording, limits, exclusions, licensing and claims performance were not acquired. The tested 2020 Parliament resolution variants returned `HTTP 202` with empty bodies, so no exact mandatory-insurance proposition from that primary text was admitted.
-
-Durable outputs are under `70_FINANCIAL_RESPONSIBILITY/` plus `95_RESEARCH/FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CLOSEOUT_2026-09-14.md`. No global AI catastrophe-fund or general provider/deployer mandatory-insurance rule was inferred.
-
-'''
+          next_section = ('### R013 financial responsibility baseline\n\n'
+                          '```text\n'
+                          'AI-LAWS-R013 — FINANCIAL RESPONSIBILITY\n'
+                          'STATE = COMPLETE_RESEARCH_BASELINE_L1_L2_FINANCIAL_RESPONSIBILITY_CURRENT_LAW_MARKET_PROPOSAL_LIMITS_OPEN\n'
+                          'NEXT_BOUNDED_UNIT = NONE_AUTO_SELECTED\n'
+                          '```\n\n'
+                          'R013 separates binding financial-responsibility rules, commercial insurance-market evidence, and proposal/withdrawn-procedure material. The current controlled AI Act contains a scoped liability-insurance requirement for notified bodies; it was not generalized to providers or deployers. Directive (EU) 2024/2853 permits specified Member-State compensation-scheme architecture and requires future evaluation of product-liability-insurance availability, while Member-State transposition and actual schemes remain open.\n\n'
+                          'The European Parliament Legislative Observatory records AI Liability Directive procedure `2022/0303(COD)` as lapsed or withdrawn, with Commission withdrawal on `2025-10-06`. Armilla live commercial pages establish current AI-insurance market-source identity, but policy wording, limits, exclusions, licensing and claims performance were not acquired. The tested 2020 Parliament resolution variants returned `HTTP 202` with empty bodies, so no exact mandatory-insurance proposition from that primary text was admitted.\n\n'
+                          'Durable outputs are under `70_FINANCIAL_RESPONSIBILITY/` plus `95_RESEARCH/FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CLOSEOUT_2026-09-14.md`. No global AI catastrophe-fund or general provider/deployer mandatory-insurance rule was inferred.\n\n')
           marker = '### Notebook/source-processing lane\n'
           if marker not in ctx:
               raise SystemExit('notebook lane marker missing')
-          ctx = ctx.replace(marker, section + marker, 1)
+          ctx = ctx.replace(marker, next_section + marker, 1)
 
           old = 'R012_GLOBAL_LIABILITY_RULE = NOT_INFERRED\nNOTEBOOK_UPLOAD_COUNT = 0'
-          new = '''R012_GLOBAL_LIABILITY_RULE = NOT_INFERRED
-R013_AI_ACT_NOTIFIED_BODY_LIABILITY_INSURANCE = VERIFIED_CURRENT_CONTROLLED_TEXT
-R013_GENERAL_PROVIDER_DEPLOYER_MANDATORY_INSURANCE = NOT_ESTABLISHED_BY_BOUNDED_SET
-R013_PLD_ART8_5_COMPENSATION_SCHEME_OPTION = VERIFIED_PRIMARY_TEXT
-R013_PLD_ART20_INSURANCE_EVALUATION = VERIFIED_PRIMARY_TEXT
-R013_PLD_TRANSPOSITION_DEADLINE = 2026-12-09
-R013_PLD_MEMBER_STATE_SCHEME_MAP = NOT_ATTEMPTED
-R013_AILD_PROCEDURE = LAPSED_OR_WITHDRAWN
-R013_AILD_WITHDRAWAL_DATE = 2025-10-06
-R013_ARMILLA_CURRENT_MARKET_IDENTITY = VERIFIED_HTTP_200
-R013_ARMILLA_POLICY_WORDING = UNKNOWN_NOT_ACQUIRED
-R013_EP2020_PRIMARY_TEXT_ACCESS = HTTP_202_EMPTY_BODY
-R013_GLOBAL_AI_CATASTROPHE_FUND = NOT_ESTABLISHED_BY_BOUNDED_SET
-R013_NOTEBOOK_UPLOADS = 0
-R013_DERIVED_MARKDOWN_CREATED = 0
-R013_LEGAL_CONCLUSION = NOT_ATTEMPTED
-NOTEBOOK_UPLOAD_COUNT = 0'''
+          new = ('R012_GLOBAL_LIABILITY_RULE = NOT_INFERRED\n'
+                 'R013_AI_ACT_NOTIFIED_BODY_LIABILITY_INSURANCE = VERIFIED_CURRENT_CONTROLLED_TEXT\n'
+                 'R013_GENERAL_PROVIDER_DEPLOYER_MANDATORY_INSURANCE = NOT_ESTABLISHED_BY_BOUNDED_SET\n'
+                 'R013_PLD_ART8_5_COMPENSATION_SCHEME_OPTION = VERIFIED_PRIMARY_TEXT\n'
+                 'R013_PLD_ART20_INSURANCE_EVALUATION = VERIFIED_PRIMARY_TEXT\n'
+                 'R013_PLD_TRANSPOSITION_DEADLINE = 2026-12-09\n'
+                 'R013_PLD_MEMBER_STATE_SCHEME_MAP = NOT_ATTEMPTED\n'
+                 'R013_AILD_PROCEDURE = LAPSED_OR_WITHDRAWN\n'
+                 'R013_AILD_WITHDRAWAL_DATE = 2025-10-06\n'
+                 'R013_ARMILLA_CURRENT_MARKET_IDENTITY = VERIFIED_HTTP_200\n'
+                 'R013_ARMILLA_POLICY_WORDING = UNKNOWN_NOT_ACQUIRED\n'
+                 'R013_EP2020_PRIMARY_TEXT_ACCESS = HTTP_202_EMPTY_BODY\n'
+                 'R013_GLOBAL_AI_CATASTROPHE_FUND = NOT_ESTABLISHED_BY_BOUNDED_SET\n'
+                 'R013_NOTEBOOK_UPLOADS = 0\n'
+                 'R013_DERIVED_MARKDOWN_CREATED = 0\n'
+                 'R013_LEGAL_CONCLUSION = NOT_ATTEMPTED\n'
+                 'NOTEBOOK_UPLOAD_COUNT = 0')
           if old not in ctx:
               raise SystemExit('integrity marker missing')
           ctx = ctx.replace(old, new, 1)
