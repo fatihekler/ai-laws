@@ -34,8 +34,8 @@ jobs:
               reg={r['manifest_source_id']:r for r in csv.DictReader(f) if r['manifest_source_id'] in ids}
           with Path('86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv').open(newline='',encoding='utf-8') as f:
               man={r['source_id']:r for r in csv.DictReader(f) if r['source_id'] in ids}
-          assert set(reg)==set(ids), ('registry missing',sorted(set(ids)-set(reg)))
-          assert set(man)==set(ids), ('manifest missing',sorted(set(ids)-set(man)))
+          assert set(reg)==set(ids)
+          assert set(man)==set(ids)
 
           markers={
             'EU-001':['2024/1689','artificial intelligence'],
@@ -60,7 +60,7 @@ jobs:
               out=Path('/tmp')/name
               cmd=['curl','-L','--silent','--show-error','--fail-with-body','--connect-timeout','15','--max-time','90','--retry','1','-A','Mozilla/5.0 AI-LAWS source verification','-o',str(out),'-w','%{http_code}|%{content_type}|%{url_effective}',url]
               try:
-                  meta=run(cmd).strip(); b=out.read_bytes(); return meta,b,out
+                  meta=run(cmd).strip(); return meta,out.read_bytes(),out
               except subprocess.CalledProcessError as e:
                   return f'FAILED:{e.returncode}',b'',out
 
@@ -75,6 +75,7 @@ jobs:
               print(f'PDF|{sid}|filename={clean(r["repo_filename"],180)}|blob={blob}|sha256={sha}|bytes={len(b)}|pages={pages}|textchars={len(txt)}|title={clean(title,250)}|markers={mk}')
               print(f'HEAD|{sid}|{clean(txt[:6500],1000)}')
               print(f'TAIL|{sid}|{clean(txt[-5000:],800)}')
+
               url=m.get('official_url','').strip()
               meta,ob,op=get(url,sid+'-landing') if url else ('NO_URL',b'',Path('/tmp/x'))
               print(f'OFFICIAL|{sid}|url={url}|curl={meta}|bytes={len(ob)}|sha256={hashlib.sha256(ob).hexdigest() if ob else "NONE"}|exact_repo={"YES" if ob and ob==b else "NO"}')
@@ -82,6 +83,7 @@ jobs:
                   raw=ob.decode('utf-8','replace')
                   visible=' '.join(html.unescape(re.sub(r'<[^>]+>',' ',raw)).split())
                   print(f'OFFICIAL_HTML|{sid}|doc_marker={"YES" if any(x.lower() in visible.lower() for x in markers[sid]) else "NO"}|head={clean(visible,900)}')
+
               pdfurl='https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:'+celex[sid]
               pm,pb,pp=get(pdfurl,sid+'-celex.pdf')
               mime=run(['file','-b','--mime-type',str(pp)]).strip() if pb else 'NONE'
@@ -90,8 +92,10 @@ jobs:
               if pb and mime=='application/pdf':
                   try:
                       oi=run(['pdfinfo',str(pp)]); ot=run(['pdftotext','-layout',str(pp),'-'])
+                      onorm=' '.join(ot.lower().split())
                       opages=(re.search(r'^Pages:\s+(\d+)',oi,re.M) or [None,'UNKNOWN'])[1]
-                      print(f'CELEX_PDF_TEXT|{sid}|pages={opages}|textchars={len(ot)}|markers={";".join(f"{x}={\"YES\" if x.lower() in \" \".join(ot.lower().split()) else \"NO\"}" for x in markers[sid])}')
+                      omk=';'.join(f'{x}={"YES" if x.lower() in onorm else "NO"}' for x in markers[sid])
+                      print(f'CELEX_PDF_TEXT|{sid}|pages={opages}|textchars={len(ot)}|markers={omk}')
                   except Exception as e:
                       print(f'CELEX_PDF_TEXT|{sid}|PARSE_ERROR={clean(e,300)}')
           PY
