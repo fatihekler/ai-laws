@@ -1,4 +1,4 @@
-name: AI-LAWS R009 UK exact policy-source probe
+name: AI-LAWS R009 UK enactment-date metadata probe
 
 on:
   push:
@@ -13,46 +13,38 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Verify exact current UK AI policy and regulator pages
+      - name: Verify exact enactment-date attributes without inferring commencement
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import urllib.request,json,re,html
-          UA={'User-Agent':'Mozilla/5.0 AI-LAWS-R009','Accept':'application/json,text/html,*/*'}
-          def fetch(url,timeout=25):
-              req=urllib.request.Request(url,headers=UA)
-              with urllib.request.urlopen(req,timeout=timeout) as r:
-                  return r.status,r.geturl(),r.headers.get('Content-Type',''),r.read()
-          def plain(s): return re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',s or ''))).strip()
-          paths={
-            'GB-009':'/government/calls-for-evidence/ai-growth-lab',
-            'GB-009R':'/government/publications/response-to-the-ai-growth-lab-call-for-evidence',
-            'GB-010':'/government/publications/regulators-strategic-approaches-to-ai',
-            'GB-POLICY-REG-ACTION':'/government/publications/a-new-approach-to-ensure-regulators-and-regulation-support-growth',
-            'GB-POLICY-AIAP-RESP':'/government/publications/ai-opportunities-action-plan-government-response',
+          import urllib.request,re
+          UA={'User-Agent':'Mozilla/5.0 AI-LAWS-R009','Accept':'application/xml,text/xml,*/*'}
+          sources={
+            'GB-001':'https://www.legislation.gov.uk/eur/2016/679/data.xml',
+            'GB-002':'https://www.legislation.gov.uk/ukpga/2018/12/data.xml',
+            'GB-003':'https://www.legislation.gov.uk/ukpga/2025/18/data.xml',
+            'GB-004':'https://www.legislation.gov.uk/ukpga/2023/50/data.xml',
+            'GB-005':'https://www.legislation.gov.uk/ukpga/2024/13/data.xml',
+            'GB-006':'https://www.legislation.gov.uk/ukpga/2015/15/data.xml',
+            'GB-007':'https://www.legislation.gov.uk/ukpga/1987/43/data.xml',
+            'GB-008':'https://www.legislation.gov.uk/ukpga/2025/20/data.xml',
           }
-          for sid,p in paths.items():
-              print('\n===',sid,p,'===')
+          for sid,u in sources.items():
+              print('\n===',sid,'===')
               try:
-                  s,f,ct,b=fetch('https://www.gov.uk/api/content'+p)
-                  o=json.loads(b.decode('utf-8','ignore')); d=o.get('details') or {}; body=d.get('body') or d.get('description') or ''
-                  markers={m:(m.lower() in plain(body).lower()) for m in ['AI Growth Lab','artificial intelligence','regulator','regulation','legislation','sandbox','statutory','legal']}
-                  out={
-                    'status':s,'title':o.get('title'),'document_type':o.get('document_type'),'first_published_at':o.get('first_published_at'),'public_updated_at':o.get('public_updated_at'),'withdrawn_notice':o.get('withdrawn_notice'),'base_path':o.get('base_path'),'markers':markers
-                  }
-                  print(json.dumps(out,ensure_ascii=False))
-                  print('BODY_HEAD=',plain(body)[:2500])
+                  req=urllib.request.Request(u,headers=UA)
+                  with urllib.request.urlopen(req,timeout=25) as r:
+                      x=r.read().decode('utf-8','ignore')
+                      tags=re.findall(r'<[^>]*(?:EnactmentDate|MadeDate|ComingIntoForce)[^>]*>',x,re.I)
+                      print('STATUS=',r.status,'FINAL=',r.geturl(),'DATE_TAGS=',tags[:20])
+                      for attr in ['EnactmentDate','MadeDate','ComingIntoForce']:
+                          vals=[]
+                          for tag in tags:
+                              if attr.lower() in tag.lower():
+                                  vals += re.findall(r'(?:Date|date)=["\']([^"\']+)["\']',tag)
+                          print(attr,'=',vals)
               except Exception as e: print('ERROR=',type(e).__name__,str(e))
-
-          print('\n=== ICO AI HUB ===')
-          u='https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/'
-          try:
-              s,f,ct,b=fetch(u); raw=b.decode('utf-8','ignore'); p=plain(raw)
-              title=re.findall(r'<title[^>]*>(.*?)</title>',raw,re.I|re.S)
-              print('STATUS=',s,'FINAL=',f,'TITLE=',plain(title[0]) if title else '')
-              for m in ['Guidance on AI and data protection','Explaining decisions made with AI','UK GDPR','Data Protection Act 2018','Data (Use and Access) Act 2025']:
-                  print('MARKER',m,m.lower() in p.lower())
-          except Exception as e: print('ICO_ERROR=',type(e).__name__,str(e))
           PY
+          echo 'COMMENCEMENT_INFERENCE_FROM_ENACTMENT_DATE=NO'
           echo 'ZIP_OR_ARTIFACT_CREATED=NO'
