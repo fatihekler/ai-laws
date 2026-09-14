@@ -1,0 +1,11 @@
+layer,jurisdiction,source_or_rule,verified_state,bounded_function,critical_limit
+REGULATORY_SCOPE,EU,GDPR Article 3,CONTROLLED_REPOSITORY_BODY_MARKERS_VERIFIED,territorial scope for GDPR application,not forum or choice-of-law rule
+REGULATORY_SCOPE,EU,AI Act Article 2 via R003,PRIOR_CONTROLLED_R003_VERIFIED,third-country/Union-use scope interface,not independently re-admitted by R018 verifier; not forum or private remedy
+FORUM_AND_RECOGNITION,EU,Brussels I bis Regulation 1215/2012,OFFICIAL_IDENTITY_LIVE_BODY_BLOCKED,EU civil/commercial jurisdiction and recognition/enforcement instrument identity,article-level propositions not admitted in R018
+APPLICABLE_LAW_CONTRACT,EU,Rome I Regulation 593/2008,OFFICIAL_IDENTITY_LIVE_BODY_BLOCKED,contractual applicable-law instrument identity,article-level propositions not admitted in R018
+APPLICABLE_LAW_NONCONTRACT,EU,Rome II Regulation 864/2007,OFFICIAL_IDENTITY_LIVE_BODY_BLOCKED,non-contractual applicable-law instrument identity,article-level propositions not admitted in R018
+SERVICE_PERSONAL_JURISDICTION_INTERFACE,US_FEDERAL,FRCP Rule 4 current 2025 pamphlet,BODY_MARKERS_VERIFIED,service abroad and territorial limits of effective service interface,constitutional due process; state long-arm law; statutory service and merits remain separate
+VENUE,US_FEDERAL,28 U.S.C. §1391,BODY_MARKERS_VERIFIED,federal civil venue architecture,venue != personal jurisdiction; applicable law; liability
+EVIDENCE_COOPERATION,US_FEDERAL,28 U.S.C. §1782,BODY_MARKERS_VERIFIED,statutory assistance for qualifying foreign/international proceedings,case-law scope discretionary factors privilege and concrete entitlement open
+FOREIGN_JUDGMENT_RECOGNITION,US,State law / treaty / case-law layer,NOT_RESEARCHED_R018,state-specific recognition/enforcement dependency,no federal universal recognition rule inferred from bounded set
+CROSS_BORDER_CHAIN,GLOBAL,AI-LAWS analytical firewall,RESEARCH_METHOD,scope -> forum -> service/venue -> applicable law -> merits -> evidence -> judgment -> recognition/enforcement,no layer may be inferred from another
