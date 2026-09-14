@@ -1,0 +1,54 @@
+name: AI-LAWS R031 final control reconciliation
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r031-final-control-reconcile.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reconcile stale current-state text
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md')
+          s=p.read_text(encoding='utf-8')
+          old_nb07='''NB07_OFFICIAL_URL_SOURCE_SET = READY\nNB07_REPOSITORY_PDF_UPLOAD_SET = HOLD_FOR_LOCAL_BINARY_CONTENT_CHECK'''
+          new_nb07='''NB07_OFFICIAL_URL_SOURCE_SET = READY\nNB07_SELECTED_REPOSITORY_PDFS_CONTENT_IDENTITY_VERIFIED = 7 / 7\nNB07_SELECTED_REPOSITORY_PDFS_EXACT_OFFICIAL_BYTE_MATCH = 7 / 7\nNB07_REPOSITORY_PDF_UPLOAD_SET = ELIGIBLE_AS_VERIFIED_OFFICIAL_SNAPSHOTS_WITH_SOURCE_SPECIFIC_DATE_STATE_LABELS\nNB07_NOTEBOOK_UPLOADS = 0'''
+          assert old_nb07 in s
+          s=s.replace(old_nb07,new_nb07,1)
+          old_lane='''R029 completed the NB08 repository incident-source classification. The current 38-PDF primary binary lanes NB01, NB03, NB04 and NB08 now have repository-level validation results; NB02 remains official-URL ready but repository PDF body validation is still partial, and NB05 has no dedicated primary binary set. No Notebook ingestion or substantive incident/legal analysis is auto-started.'''
+          new_lane='''R029 completed the NB08 repository incident-source classification. The primary PDF packs NB01, NB02, NB03, NB04 and NB08 now have repository-level validation results. NB02 is `10/10` exact official EUR-Lex bytes; NB03 has seven exact-official PDF matches plus the intentionally supporting-only `US-001` White House HTML-print snapshot; NB05 has no dedicated primary binary set. No Notebook ingestion or substantive incident/legal analysis is auto-started.'''
+          assert old_lane in s
+          s=s.replace(old_lane,new_lane,1)
+          p.write_text(s,encoding='utf-8')
+          print('CONTROL_RECONCILIATION=PASS')
+          PY
+      - name: Commit reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'NO_CHANGES'; exit 1; }
+          git commit -m 'control(r031): reconcile validated Notebook source states'
+          git push origin HEAD:main
+      - name: Confirm bounded closeout
+        run: |
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
+          echo 'NOTEBOOK_UPLOADS=0'
+          echo 'AUTO_ADVANCE=NO'
