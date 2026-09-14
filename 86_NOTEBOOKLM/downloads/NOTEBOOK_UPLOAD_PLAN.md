@@ -169,26 +169,31 @@ as separate classes.
 
 ## NB08 — Frontier AI Incidents
 
-Recommended core pair:
-
-1. `INC-001` — OpenAI company incident disclosure;
-2. `INC-002` — Redwood/METR independent investigation.
-
-Additional:
-
-- `INC-003` — Anthropic vendor threat-intelligence report;
-- `INC-004` — optional policy/forecast context only.
-
-Mandatory labels:
+R029 inspected all four repository PDFs and rechecked the directly corresponding original/source layer.
 
 ```text
-INC-001 = COMPANY_INCIDENT_DISCLOSURE
-INC-002 = INDEPENDENT_INVESTIGATION
-INC-003 = VENDOR_THREAT_INTELLIGENCE
-INC-004 = POLICY_FORECAST_CONTEXT
+NB08_REPOSITORY_PDFS_INSPECTED = 4 / 4
+NB08_NATIVE_SEARCHABLE_TEXT_LAYER = 4 / 4
+NB08_CONTENT_IDENTITY_VERIFIED = 2
+NB08_CONTENT_IDENTITY_PARTIAL = 2
+NB08_OFFICIAL_OR_ORIGINAL_EXACT_BYTE_MATCH = 2
+NB08_DERIVED_MARKDOWN_REQUIRED = 0
+NB08_NOTEBOOK_UPLOADS = 0
 ```
 
-Do not ask Notebook to synthesize these as if they were equal authority.
+Controlled roles and routing:
+
+- `INC-001` — `COMPANY_INCIDENT_DISCLOSURE`: repository OpenAI technical report is content-partial because both relevant OpenAI official URLs returned 403 to the GitHub runner; hold normal PDF ingestion pending official-source recheck.
+- `INC-002` — `INDEPENDENT_INVESTIGATION`: exact byte match to the METR direct PDF; eligible as a verified official/original PDF while preserving stated investigation limitations.
+- `INC-003` — `VENDOR_THREAT_INTELLIGENCE`: exact byte match to the official Anthropic CDN report; eligible with explicit vendor-attribution labeling.
+- `INC-004` — `POLICY_FORECAST_CONTEXT`: live author page verified, repository file is a webpage-print snapshot; use live URL if needed and never treat it as incident fact.
+
+```text
+COMPANY_DISCLOSURE != INDEPENDENT_PROOF
+VENDOR_ATTRIBUTION != COURT_FINDING
+FORECAST != INCIDENT
+INCIDENT != LIABILITY
+```
 
 ## Upload workflow
 

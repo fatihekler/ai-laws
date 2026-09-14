@@ -3,7 +3,7 @@
 **UPDATED:** 2026-09-14  
 **REPOSITORY:** `fatihekler/ai-laws`  
 **BRANCH:** `main`  
-**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / R028_NB03_REPOSITORY_PDF_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE
+**STATE:** R001_COMPLETE / R021_COMPLETE / R022_COMPLETE / R023_DOWNLOAD_LABELING_COMPLETE / R024_NB07_SOURCE_VALIDATION_COMPLETE / R025_NB02_SOURCE_VALIDATION_COMPLETE / R026_NB04_REPOSITORY_PDF_VALIDATION_COMPLETE / R027_NB01_REPOSITORY_PDF_VALIDATION_COMPLETE / R028_NB03_REPOSITORY_PDF_VALIDATION_COMPLETE / R029_NB08_REPOSITORY_INCIDENT_SOURCE_VALIDATION_COMPLETE / LEGAL_RESEARCH_ACTIVE
 **AUTO_ADVANCE:** NO
 
 ## 1. Project position
@@ -43,6 +43,7 @@ AI-LAWS-R025 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R026 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R027 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R028 = COMPLETE_SUPPORT_SOURCE_VALIDATION
+AI-LAWS-R029 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 ```
 
 ### R001
@@ -173,6 +174,24 @@ Exact official byte matches were established for `US-002`, `US-003`, `US-004`, `
 
 Durable output: `86_NOTEBOOKLM/downloads/NB03_CONTENT_IDENTITY_RESULTS.csv` plus registry/ledger/upload-plan/download-list/queue reconciliation.
 
+### R029 — NB08 repository incident-source validation
+
+R029 inspected `INC-001..INC-004` inside GitHub and rechecked their direct source/original layer without starting the R019 incident corpus.
+
+```text
+NB08_REPOSITORY_PDFS_INSPECTED = 4 / 4
+NB08_NATIVE_SEARCHABLE_TEXT_LAYER = 4 / 4
+NB08_CONTENT_IDENTITY_VERIFIED = 2
+NB08_CONTENT_IDENTITY_PARTIAL = 2
+NB08_ORIGINAL_OR_OFFICIAL_EXACT_BYTE_MATCH = 2
+NB08_DERIVED_MARKDOWN = 0
+NB08_NOTEBOOK_UPLOADS = 0
+```
+
+`INC-002` exactly matches the METR original PDF and `INC-003` exactly matches the official Anthropic CDN PDF. `INC-001` remains source-partial because both relevant OpenAI URLs returned 403 to the GitHub runner. `INC-004` is a verified live-author policy essay with a repository webpage-print snapshot and remains `NOT_INCIDENT_EVIDENCE`.
+
+Durable output: `86_NOTEBOOKLM/downloads/NB08_CONTENT_IDENTITY_RESULTS.csv` plus registry/manifest/ledger/upload-plan/download-list/queue reconciliation.
+
 ### R025 — NB02 remaining EU source validation
 
 R025 processed the seven NB02 sources not already covered by R024:
@@ -294,6 +313,21 @@ NB03_NOTEBOOK_UPLOADS = 0
 
 Use `DOWNLOADS_REGISTRY.csv` for exact routing. Live White House/OMB currentness and NIST revision state remain authoritative beyond the pinned snapshots.
 
+### NB08 current ingest state
+
+```text
+NB08_CONTENT_IDENTITY_VERIFIED = 2 / 4
+NB08_CONTENT_IDENTITY_PARTIAL = 2 / 4
+NB08_EXACT_ORIGINAL_OFFICIAL_PDF_MATCH = 2 / 4
+NB08_NATIVE_TEXT_LAYER = 4 / 4
+NB08_DERIVED_MARKDOWN_REQUIRED = 0
+NB08_NOTEBOOK_UPLOADS = 0
+INC001_OFFICIAL_SOURCE_RECHECK = BLOCKED_403
+INC004_ROLE = POLICY_FORECAST_CONTEXT_NOT_INCIDENT
+```
+
+Use `DOWNLOADS_REGISTRY.csv` for role-specific routing. `INC-002` and `INC-003` are verified PDF snapshots; `INC-001` remains source-partial; `INC-004` is optional non-incident policy context.
+
 ### NB02 current ingest state
 
 ```text
@@ -404,7 +438,7 @@ The controlled NB02 official URL set is now ready for a separate Notebook ingest
 
 NB07 official sources also remain ready for a separate Notebook ingestion step.
 
-R028 completed the NB03 core repository-PDF classification. No further primary repository pack is auto-started by this unit; NB08 incident PDFs remain a separate controlled lane and NB05 has no dedicated primary binary set among the current 38 PDFs.
+R029 completed the NB08 repository incident-source classification. The current 38-PDF primary binary lanes NB01, NB03, NB04 and NB08 now have repository-level validation results; NB02 remains official-URL ready but repository PDF body validation is still partial, and NB05 has no dedicated primary binary set. No Notebook ingestion or substantive incident/legal analysis is auto-started.
 
 ### Türkiye source-processing lane
 
@@ -454,6 +488,11 @@ R028_NB03_CONTENT_IDENTITY_VERIFIED = 7
 R028_NB03_CONTENT_IDENTITY_PARTIAL = 1
 R028_NB03_OFFICIAL_EXACT_BYTE_MATCH = 6
 R028_NB03_NATIVE_TEXT_LAYER_VERIFIED = 8
+R029_NB08_REPOSITORY_PDFS_INSPECTED = 4
+R029_NB08_CONTENT_IDENTITY_VERIFIED = 2
+R029_NB08_CONTENT_IDENTITY_PARTIAL = 2
+R029_NB08_EXACT_ORIGINAL_OFFICIAL_PDF_MATCH = 2
+R029_NB08_NATIVE_TEXT_LAYER_VERIFIED = 4
 NB02_OFFICIAL_SOURCE_LAYER_RECHECKED = 10
 NB02_OFFICIAL_URL_DIRECT_READY = 10
 NB02_REPOSITORY_PDF_CONTENT_IDENTITY_PARTIAL = 10

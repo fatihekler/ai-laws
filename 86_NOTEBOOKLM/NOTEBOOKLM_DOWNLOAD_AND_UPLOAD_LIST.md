@@ -248,21 +248,16 @@ POLICY PROPOSAL
 
 ## H. NB08 — Frontier AI incident evidence
 
-- `INC-001` OpenAI company Hugging Face incident disclosure;
-- `INC-002` Redwood/METR independent investigation;
-- `INC-003` Anthropic Threat Intelligence Report September 2026;
-- `INC-004` Dario Amodei `We Must Pace the Frontier` — optional policy/forecast context, not incident fact.
-
-Rules:
+R029 repository/source validation state:
 
 ```text
-COMPANY_DISCLOSURE != INDEPENDENT_PROOF
-VENDOR_ATTRIBUTION != COURT_FINDING
-FORECAST != INCIDENT
-INCIDENT != LIABILITY
+INC-001 = CONTENT_IDENTITY_PARTIAL / OPENAI_REPOSITORY_TECHNICAL_REPORT / OFFICIAL_URL_403_RECHECK_BLOCKED
+INC-002 = CONTENT_IDENTITY_VERIFIED / EXACT_METR_ORIGINAL_PDF / INDEPENDENT_INVESTIGATION
+INC-003 = CONTENT_IDENTITY_VERIFIED / EXACT_ANTHROPIC_OFFICIAL_PDF / VENDOR_THREAT_INTELLIGENCE
+INC-004 = CONTENT_IDENTITY_PARTIAL / AUTHOR_WEBPAGE_PRINT / POLICY_FORECAST_CONTEXT / NOT_INCIDENT
 ```
 
-Use the source labels from `downloads/DOWNLOADS_REGISTRY.csv` when uploading/ingesting.
+All four PDFs have native searchable text; no Markdown derivative is required. The core evidentiary pair remains `INC-001` + `INC-002`, but they are not equal authority and the OpenAI repository report remains source-partial until its official source can be rechecked. `INC-003` is vendor attribution; `INC-004` is optional policy context only.
 
 ---
 
