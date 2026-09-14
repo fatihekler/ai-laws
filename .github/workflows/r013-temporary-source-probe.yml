@@ -1,4 +1,4 @@
-name: R013 targeted proposal and market verification
+name: R013 bounded reconciliation cleanup
 
 on:
   push:
@@ -6,71 +6,120 @@ on:
       - '.github/workflows/r013-temporary-source-probe.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  probe:
+  reconcile:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
-      - name: Checkout exact source state
+      - name: Checkout exact trigger state
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Probe Parliament resolution variants
+      - name: Fail closed on drift
         shell: bash
         run: |
-          set -u
-          probe() {
-            id="$1"
-            url="$2"
-            body="$(mktemp)"
-            hdr="$(mktemp)"
-            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
-            ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
-            bytes="$(wc -c < "$body" | tr -d ' ')"
-            sha="$(sha256sum "$body" | awk '{print $1}')"
-            echo "SOURCE_ID=${id}"
-            echo "HTTP_STATUS=${status}"
-            echo "CONTENT_TYPE=${ctype}"
-            echo "BYTE_SIZE=${bytes}"
-            echo "SHA256=${sha}"
-            if [ "$bytes" -gt 0 ]; then
-              if echo "$ctype" | grep -qi pdf; then
-                pdftotext "$body" - 2>/dev/null | grep -inE -C 4 'insurance|high-risk|strict liability|compensation' | head -n 120 || true
-              else
-                tr '\n' ' ' < "$body" | sed -E 's/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,260}(insurance|high-risk|strict liability|compensation).{0,520}' | head -n 20 || true
-              fi
-            fi
-            echo '---'
-            rm -f "$body" "$hdr"
-          }
-          probe EP_RESOLUTION_PDF 'https://www.europarl.europa.eu/doceo/document/TA-9-2020-0276_EN.pdf'
-          probe EP_RESOLUTION_XML 'https://www.europarl.europa.eu/doceo/document/TA-9-2020-0276_EN.xml'
-          probe EP_RESOLUTION_HTML 'https://www.europarl.europa.eu/doceo/document/TA-9-2020-0276_EN.html'
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
 
-      - name: Probe current Armilla market detail
+      - name: Reconcile queue context and closeout
         shell: bash
         run: |
-          set -u
-          for path in '/' '/ai-insurance' '/become-an-armilla-broker-ai-insurance-warranty'; do
-            url="https://www.armilla.ai${path}"
-            body="$(mktemp)"
-            hdr="$(mktemp)"
-            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
-            ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
-            bytes="$(wc -c < "$body" | tr -d ' ')"
-            echo "URL=${url}"
-            echo "HTTP_STATUS=${status}"
-            echo "CONTENT_TYPE=${ctype}"
-            echo "BYTE_SIZE=${bytes}"
-            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,240}(AI insurance|insurance|warranty|coverage|underwrit|policy|liability).{0,520}' | head -n 30 || true
-            echo '---'
-            rm -f "$body" "$hdr"
-          done
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
 
-      - name: Confirm bounded execution
+          research_commit = '9b81d64ec73358dfe978feb80233be32a225a8a2'
+
+          qpath = Path('90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv')
+          qlines = qpath.read_text(encoding='utf-8').splitlines()
+          idx = [i for i, line in enumerate(qlines) if line.startswith('AI-LAWS-R013,')]
+          if len(idx) != 1:
+              raise SystemExit(f'R013 queue row count unexpected: {len(idx)}')
+          qlines[idx[0]] = 'AI-LAWS-R013,P1,Financial responsibility,Existing insurance/financial-assurance mechanisms and AI catastrophe-fund/mandatory-insurance proposals,COMPLETE_RESEARCH_BASELINE_L1_L2_FINANCIAL_RESPONSIBILITY_CURRENT_LAW_MARKET_PROPOSAL_LIMITS_OPEN,NONE,70_FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_FINANCIAL_RESPONSIBILITY_BASELINE_2026-09-14.md; 70_FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CURRENT_LAW_MARKET_PROPOSAL_MATRIX_2026-09-14.csv; 70_FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_SOURCE_AND_CURRENTNESS_MATRIX_2026-09-14.csv; 95_RESEARCH/FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CLOSEOUT_2026-09-14.md,"bounded EU current-law + current-market + withdrawn/proposal-status baseline complete; policy wording, Member-State schemes/transposition, market capacity, other jurisdictions and catastrophe-fund proposals remain open; no proposed fund represented as existing right"'
+          qpath.write_text('\n'.join(qlines) + '\n', encoding='utf-8')
+
+          cpath = Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md')
+          ctx = cpath.read_text(encoding='utf-8')
+
+          old = ' / R012_COMPARATIVE_LIABILITY_BASELINE_COMPLETE_DEPENDENCIES_OPEN / R021_COMPLETE'
+          new = ' / R012_COMPARATIVE_LIABILITY_BASELINE_COMPLETE_DEPENDENCIES_OPEN / R013_FINANCIAL_RESPONSIBILITY_BASELINE_COMPLETE_LIMITS_OPEN / R021_COMPLETE'
+          if old not in ctx:
+              raise SystemExit('context state marker missing')
+          ctx = ctx.replace(old, new, 1)
+
+          old = 'AI-LAWS-R012 = COMPLETE_RESEARCH_BASELINE_L1_L2_LIABILITY_MODEL_JURISDICTION_DEPENDENCIES_OPEN\nAI-LAWS-R021 = COMPLETE_SUPPORT_INFRASTRUCTURE'
+          new = 'AI-LAWS-R012 = COMPLETE_RESEARCH_BASELINE_L1_L2_LIABILITY_MODEL_JURISDICTION_DEPENDENCIES_OPEN\nAI-LAWS-R013 = COMPLETE_RESEARCH_BASELINE_L1_L2_FINANCIAL_RESPONSIBILITY_CURRENT_LAW_MARKET_PROPOSAL_LIMITS_OPEN\nAI-LAWS-R021 = COMPLETE_SUPPORT_INFRASTRUCTURE'
+          if old not in ctx:
+              raise SystemExit('completed-unit marker missing')
+          ctx = ctx.replace(old, new, 1)
+
+          section = '''### R013 financial responsibility baseline
+
+```text
+AI-LAWS-R013 — FINANCIAL RESPONSIBILITY
+STATE = COMPLETE_RESEARCH_BASELINE_L1_L2_FINANCIAL_RESPONSIBILITY_CURRENT_LAW_MARKET_PROPOSAL_LIMITS_OPEN
+NEXT_BOUNDED_UNIT = NONE_AUTO_SELECTED
+```
+
+R013 separates binding financial-responsibility rules, commercial insurance-market evidence, and proposal/withdrawn-procedure material. The current controlled AI Act contains a scoped liability-insurance requirement for notified bodies; it was not generalized to providers or deployers. Directive (EU) 2024/2853 permits specified Member-State compensation-scheme architecture and requires future evaluation of product-liability-insurance availability, while Member-State transposition and actual schemes remain open.
+
+The European Parliament Legislative Observatory records AI Liability Directive procedure `2022/0303(COD)` as lapsed or withdrawn, with Commission withdrawal on `2025-10-06`. Armilla live commercial pages establish current AI-insurance market-source identity, but policy wording, limits, exclusions, licensing and claims performance were not acquired. The tested 2020 Parliament resolution variants returned `HTTP 202` with empty bodies, so no exact mandatory-insurance proposition from that primary text was admitted.
+
+Durable outputs are under `70_FINANCIAL_RESPONSIBILITY/` plus `95_RESEARCH/FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CLOSEOUT_2026-09-14.md`. No global AI catastrophe-fund or general provider/deployer mandatory-insurance rule was inferred.
+
+'''
+          marker = '### Notebook/source-processing lane\n'
+          if marker not in ctx:
+              raise SystemExit('notebook lane marker missing')
+          ctx = ctx.replace(marker, section + marker, 1)
+
+          old = 'R012_GLOBAL_LIABILITY_RULE = NOT_INFERRED\nNOTEBOOK_UPLOAD_COUNT = 0'
+          new = '''R012_GLOBAL_LIABILITY_RULE = NOT_INFERRED
+R013_AI_ACT_NOTIFIED_BODY_LIABILITY_INSURANCE = VERIFIED_CURRENT_CONTROLLED_TEXT
+R013_GENERAL_PROVIDER_DEPLOYER_MANDATORY_INSURANCE = NOT_ESTABLISHED_BY_BOUNDED_SET
+R013_PLD_ART8_5_COMPENSATION_SCHEME_OPTION = VERIFIED_PRIMARY_TEXT
+R013_PLD_ART20_INSURANCE_EVALUATION = VERIFIED_PRIMARY_TEXT
+R013_PLD_TRANSPOSITION_DEADLINE = 2026-12-09
+R013_PLD_MEMBER_STATE_SCHEME_MAP = NOT_ATTEMPTED
+R013_AILD_PROCEDURE = LAPSED_OR_WITHDRAWN
+R013_AILD_WITHDRAWAL_DATE = 2025-10-06
+R013_ARMILLA_CURRENT_MARKET_IDENTITY = VERIFIED_HTTP_200
+R013_ARMILLA_POLICY_WORDING = UNKNOWN_NOT_ACQUIRED
+R013_EP2020_PRIMARY_TEXT_ACCESS = HTTP_202_EMPTY_BODY
+R013_GLOBAL_AI_CATASTROPHE_FUND = NOT_ESTABLISHED_BY_BOUNDED_SET
+R013_NOTEBOOK_UPLOADS = 0
+R013_DERIVED_MARKDOWN_CREATED = 0
+R013_LEGAL_CONCLUSION = NOT_ATTEMPTED
+NOTEBOOK_UPLOAD_COUNT = 0'''
+          if old not in ctx:
+              raise SystemExit('integrity marker missing')
+          ctx = ctx.replace(old, new, 1)
+          cpath.write_text(ctx, encoding='utf-8')
+
+          close_path = Path('95_RESEARCH/FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CLOSEOUT_2026-09-14.md')
+          close = close_path.read_text(encoding='utf-8')
+          placeholder = '`PENDING_R013_RESEARCH_COMMIT`'
+          if placeholder not in close:
+              raise SystemExit('closeout placeholder missing')
+          close_path.write_text(close.replace(placeholder, f'`{research_commit}`', 1), encoding='utf-8')
+          PY
+          git diff --check
+
+      - name: Commit reconciliation cleanup and push
         shell: bash
         run: |
-          echo 'WORKFLOW_ARTIFACTS_CREATED=0'
-          echo 'NOTEBOOK_UPLOADS=0'
-          echo 'AUTO_ADVANCE=NO'
+          set -euo pipefail
+          git config user.name 'Fatih Mehmet Ekler'
+          git config user.email '5189511+fatihekler@users.noreply.github.com'
+          git rm .github/workflows/r013-temporary-source-probe.yml
+          git add 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv 95_RESEARCH/FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CLOSEOUT_2026-09-14.md
+          git diff --cached --check
+          git commit -m 'control(r013): reconcile state and cleanup helper'
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          git push origin HEAD:main
+          printf 'FINAL_HEAD=%s\nFINAL_TREE=%s\nHELPER_PRESENT=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" "$(test -e .github/workflows/r013-temporary-source-probe.yml && echo YES || echo NO)"
