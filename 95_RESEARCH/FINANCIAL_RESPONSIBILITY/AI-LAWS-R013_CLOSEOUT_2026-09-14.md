@@ -1,0 +1,87 @@
+# AI-LAWS-R013 — Financial Responsibility Closeout
+
+**UNIT_ID:** `AI-LAWS-R013`
+**DATE:** 2026-09-14
+**BASE_HEAD:** `0ea13878fdf4f3edcb3ee626bf096888360093fc`
+**R013_RESEARCH_COMMIT:** `PENDING_R013_RESEARCH_COMMIT`
+**STATE:** `COMPLETE_RESEARCH_BASELINE_L1_L2_FINANCIAL_RESPONSIBILITY_CURRENT_LAW_MARKET_PROPOSAL_LIMITS_OPEN`
+**LEGAL_ADVICE:** NO
+**AUTO_ADVANCE:** NO
+
+## Scope completed
+
+R013 produced a bounded financial-responsibility baseline separating current binding-law/directive architecture, live commercial AI-insurance source identity, and proposal/withdrawn-procedure material. It did not perform an exhaustive global insurance survey or create a general AI mandatory-insurance rule.
+
+## Durable outputs
+
+- `70_FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_FINANCIAL_RESPONSIBILITY_BASELINE_2026-09-14.md`
+- `70_FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CURRENT_LAW_MARKET_PROPOSAL_MATRIX_2026-09-14.csv`
+- `70_FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_SOURCE_AND_CURRENTNESS_MATRIX_2026-09-14.csv`
+- `95_RESEARCH/FINANCIAL_RESPONSIBILITY/AI-LAWS-R013_CLOSEOUT_2026-09-14.md`
+- reconciled `90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv`
+- reconciled `00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md`
+
+## Verification record
+
+```text
+CONTROLLED_EU_PDF_SNAPSHOTS_EXTRACTED = 3
+AI_ACT_NOTIFIED_BODY_LIABILITY_INSURANCE = VERIFIED_CURRENT_CONTROLLED_TEXT
+PLD_ARTICLE_8_5_COMPENSATION_SCHEME_OPTION = VERIFIED_PRIMARY_TEXT
+PLD_ARTICLE_20_PRODUCT_LIABILITY_INSURANCE_EVALUATION = VERIFIED_PRIMARY_TEXT
+PLD_TRANSPOSITION_DEADLINE = 2026-12-09
+PLD_MEMBER_STATE_SCHEME_MAP = NOT_ATTEMPTED
+GDPR_AI_FINANCIAL_ASSURANCE_DUTY = NOT_ESTABLISHED_BY_TARGETED_R013_SEARCH
+AILD_PROCEDURE_2022_0303_COD = LAPSED_OR_WITHDRAWN
+AILD_COMMISSION_WITHDRAWAL_DATE = 2025-10-06
+EP2020_RESOLUTION_PRIMARY_BODY = HTTP_202_EMPTY_BODY
+ARMILLA_HOME = HTTP_200
+ARMILLA_AI_INSURANCE_PAGE = HTTP_200
+ARMILLA_BROKER_AI_INSURANCE_WARRANTY_PAGE = HTTP_200
+ARMILLA_POLICY_WORDING = UNKNOWN_NOT_ACQUIRED
+MUNICH_RE_GUESSED_CANDIDATE_PATHS = HTTP_404
+NOTEBOOK_UPLOADS = 0
+NEW_SOURCE_BINARIES = 0
+DERIVED_MARKDOWN_CREATED = 0
+ZIP_OR_ARTIFACT_CREATED = NO
+```
+
+## Core findings with limits
+
+```text
+NOTIFIED_BODY_INSURANCE_DUTY = VERIFIED_SCOPED_CURRENT_LAW
+GENERAL_AI_PROVIDER_DEPLOYER_MANDATORY_INSURANCE = NOT_ESTABLISHED_BY_R013_SET
+PLD_MEMBER_STATE_COMPENSATION_SCHEME_OPTION = VERIFIED_DIRECTIVE_TEXT
+EU_WIDE_AI_CATASTROPHE_FUND_CREATED_BY_PLD = NO
+AILD_CURRENT_LAW = NO
+AILD_ACTIVE_PROPOSAL = NO
+CURRENT_COMMERCIAL_AI_INSURANCE_IDENTITY = VERIFIED_FOR_ARMILLA_SOURCE
+COMMERCIAL_POLICY_COVERAGE = UNKNOWN_NOT_ACQUIRED
+GLOBAL_FRONTIER_AI_CATASTROPHE_FUND_RULE = NOT_ESTABLISHED_BY_R013
+LEGAL_CONCLUSION = NOT_ATTEMPTED
+```
+
+## Preserved blockers and UNKNOWNs
+
+- `R005` remains `PARTIAL_SOURCE_PIN_REPOSITORY_PDF_CONTENT_VERIFIED_OFFICIAL_LIVE_RECHECK_BLOCKED`.
+- `R006` remains `BLOCKED_BY_OFFICIAL_SOURCE_AVAILABILITY`.
+- `R019` remains `READY_FOR_EXPLICIT_AUTHORIZATION` and was not started.
+- Armilla policy wording, limits, exclusions, underwriting, licensing and claims-performance evidence remain unknown/not acquired.
+- EU Member-State PLD transposition and compensation schemes remain open.
+- general provider/deployer mandatory-insurance rules outside the bounded sources remain open.
+- catastrophe-insurance capacity, correlated-loss modelling and extreme-tail insurability remain open.
+- exact substantive text of the 2020 Parliament resolution remains inaccessible in the GitHub-runner environment.
+- Munich Re candidate paths returned 404; product existence or absence was not inferred.
+- other jurisdictions and market participants remain unresearched in this bounded unit.
+
+## Helper discipline
+
+Temporary GitHub Actions source probes produced no artifacts and no Notebook uploads. The helper workflow is to be removed in the final reconciliation/cleanup commit.
+
+## Stop
+
+```text
+NEXT_BOUNDED_UNIT = NONE_AUTO_SELECTED
+UNKNOWN_PRESERVED = YES
+AUTO_ADVANCE = NO
+STOP = YES
+```
