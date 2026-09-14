@@ -1,0 +1,41 @@
+name: R012 temporary source probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r012-temporary-source-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Probe controlled official sources
+        shell: bash
+        run: |
+          set -u
+          probe() {
+            id="$1"
+            url="$2"
+            tmp_body="$(mktemp)"
+            tmp_headers="$(mktemp)"
+            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -D "$tmp_headers" -o "$tmp_body" -w '%{http_code}' "$url" || true)"
+            ctype="$(grep -i '^content-type:' "$tmp_headers" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
+            final_url="$(curl -L --connect-timeout 20 --max-time 90 -sS -o /dev/null -w '%{url_effective}' "$url" || true)"
+            bytes="$(wc -c < "$tmp_body" | tr -d ' ')"
+            sha="$(sha256sum "$tmp_body" | awk '{print $1}')"
+            printf 'SOURCE_ID=%s\nHTTP_STATUS=%s\nCONTENT_TYPE=%s\nFINAL_URL=%s\nBYTE_SIZE=%s\nSHA256=%s\n---\n' "$id" "$status" "$ctype" "$final_url" "$bytes" "$sha"
+            rm -f "$tmp_body" "$tmp_headers"
+          }
+
+          probe EU-001 'https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:02024R1689-20260727'
+          probe EU-003 'https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32024L2853'
+          probe EU-005 'https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R0679'
+          probe US-003 'https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf'
+          probe US-004 'https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-22-Driving-Efficient-Acquisition-of-Artificial-Intelligence-in-Government.pdf'
+          probe US-007 'https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10'
+          probe US-008 'https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence'
+          probe US-009-S101 'https://le.utah.gov/xcode/Title13/Chapter72/C13-72-S101_2026050620260506.pdf'
