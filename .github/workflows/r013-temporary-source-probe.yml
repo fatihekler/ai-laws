@@ -16,7 +16,7 @@ jobs:
       - name: Checkout exact source state
         uses: actions/checkout@v4
 
-      - name: Extract controlled current-law insurance signals
+      - name: Extract controlled current-law financial signals
         shell: bash
         run: |
           set -euo pipefail
@@ -32,19 +32,22 @@ jobs:
           echo '===== CONTROLLED SNAPSHOT HASHES ====='
           sha256sum "$pld" "$ai" "$gdpr"
           for spec in PLD:/tmp/pld.txt AI_ACT:/tmp/ai.txt GDPR:/tmp/gdpr.txt; do
-            id="${spec%%:*}"; file="${spec#*:}"
+            id="${spec%%:*}"
+            file="${spec#*:}"
             echo "===== ${id} FINANCIAL TERMS ====="
-            grep -inE -C 3 'insurance|insurability|financial guarantee|financial assurance|compensation scheme|compensation fund|catastrophe|reserve requirement|capital requirement|reinsurance' "$file" || true
+            grep -inE -C 4 'insurance|insurability|financial guarantee|financial assurance|compensation scheme|compensation fund|catastrophe|reserve requirement|capital requirement|reinsurance' "$file" || true
           done
 
-      - name: Probe official EU proposal and current-status sources
+      - name: Probe official EU proposal and status sources
         shell: bash
         run: |
           set -u
           probe() {
-            id="$1"; url="$2"
-            body="$(mktemp)"; hdr="$(mktemp)"
-            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
+            id="$1"
+            url="$2"
+            body="$(mktemp)"
+            hdr="$(mktemp)"
+            status="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
             ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
             bytes="$(wc -c < "$body" | tr -d ' ')"
             sha="$(sha256sum "$body" | awk '{print $1}')"
@@ -53,19 +56,7 @@ jobs:
             echo "CONTENT_TYPE=${ctype}"
             echo "BYTE_SIZE=${bytes}"
             echo "SHA256=${sha}"
-            python3 - "$body" <<'PY'
-import re, sys
-from pathlib import Path
-p=Path(sys.argv[1])
-s=p.read_text(errors='replace') if p.exists() else ''
-text=re.sub(r'<script.*?</script>|<style.*?</style>', ' ', s, flags=re.I|re.S)
-text=re.sub(r'<[^>]+>', ' ', text)
-text=re.sub(r'\s+', ' ', text)
-for term in ['insurance','withdraw','liability','compensation','high-risk AI','Artificial Intelligence Liability Directive']:
-    m=re.search(r'.{0,220}'+re.escape(term)+r'.{0,420}', text, flags=re.I)
-    if m:
-        print('SNIPPET_'+re.sub(r'\W+','_',term).upper()+'='+m.group(0)[:800])
-PY
+            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,180}(insurance|withdrawn|withdrawal|liability|compensation|high-risk AI|Artificial Intelligence Liability Directive).{0,320}' | head -n 12 || true
             echo '---'
             rm -f "$body" "$hdr"
           }
@@ -79,8 +70,10 @@ PY
         run: |
           set -u
           probe_market() {
-            id="$1"; url="$2"
-            body="$(mktemp)"; hdr="$(mktemp)"
+            id="$1"
+            url="$2"
+            body="$(mktemp)"
+            hdr="$(mktemp)"
             status="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$hdr" -o "$body" -w '%{http_code}' "$url" || true)"
             ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
             bytes="$(wc -c < "$body" | tr -d ' ')"
@@ -88,18 +81,7 @@ PY
             echo "HTTP_STATUS=${status}"
             echo "CONTENT_TYPE=${ctype}"
             echo "BYTE_SIZE=${bytes}"
-            python3 - "$body" <<'PY'
-import re, sys
-from pathlib import Path
-s=Path(sys.argv[1]).read_text(errors='replace') if Path(sys.argv[1]).exists() else ''
-text=re.sub(r'<script.*?</script>|<style.*?</style>', ' ', s, flags=re.I|re.S)
-text=re.sub(r'<[^>]+>', ' ', text)
-text=re.sub(r'\s+', ' ', text)
-for term in ['aiSure','artificial intelligence','AI insurance','warranty','insurance','performance guarantee']:
-    m=re.search(r'.{0,220}'+re.escape(term)+r'.{0,520}', text, flags=re.I)
-    if m:
-        print('SNIPPET_'+re.sub(r'\W+','_',term).upper()+'='+m.group(0)[:900])
-PY
+            tr '\n' ' ' < "$body" | sed -E 's/<script[^>]*>.*<\/script>/ /Ig; s/<style[^>]*>.*<\/style>/ /Ig; s/<[^>]+>/ /g; s/[[:space:]]+/ /g' | grep -Eio '.{0,180}(aiSure|artificial intelligence|AI insurance|warranty|insurance|performance guarantee).{0,360}' | head -n 12 || true
             echo '---'
             rm -f "$body" "$hdr"
           }
@@ -107,8 +89,9 @@ PY
           probe_market MUNICHRE_AISURE 'https://www.munichre.com/en/solutions/for-industry-clients/ai-performance-insurance.html'
           probe_market ARMILLA 'https://www.armilla.ai/'
 
-      - name: Confirm no artifact production
+      - name: Confirm bounded execution
         shell: bash
         run: |
           echo 'WORKFLOW_ARTIFACTS_CREATED=0'
           echo 'NOTEBOOK_UPLOADS=0'
+          echo 'AUTO_ADVANCE=NO'
