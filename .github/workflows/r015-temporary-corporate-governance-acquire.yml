@@ -1,4 +1,4 @@
-name: R015 corporate governance source acquisition
+name: R015 bounded reconciliation cleanup
 
 on:
   push:
@@ -9,9 +9,9 @@ permissions:
   contents: write
 
 jobs:
-  acquire:
+  reconcile:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 8
     steps:
       - name: Checkout exact trigger state
         uses: actions/checkout@v4
@@ -25,94 +25,125 @@ jobs:
           git fetch origin main
           test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
 
-      - name: Install extraction tools
+      - name: Reconcile queue context and closeout
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils >/dev/null
+          python3 - <<'PY'
+          from pathlib import Path
+          import csv
+          import io
 
-      - name: Acquire verify and classify official sources
+          research_commit = 'df24133cfb59e6e5a6f1239119f6c1b23da45bb5'
+
+          qpath = Path('90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv')
+          rows = list(csv.reader(qpath.read_text(encoding='utf-8').splitlines()))
+          hits = [i for i, row in enumerate(rows) if row and row[0] == 'AI-LAWS-R015']
+          if len(hits) != 1:
+              raise SystemExit(f'R015 queue row count unexpected: {len(hits)}')
+          rows[hits[0]] = [
+              'AI-LAWS-R015',
+              'P1',
+              'Corporate governance',
+              'Board/officer risk oversight, disclosure and organizational responsibility for frontier/high-risk AI',
+              'COMPLETE_RESEARCH_BASELINE_L1_L2_CORPORATE_GOVERNANCE_EU_US_DELAWARE_DISCLOSURE_SCOPE_LIMITS_OPEN',
+              'NONE',
+              '75_CORPORATE_GOVERNANCE/AI-LAWS-R015_CORPORATE_GOVERNANCE_BASELINE_2026-09-14.md; 75_CORPORATE_GOVERNANCE/AI-LAWS-R015_GOVERNANCE_DUTY_MATRIX_2026-09-14.csv; 75_CORPORATE_GOVERNANCE/AI-LAWS-R015_SOURCE_AND_CURRENTNESS_MATRIX_2026-09-14.csv; 30_CASE_LAW/US-DE/US-DE-CASE-001_MARCHAND_V_BARNHILL.yaml; 30_CASE_LAW/US-DE/US-DE-CASE-002_MCDONALDS_OFFICER_OVERSIGHT.yaml; 30_CASE_LAW/US-DE/US-DE-CASE-003_MCDONALDS_DIRECTOR_DISMISSAL.yaml; 95_RESEARCH/CORPORATE_GOVERNANCE/AI-LAWS-R015_CLOSEOUT_2026-09-14.md',
+              'bounded EU AI-provider + Delaware board/officer oversight + U.S. issuer disclosure + NIST governance baseline complete; no personal liability, universal AI mission-critical status, dedicated AI committee mandate or global board duty inferred; state/EU-national/sector maps remain open'
+          ]
+          buf = io.StringIO()
+          w = csv.writer(buf, lineterminator='\n')
+          w.writerows(rows)
+          qpath.write_text(buf.getvalue(), encoding='utf-8')
+
+          cpath = Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md')
+          ctx = cpath.read_text(encoding='utf-8')
+
+          old = ' / R014_EVIDENCE_PROCEDURE_BASELINE_COMPLETE_SCOPE_LIMITS_OPEN / R021_COMPLETE'
+          new = ' / R014_EVIDENCE_PROCEDURE_BASELINE_COMPLETE_SCOPE_LIMITS_OPEN / R015_CORPORATE_GOVERNANCE_BASELINE_COMPLETE_SCOPE_LIMITS_OPEN / R021_COMPLETE'
+          if old not in ctx:
+              raise SystemExit('context state marker missing')
+          ctx = ctx.replace(old, new, 1)
+
+          old = 'AI-LAWS-R014 = COMPLETE_RESEARCH_BASELINE_L1_L2_EVIDENCE_PROCEDURE_EU_US_FEDERAL_SCOPE_LIMITS_OPEN\nAI-LAWS-R021 = COMPLETE_SUPPORT_INFRASTRUCTURE'
+          new = 'AI-LAWS-R014 = COMPLETE_RESEARCH_BASELINE_L1_L2_EVIDENCE_PROCEDURE_EU_US_FEDERAL_SCOPE_LIMITS_OPEN\nAI-LAWS-R015 = COMPLETE_RESEARCH_BASELINE_L1_L2_CORPORATE_GOVERNANCE_EU_US_DELAWARE_DISCLOSURE_SCOPE_LIMITS_OPEN\nAI-LAWS-R021 = COMPLETE_SUPPORT_INFRASTRUCTURE'
+          if old not in ctx:
+              raise SystemExit('completed-unit marker missing')
+          ctx = ctx.replace(old, new, 1)
+
+          section = '''### R015 corporate governance baseline
+
+```text
+AI-LAWS-R015 — CORPORATE GOVERNANCE
+STATE = COMPLETE_RESEARCH_BASELINE_L1_L2_CORPORATE_GOVERNANCE_EU_US_DELAWARE_DISCLOSURE_SCOPE_LIMITS_OPEN
+NEXT_BOUNDED_UNIT = NONE_AUTO_SELECTED
+```
+
+R015 separates AI-provider/entity organizational duties, Delaware board fiduciary oversight, Delaware officer oversight, U.S. securities risk/governance disclosure, and voluntary NIST operational governance. The controlled EU AI Act verifies Article 17 quality-management-system duties for high-risk AI providers and Article 55 systemic-risk GPAI provider obligations; neither was converted into automatic director/officer personal liability or a universal dedicated board AI-committee mandate.
+
+Delaware current statutory sources for DGCL §§ 141–142 were verified. Three official Delaware opinions were admitted only as `ANALOGICAL_PRECEDENT`: `Marchand v. Barnhill`, the January 26, 2023 McDonald's officer-oversight opinion, and the March 1, 2023 companion director-dismissal opinion. The cases preserve the demanding good-faith/bad-faith, remit, red-flags, response and procedural-posture distinctions. AI is not automatically `mission-critical`, and survival of a motion to dismiss is not final personal liability.
+
+For issuer disclosure, Regulation S-K Item 105 was mapped as a material-risk-factor framework, while the official SEC adopting release verifies Item 407(h)'s board risk-oversight disclosure architecture. GitHub-runner eCFR bodies for §§ 229.303 and 229.407 were not admitted as verified section text. NIST AI RMF 1.0 remains voluntary/nonbinding and is currently being revised.
+
+Durable outputs are under `75_CORPORATE_GOVERNANCE/`, `30_CASE_LAW/US-DE/`, and `95_RESEARCH/CORPORATE_GOVERNANCE/`. No global AI board duty or personal-liability conclusion was inferred.
+
+'''
+          marker = '### Notebook/source-processing lane\n'
+          if marker not in ctx:
+              raise SystemExit('notebook lane marker missing')
+          ctx = ctx.replace(marker, section + marker, 1)
+
+          old = 'R014_LEGAL_CONCLUSION = NOT_ATTEMPTED\nNOTEBOOK_UPLOAD_COUNT = 0'
+          new = '''R014_LEGAL_CONCLUSION = NOT_ATTEMPTED
+R015_SOURCE_ACQUISITION_COMMIT = d30a38a029eae1a8ba3080be052ca853f40d0757
+R015_SOURCE_CORRECTION_COMMIT = 2aaea3fc1d62511229df8a7fbf7a8498409d7ae8
+R015_RESEARCH_COMMIT = df24133cfb59e6e5a6f1239119f6c1b23da45bb5
+R015_EU_AI_ACT_ART17_QMS = VERIFIED_CURRENT_CONTROLLED_TEXT
+R015_EU_AI_ACT_ART55_SYSTEMIC_RISK_GOVERNANCE = VERIFIED_CURRENT_CONTROLLED_TEXT
+R015_DE_DGCL_141_142 = VERIFIED_CURRENT_OFFICIAL_SOURCE
+R015_DE_CASES_OFFICIAL_FULL_TEXT_VERIFIED = 3
+R015_DE_CASES_RELEVANCE_CLASS = ANALOGICAL_PRECEDENT
+R015_DE_CASE_PDF_REPOSITORY_SNAPSHOTS = 0
+R015_DE_CASE_GITHUB_RUNNER_BODY = HTTP_200_NON_PDF_244_BYTE_HTML
+R015_SEC_ITEM105 = VERIFIED_BOUNDED_CURRENT_SOURCE
+R015_SEC_ITEM407H_ADOPTION = VERIFIED_OFFICIAL_SEC_SOURCE
+R015_SEC_ECFR_229_303_GITHUB_BODY = NOT_SECTION_VERIFIED
+R015_SEC_ECFR_229_407_GITHUB_BODY = NOT_SECTION_VERIFIED
+R015_NIST_AI_RMF_BINDING_STATE = VOLUNTARY_NONBINDING
+R015_NIST_AI_RMF_REVISION_STATE = REVISED_VERSION_IN_PROGRESS
+R015_DEDICATED_BOARD_AI_COMMITTEE_MANDATE = NOT_ESTABLISHED
+R015_AI_ALWAYS_MISSION_CRITICAL = NOT_INFERRED
+R015_PERSONAL_LIABILITY_CONCLUSION = NOT_ATTEMPTED
+R015_GLOBAL_AI_BOARD_DUTY = NOT_INFERRED
+R015_NOTEBOOK_UPLOADS = 0
+R015_ZIP_OR_WORKFLOW_ARTIFACT_CREATED = NO
+R015_LEGAL_CONCLUSION = NOT_ATTEMPTED
+NOTEBOOK_UPLOAD_COUNT = 0'''
+          if old not in ctx:
+              raise SystemExit('integrity marker missing')
+          ctx = ctx.replace(old, new, 1)
+          cpath.write_text(ctx, encoding='utf-8')
+
+          close_path = Path('95_RESEARCH/CORPORATE_GOVERNANCE/AI-LAWS-R015_CLOSEOUT_2026-09-14.md')
+          close = close_path.read_text(encoding='utf-8')
+          placeholder = '`PENDING_R015_RESEARCH_COMMIT`'
+          if placeholder not in close:
+              raise SystemExit('closeout placeholder missing')
+          close_path.write_text(close.replace(placeholder, f'`{research_commit}`', 1), encoding='utf-8')
+          PY
+          git diff --check
+
+      - name: Commit reconciliation cleanup and push
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p 30_CASE_LAW/US-DE/source_snapshots 75_CORPORATE_GOVERNANCE/source_acquisition
-          out='75_CORPORATE_GOVERNANCE/source_acquisition/AI-LAWS-R015_SOURCE_ACQUISITION_RESULTS_2026-09-14.csv'
-          printf '%s\n' 'source_key,jurisdiction,authority_class,title,official_url,http_status,content_type,byte_size,sha256,pages,verification_state,repository_snapshot,notes' > "$out"
-          csvq() { python3 -c 'import csv,sys; csv.writer(sys.stdout,lineterminator="").writerow(sys.argv[1:])' "$@"; }
-
-          echo '===== EU AI ACT EXISTING SNAPSHOT ====='
-          ai='86_NOTEBOOKLM/downloads/Current consolidated AI Act.pdf'; test -f "$ai"
-          ai_sha="$(sha256sum "$ai" | awk '{print $1}')"; ai_bytes="$(wc -c < "$ai" | tr -d ' ')"; ai_pages="$(pdfinfo "$ai" | awk -F: '/^Pages:/{gsub(/ /,"",$2);print $2}')"; echo "AI_SHA=$ai_sha"
-          test "$ai_sha" = '1ccd38d1c78482cf2053b70110115adcc5080700acc8bd7bead8cb3579143ccf'
-          pdftotext -layout "$ai" /tmp/r015-ai-act.txt
-          grep -iq 'Article 17' /tmp/r015-ai-act.txt; grep -iq 'Quality management system' /tmp/r015-ai-act.txt; grep -iq 'Article 55' /tmp/r015-ai-act.txt; grep -iq 'systemic risk' /tmp/r015-ai-act.txt
-          csvq 'EU-001' 'EU' 'STATUTE_OR_REGULATION' 'Artificial Intelligence Act — current consolidated snapshot' 'https://eur-lex.europa.eu/eli/reg/2024/1689' 'REPOSITORY_CONTROLLED' 'application/pdf' "$ai_bytes" "$ai_sha" "$ai_pages" 'VERIFIED_EXISTING_R030_EXACT_OFFICIAL_PDF; R015_ART17_ART55_MARKERS_VERIFIED' 'EXISTING_REPOSITORY_BINARY' 'Provider/entity organizational obligations; no board/officer personal liability inferred.' >> "$out"; printf '\n' >> "$out"
-
-          echo '===== NIST AI RMF EXISTING SNAPSHOT + LIVE PAGE ====='
-          nist='86_NOTEBOOKLM/downloads/NIST AI RMF 1.0.pdf'; test -f "$nist"
-          nist_sha="$(sha256sum "$nist" | awk '{print $1}')"; nist_bytes="$(wc -c < "$nist" | tr -d ' ')"; nist_pages="$(pdfinfo "$nist" | awk -F: '/^Pages:/{gsub(/ /,"",$2);print $2}')"; echo "NIST_SHA=$nist_sha"
-          pdftotext -layout "$nist" /tmp/r015-nist.txt; grep -qi 'GOVERN' /tmp/r015-nist.txt
-          nist_url='https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10'; nh="$(mktemp)"; nb="$(mktemp)"
-          ns="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$nh" -o "$nb" -w '%{http_code}' "$nist_url" || true)"; echo "NIST_HTTP=$ns"; test "$ns" = '200'; grep -Eqi 'Artificial Intelligence Risk Management Framework|AI RMF' "$nb"
-          nctype="$(grep -i '^content-type:' "$nh" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"
-          csvq 'US-007' 'US' 'OFFICIAL_STANDARD_OR_FRAMEWORK' 'NIST AI Risk Management Framework 1.0' "$nist_url" "$ns" "$nctype" "$nist_bytes" "$nist_sha" "$nist_pages" 'OFFICIAL_PAGE_RECHECKED; REPOSITORY_SNAPSHOT_MARKERS_VERIFIED; VOLUNTARY_NONBINDING' 'EXISTING_REPOSITORY_BINARY' 'Govern function is operational framework evidence, not fiduciary law; revision-state warning preserved.' >> "$out"; printf '\n' >> "$out"; rm -f "$nh" "$nb"
-
-          echo '===== DELAWARE CODE CURRENT OFFICIAL SOURCES ====='
-          de_url='https://delcode.delaware.gov/title8/c001/sc04/index.html'; dh="$(mktemp)"; db="$(mktemp)"
-          ds="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$dh" -o "$db" -w '%{http_code}' "$de_url")"; echo "DE_CODE_HTTP=$ds"; test "$ds" = '200'; grep -Eqi 'Board of directors' "$db"; grep -Eqi 'Officers' "$db"
-          dctype="$(grep -i '^content-type:' "$dh" | tail -1 | tr -d '\r' | cut -d' ' -f2-)"; dbytes="$(wc -c < "$db" | tr -d ' ')"; dsha="$(sha256sum "$db" | awk '{print $1}')"
-          csvq 'US-DE-STAT-001' 'US-DE' 'STATUTE_OR_REGULATION' 'Delaware General Corporation Law — Title 8 §§ 141-142 current official HTML' "$de_url" "$ds" "$dctype" "$dbytes" "$dsha" '' 'CURRENT_OFFICIAL_HTML_SECTION_MARKERS_VERIFIED' 'URL_DIRECT_ONLY' '§141 board management/direction; §142 officer roles; dynamic current URL preferred.' >> "$out"; printf '\n' >> "$out"; rm -f "$dh" "$db"
-
-          title8_url='https://delcode.delaware.gov/title8/title8.pdf'; th="$(mktemp)"; tp="$(mktemp)"
-          ts="$(curl -L --connect-timeout 20 --max-time 120 -sS -A 'Mozilla/5.0' -D "$th" -o "$tp" -w '%{http_code}' "$title8_url")"; echo "DE_TITLE8_HTTP=$ts"; test "$ts" = '200'; pdfinfo "$tp" >/dev/null
-          tctype="$(grep -i '^content-type:' "$th" | tail -1 | tr -d '\r' | cut -d' ' -f2-)"; tbytes="$(wc -c < "$tp" | tr -d ' ')"; tsha="$(sha256sum "$tp" | awk '{print $1}')"; tpages="$(pdfinfo "$tp" | awk -F: '/^Pages:/{gsub(/ /,"",$2);print $2}')"
-          pdftotext -layout "$tp" /tmp/r015-title8.txt; grep -Eqi 'Board of directors' /tmp/r015-title8.txt; grep -Eqi 'Officers' /tmp/r015-title8.txt
-          csvq 'US-DE-STAT-001-PDF-PROBE' 'US-DE' 'STATUTE_OR_REGULATION' 'Delaware Code Title 8 — transient official PDF currentness probe' "$title8_url" "$ts" "$tctype" "$tbytes" "$tsha" "$tpages" 'OFFICIAL_PDF_BODY_VERIFIED_TRANSIENTLY' 'NOT_VENDORED_DYNAMIC_CODE' 'Hash records fetched bytes only; current official HTML remains preferred.' >> "$out"; printf '\n' >> "$out"; rm -f "$th" "$tp"
-
-          acquire_case() {
-            key="$1"; title="$2"; url="$3"; dest="$4"; marker1="$5"; marker2="$6"
-            echo "===== CASE $key ====="; hdr="$(mktemp)"; tmp="$(mktemp)"; text="$(mktemp)"
-            status="$(curl -L --connect-timeout 20 --max-time 120 -sS -A 'Mozilla/5.0' -H 'Accept: application/pdf,*/*' -H 'Referer: https://courts.delaware.gov/opinions/' -D "$hdr" -o "$tmp" -w '%{http_code}' "$url" || true)"; echo "${key}_HTTP=$status"
-            ctype="$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"; bytes="$(wc -c < "$tmp" | tr -d ' ')"; sha="$(sha256sum "$tmp" | awk '{print $1}')"; magic="$(head -c 5 "$tmp" || true)"
-            if [ "$status" = '200' ] && [ "$magic" = '%PDF-' ] && pdfinfo "$tmp" >/dev/null 2>&1; then
-              pages="$(pdfinfo "$tmp" | awk -F: '/^Pages:/{gsub(/ /,"",$2);print $2}')"; pdftotext -layout "$tmp" "$text"; grep -Fqi "$marker1" "$text"; grep -Fqi "$marker2" "$text"; mv "$tmp" "$dest"
-              state='OFFICIAL_COURT_FULL_TEXT_VERIFIED_AND_PINNED'; snap="$dest"; note='Pinned official judicial opinion; analogical corporate-governance precedent, not direct AI precedent.'
-            else
-              pages=''; state="OFFICIAL_COURT_GITHUB_RUNNER_BODY_NOT_PDF_HTTP_${status}"; snap='NOT_PINNED'; note='Official URL identity retained; GitHub runner returned non-PDF body. This access result is not a no-case finding; full-text admission requires separate official-source verification.'; rm -f "$tmp"
-            fi
-            csvq "$key" 'US-DE' 'COURT_PRECEDENT' "$title" "$url" "$status" "$ctype" "$bytes" "$sha" "$pages" "$state" "$snap" "$note" >> "$out"; printf '\n' >> "$out"; rm -f "$hdr" "$text"
-          }
-          acquire_case 'US-DE-CASE-001' 'Marchand v. Barnhill' 'https://courts.delaware.gov/Opinions/Download.aspx?id=291200&lang=en' '30_CASE_LAW/US-DE/source_snapshots/US-DE-CASE-001__MARCHAND-v-BARNHILL__2019-06-19.pdf' 'Marchand' 'Barnhill'
-          acquire_case 'US-DE-CASE-002' "In re McDonald's Corp. Stockholder Derivative Litigation — officer oversight opinion" 'https://courts.delaware.gov/Opinions/Download.aspx?id=343130' '30_CASE_LAW/US-DE/source_snapshots/US-DE-CASE-002__MCDONALDS__OFFICER-OVERSIGHT__2023-01-26.pdf' "McDonald's" '2021-0324-JTL'
-          acquire_case 'US-DE-CASE-003' "In re McDonald's Corp. Stockholder Derivative Litigation — director dismissal opinion" 'https://courts.delaware.gov/Opinions/Download.aspx?id=344560' '30_CASE_LAW/US-DE/source_snapshots/US-DE-CASE-003__MCDONALDS__DIRECTOR-DISMISSAL__2023-03-01.pdf' "McDonald's" '2021-0324-JTL'
-
-          echo '===== SEC CURRENT / ADOPTING / AI-WASHING SOURCES ====='
-          for section in 229.105 229.303 229.407; do
-            case "$section" in 229.105) u='https://www.ecfr.gov/current/title-17/chapter-II/part-229/subpart-229.100/section-229.105';; 229.303) u='https://www.ecfr.gov/current/title-17/chapter-II/part-229/subpart-229.300/section-229.303';; 229.407) u='https://www.ecfr.gov/current/title-17/chapter-II/part-229/subpart-229.400/section-229.407';; esac
-            h="$(mktemp)"; b="$(mktemp)"; s="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0' -D "$h" -o "$b" -w '%{http_code}' "$u" || true)"; echo "ECFR_${section}_HTTP=$s"
-            ct="$(grep -i '^content-type:' "$h" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"; by="$(wc -c < "$b" | tr -d ' ')"; sh="$(sha256sum "$b" | awk '{print $1}')"; state='CURRENT_ECFR_HTTP_BODY_ACQUIRED'; if [ "$s" != '200' ]; then state="ECFR_ACCESS_${s}"; fi
-            csvq "US-SEC-${section}" 'US' 'STATUTE_OR_REGULATION' "17 CFR § ${section} — current eCFR probe" "$u" "$s" "$ct" "$by" "$sh" '' "$state" 'URL_DIRECT_ONLY' 'Dynamic current source; recheck before material issuer-disclosure conclusions.' >> "$out"; printf '\n' >> "$out"; rm -f "$h" "$b"
-          done
-
-          sec_url='https://www.sec.gov/files/rules/final/2009/33-9089.pdf'; shdr="$(mktemp)"; spdf="$(mktemp)"; ss="$(curl -L --connect-timeout 20 --max-time 120 -sS -A 'Mozilla/5.0 research-source-verification' -D "$shdr" -o "$spdf" -w '%{http_code}' "$sec_url" || true)"; echo "SEC_33_9089_HTTP=$ss"
-          sct="$(grep -i '^content-type:' "$shdr" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"; sby="$(wc -c < "$spdf" | tr -d ' ')"; ssh="$(sha256sum "$spdf" | awk '{print $1}')"; spages=''; sstate="SEC_FINAL_RULE_ACCESS_${ss}"
-          if [ "$ss" = '200' ] && pdfinfo "$spdf" >/dev/null 2>&1; then spages="$(pdfinfo "$spdf" | awk -F: '/^Pages:/{gsub(/ /,"",$2);print $2}')"; pdftotext -layout "$spdf" /tmp/r015-sec-9089.txt; if grep -Eqi 'risk oversight|role.*risk' /tmp/r015-sec-9089.txt; then sstate='OFFICIAL_SEC_FINAL_RULE_BODY_VERIFIED'; fi; fi
-          csvq 'US-SEC-33-9089' 'US' 'STATUTE_OR_REGULATION' 'SEC Proxy Disclosure Enhancements — Release 33-9089' "$sec_url" "$ss" "$sct" "$sby" "$ssh" "$spages" "$sstate" 'URL_DIRECT_ONLY' 'Historical adopting release for Item 407(h); current eCFR remains controlling current regulatory source.' >> "$out"; printf '\n' >> "$out"; rm -f "$shdr" "$spdf"
-
-          aw_url='https://www.sec.gov/newsroom/speeches-statements/sec-chair-gary-gensler-ai-washing'; ah="$(mktemp)"; ab="$(mktemp)"; as="$(curl -L --connect-timeout 20 --max-time 90 -sS -A 'Mozilla/5.0 research-source-verification' -D "$ah" -o "$ab" -w '%{http_code}' "$aw_url" || true)"; echo "SEC_AI_WASHING_HTTP=$as"
-          act="$(grep -i '^content-type:' "$ah" | tail -1 | tr -d '\r' | cut -d' ' -f2- || true)"; aby="$(wc -c < "$ab" | tr -d ' ')"; ash="$(sha256sum "$ab" | awk '{print $1}')"; astate="SEC_STATEMENT_ACCESS_${as}"; if [ "$as" = '200' ] && grep -qi 'AI Washing' "$ab"; then astate='OFFICIAL_SEC_STATEMENT_IDENTITY_VERIFIED_NONBINDING'; fi
-          csvq 'US-SEC-AI-WASHING-2024' 'US' 'OFFICIAL_GUIDANCE' 'SEC Chair statement on AI washing' "$aw_url" "$as" "$act" "$aby" "$ash" '' "$astate" 'URL_DIRECT_ONLY' 'Chair statement/enforcement signal; not regulation and not standalone private-liability rule.' >> "$out"; printf '\n' >> "$out"; rm -f "$ah" "$ab"
-
-          echo 'ZIP_OR_ARTIFACT_CREATED=NO'; echo 'NOTEBOOK_UPLOADS=0'; echo 'AUTO_ADVANCE=NO'
-
-      - name: Commit acquisition record and any verified PDF snapshots
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'Fatih Mehmet Ekler'; git config user.email '5189511+fatihekler@users.noreply.github.com'
-          git add 75_CORPORATE_GOVERNANCE/source_acquisition/AI-LAWS-R015_SOURCE_ACQUISITION_RESULTS_2026-09-14.csv
-          find 30_CASE_LAW/US-DE/source_snapshots -type f -name '*.pdf' -print0 | xargs -0 -r git add --
-          git diff --cached --check; git commit -m 'sources(r015): record corporate governance source verification'
-          git fetch origin main; test "$(git rev-parse origin/main)" = "$GITHUB_SHA"; git push origin HEAD:main
-          printf 'SOURCE_COMMIT=%s\nSOURCE_TREE=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})"
+          git config user.name 'Fatih Mehmet Ekler'
+          git config user.email '5189511+fatihekler@users.noreply.github.com'
+          git rm .github/workflows/r015-temporary-corporate-governance-acquire.yml
+          git add 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv 95_RESEARCH/CORPORATE_GOVERNANCE/AI-LAWS-R015_CLOSEOUT_2026-09-14.md
+          git diff --cached --check
+          git commit -m 'control(r015): reconcile state and cleanup helper'
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
+          git push origin HEAD:main
+          printf 'FINAL_HEAD=%s\nFINAL_TREE=%s\nHELPER_PRESENT=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" "$(test -e .github/workflows/r015-temporary-corporate-governance-acquire.yml && echo YES || echo NO)"
