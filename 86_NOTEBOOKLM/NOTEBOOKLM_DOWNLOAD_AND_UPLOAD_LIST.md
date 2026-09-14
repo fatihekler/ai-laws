@@ -162,6 +162,11 @@ Before a current-law conclusion, verify the current consolidated/version/applica
 
 ---
 
+
+### R030 repository-PDF verification state
+
+All ten `EU-001..EU-010` repository PDFs are native-searchable and exact-byte matches to the appropriate official EUR-Lex PDFs as rechecked on 2026-09-14. `EU-001` uses consolidated `CELEX:02024R1689-20260727`; directives and phased-application/currentness labels remain mandatory. No Notebook upload was performed by R030.
+
 ## D. NB03 — United States
 
 R028 repository validation state:

@@ -46,35 +46,32 @@ Key corrections: `INT-001` repository PDF is the 12-page **CETS 225 treaty text*
 
 ## NB02 — European Union AI Law
 
-Use official EUR-Lex URLs as the preferred current-law sources:
-
-- `EU-001` AI Act current consolidated text;
-- `EU-002` Regulation (EU) 2026/1744;
-- `EU-003` Product Liability Directive;
-- `EU-004` Charter;
-- `EU-005` GDPR;
-- `EU-006` DSA;
-- `EU-007` Data Act;
-- `EU-008` DGA;
-- `EU-009` NIS2;
-- `EU-010` Cyber Resilience Act.
-
-R024 and R025 together rechecked the official source/currentness layer for `EU-001` through `EU-010` on 2026-09-14. The controlled NB02 official-URL source set is therefore ready for Notebook ingestion. The repository PDF bodies are still not directly inspectable through the current GitHub connector, so the corresponding repository snapshots remain `CONTENT_IDENTITY_PARTIAL` and are not the preferred Notebook baseline.
-
-Special currentness/application labels must remain visible:
-
-- `EU-003` and `EU-009` are directives; national transposition must be checked for Member-State-specific duties.
-- `EU-010` has phased application: Chapter IV from 2026-06-11, Article 14 from 2026-09-11, and general application from 2027-12-11.
-- `EU-007` generally applies from 2025-09-12, with additional provision-specific dates.
-
-Repository PDFs may be uploaded only as versioned snapshots after content identity is checked.
-
-Important:
+R030 validated all ten `EU-001..EU-010` repository PDFs inside GitHub against official EUR-Lex PDF endpoints. No ZIP/artifact, derived Markdown or Notebook upload was created.
 
 ```text
-CONSOLIDATED_PDF_SNAPSHOT != PERMANENT_CURRENT_LAW
-DIRECTIVE != IDENTICAL_NATIONAL_IMPLEMENTATION
-OFFICIAL_URL_SOURCE_VERIFIED != REPOSITORY_PDF_BODY_VERIFIED
+NB02_REPOSITORY_PDFS_INSPECTED = 10 / 10
+NB02_NATIVE_SEARCHABLE_TEXT_LAYER = 10 / 10
+NB02_CONTENT_IDENTITY_VERIFIED = 10 / 10
+NB02_OFFICIAL_EUR_LEX_EXACT_BYTE_MATCH = 10 / 10
+NB02_DERIVED_MARKDOWN_REQUIRED = 0
+NB02_NOTEBOOK_UPLOADS = 0
+```
+
+`EU-001` exactly matches the current consolidated EUR-Lex PDF `CELEX:02024R1689-20260727` dated `2026-07-27`. `EU-002..EU-010` exactly match their corresponding official EUR-Lex CELEX PDFs.
+
+The repository PDFs are therefore eligible as **verified official snapshots**, but official EUR-Lex URLs remain required for temporal currentness and legal-effect checks.
+
+Special labels remain mandatory:
+
+- `EU-001` is a consolidated temporal snapshot; a newer consolidation supersedes it for current-law use.
+- `EU-003` and `EU-009` are directives; national transposition must be checked for Member-State-specific duties.
+- `EU-010` has phased application: Chapter IV from `2026-06-11`, Article 14 from `2026-09-11`, general application from `2027-12-11`.
+- `EU-007` generally applies from `2025-09-12`, with provision-specific dates.
+
+```text
+EXACT_OFFICIAL_PDF_BYTES != PERMANENT_CURRENT_LAW
+DIRECTIVE_TEXT_VERIFIED != NATIONAL_IMPLEMENTATION_VERIFIED
+CONSOLIDATED_SNAPSHOT_VERIFIED != FUTURE_CURRENTNESS_GUARANTEED
 ```
 
 ## NB03 — United States
