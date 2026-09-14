@@ -40,6 +40,7 @@ AI-LAWS-R022 = COMPLETE_SUPPORT_INFRASTRUCTURE
 AI-LAWS-R023 = COMPLETE_SUPPORT_INFRASTRUCTURE
 AI-LAWS-R024 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 AI-LAWS-R025 = COMPLETE_SUPPORT_SOURCE_VALIDATION
+AI-LAWS-R026 = COMPLETE_SUPPORT_SOURCE_VALIDATION
 ```
 
 ### R001
@@ -244,6 +245,15 @@ NB07_OFFICIAL_URL_SOURCE_SET = READY
 NB07_REPOSITORY_PDF_UPLOAD_SET = HOLD_FOR_LOCAL_BINARY_CONTENT_CHECK
 ```
 
+### NB04 current ingest state
+
+```text
+NB04_REPOSITORY_PDF_CONTENT_IDENTITY_VERIFIED = 8 / 8
+NB04_REPOSITORY_PDF_UPLOAD_SET = ELIGIBLE_AS_VERIFIED_SNAPSHOTS_WITH_DATE_STATE_LABELS
+NB04_OFFICIAL_LIVE_MEVZUAT_EXACT_BYTE_RECHECK = BLOCKED
+PRIMARY_SOURCE_RECHECK_REQUIRED_BEFORE_MATERIAL_LEGAL_CLAIM = YES
+```
+
 ## 5. PDF / Markdown decision
 
 Default:
@@ -264,7 +274,7 @@ Do not bulk-convert PDFs to Markdown.
 
 Derived Markdown is justified only for bad text extraction, scanned pages/OCR, difficult layout, controlled diffing or page-locator requirements. Every derivative must be explicitly `NONCANONICAL_DERIVATIVE` and preserve provenance/page markers.
 
-R024/R025 created no Markdown derivatives because the repository PDF body/text-layer state cannot be established through the current GitHub connector and verified official URLs are available.
+R024/R025/R026 created no Markdown derivatives because the repository PDF body/text-layer state cannot be established through the current GitHub connector and verified official URLs are available.
 
 ## 6. Model and Notebook firewall
 
@@ -329,7 +339,7 @@ The controlled NB02 official URL set is now ready for a separate Notebook ingest
 
 NB07 official sources also remain ready for a separate Notebook ingestion step.
 
-No subsequent source pack is auto-selected by R025.
+No subsequent source pack is auto-selected by R026.
 
 ### Türkiye source-processing lane
 
