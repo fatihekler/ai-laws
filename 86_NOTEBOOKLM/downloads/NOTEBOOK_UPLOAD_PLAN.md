@@ -45,6 +45,14 @@ Use official EUR-Lex URLs as the preferred current-law sources:
 - `EU-009` NIS2;
 - `EU-010` Cyber Resilience Act.
 
+R024 and R025 together rechecked the official source/currentness layer for `EU-001` through `EU-010` on 2026-09-14. The controlled NB02 official-URL source set is therefore ready for Notebook ingestion. The repository PDF bodies are still not directly inspectable through the current GitHub connector, so the corresponding repository snapshots remain `CONTENT_IDENTITY_PARTIAL` and are not the preferred Notebook baseline.
+
+Special currentness/application labels must remain visible:
+
+- `EU-003` and `EU-009` are directives; national transposition must be checked for Member-State-specific duties.
+- `EU-010` has phased application: Chapter IV from 2026-06-11, Article 14 from 2026-09-11, and general application from 2027-12-11.
+- `EU-007` generally applies from 2025-09-12, with additional provision-specific dates.
+
 Repository PDFs may be uploaded only as versioned snapshots after content identity is checked.
 
 Important:
@@ -52,6 +60,7 @@ Important:
 ```text
 CONSOLIDATED_PDF_SNAPSHOT != PERMANENT_CURRENT_LAW
 DIRECTIVE != IDENTICAL_NATIONAL_IMPLEMENTATION
+OFFICIAL_URL_SOURCE_VERIFIED != REPOSITORY_PDF_BODY_VERIFIED
 ```
 
 ## NB03 — United States
