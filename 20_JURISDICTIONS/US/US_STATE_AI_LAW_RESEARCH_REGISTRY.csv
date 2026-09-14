@@ -1,0 +1,52 @@
+jurisdiction_id,name,jurisdiction_type,r007_state,verified_instrument_or_candidate,official_source,verified_date_or_version_signal,verification_state,last_checked,notes
+US-AL,Alabama,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-AK,Alaska,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-AZ,Arizona,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-AR,Arkansas,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-CA,California,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-CO,Colorado,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-CT,Connecticut,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-DE,Delaware,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-FL,Florida,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-GA,Georgia,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-HI,Hawaii,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-ID,Idaho,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-IL,Illinois,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-IN,Indiana,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-IA,Iowa,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-KS,Kansas,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-KY,Kentucky,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-LA,Louisiana,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-ME,Maine,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-MD,Maryland,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-MA,Massachusetts,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-MI,Michigan,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-MN,Minnesota,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-MS,Mississippi,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-MO,Missouri,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-MT,Montana,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-NE,Nebraska,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-NV,Nevada,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-NH,New Hampshire,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-NJ,New Jersey,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-NM,New Mexico,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-NY,New York,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-NC,North Carolina,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-ND,North Dakota,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-OH,Ohio,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-OK,Oklahoma,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-OR,Oregon,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-PA,Pennsylvania,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-RI,Rhode Island,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-SC,South Carolina,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-SD,South Dakota,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-TN,Tennessee,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-TX,Texas,SUBNATIONAL_STATE,OFFICIAL_CODE_PORTAL_REACHABLE_CONTENT_UNRESOLVED,Candidate Texas Business & Commerce Code Chapter 552 endpoint,https://statutes.capitol.texas.gov/Docs/BC/htm/BC.552.htm,Official portal returned client-rendered shell; substantive chapter identity/effective state not admitted by R007,RESEARCH_REQUIRED,2026-09-14,Reachable portal != verified enacted/current AI-law content
+US-UT,Utah,SUBNATIONAL_STATE,CURRENT_AI_SPECIFIC_STATUTE_SOURCE_VERIFIED_L1,Utah Code Title 13 Chapter 72 — Artificial Intelligence Policy Act,https://le.utah.gov/xcode/Title13/Chapter72/13-72.html,Section 13-72-101 current version C13-72-S101_2026050620260506 verified; effective 2026-05-06; affected by 63I-2-213 on 2027-07-01,CURRENT_CHAPTER_IDENTITY_AND_SECTION101_BODY_VERIFIED_WHOLE_CHAPTER_SECTION_BY_SECTION_OPEN,2026-09-14,Old 2024 whole-chapter PDF is not current-law authority; concrete duties require section-by-section currentness recheck
+US-VT,Vermont,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-VA,Virginia,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-WA,Washington,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-WV,West Virginia,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-WI,Wisconsin,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-WY,Wyoming,SUBNATIONAL_STATE,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
+US-DC,District of Columbia,FEDERAL_DISTRICT,ENUMERATED_RESEARCH_REQUIRED,,,,RESEARCH_REQUIRED,2026-09-14,No negative inference: unverified in R007 does not mean no AI-related law exists
