@@ -115,7 +115,9 @@ jobs:
           placeholder = '`PENDING_R012_RESEARCH_COMMIT`'
           if placeholder not in close:
               raise SystemExit('closeout placeholder missing')
-          close_path.write_text(close.replace(placeholder, f'`{research_commit}`', 1), encoding='utf-8')
+          close = close.replace(placeholder, f'`{research_commit}`', 1)
+          close = close.replace(f'**R012_RESEARCH_COMMIT:** `{research_commit}`  \n', f'**R012_RESEARCH_COMMIT:** `{research_commit}`\n')
+          close_path.write_text(close, encoding='utf-8')
           PY
           git diff --check
 
