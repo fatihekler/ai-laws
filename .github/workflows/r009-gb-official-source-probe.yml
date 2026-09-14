@@ -1,0 +1,94 @@
+name: AI-LAWS R009 UK official-source probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r009-gb-official-source-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe UK legislation and official policy sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request, urllib.parse, urllib.error, re, json, html, xml.etree.ElementTree as ET
+
+          UA={'User-Agent':'Mozilla/5.0 AI-LAWS-R009','Accept':'*/*'}
+
+          def fetch(url, timeout=20):
+              req=urllib.request.Request(url,headers=UA)
+              with urllib.request.urlopen(req,timeout=timeout) as r:
+                  b=r.read()
+                  return r.status,r.geturl(),r.headers.get('Content-Type',''),b
+
+          def clean_html(b):
+              t=b.decode('utf-8','ignore')
+              title=re.findall(r'<title[^>]*>(.*?)</title>',t,re.I|re.S)
+              title=re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',title[0]))).strip() if title else ''
+              plain=re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',t))).strip()
+              return title,plain
+
+          print('=== LEGISLATION KNOWN ===')
+          known={
+            'GB_UK_GDPR':'https://www.legislation.gov.uk/eur/2016/679/contents',
+            'GB_DPA2018':'https://www.legislation.gov.uk/ukpga/2018/12/contents',
+            'GB_DUAA2025':'https://www.legislation.gov.uk/ukpga/2025/18/contents',
+            'GB_OSA2023':'https://www.legislation.gov.uk/ukpga/2023/50/contents',
+            'GB_DMCCA2024':'https://www.legislation.gov.uk/ukpga/2024/13/contents',
+            'GB_CRA2015':'https://www.legislation.gov.uk/ukpga/2015/15/contents',
+            'GB_CPA1987':'https://www.legislation.gov.uk/ukpga/1987/43/contents',
+          }
+          for k,u in known.items():
+              try:
+                  s,f,ct,b=fetch(u)
+                  title,plain=clean_html(b)
+                  markers={m:(m.lower() in plain.lower()) for m in ['Changes to legislation','Latest available','outstanding changes','prospective','in force']}
+                  print(k,'STATUS=',s,'FINAL=',f,'CT=',ct,'BYTES=',len(b),'TITLE=',title,'MARKERS=',markers)
+              except Exception as e: print(k,'ERROR=',type(e).__name__,str(e))
+
+          print('\n=== 2025 ACT TITLE DISCOVERY ===')
+          for chap in range(15,31):
+              u=f'https://www.legislation.gov.uk/ukpga/2025/{chap}/contents'
+              try:
+                  s,f,ct,b=fetch(u,12); title,plain=clean_html(b)
+                  if any(x in title.lower() for x in ['product','metrology','data','artificial','digital']):
+                      print('CHAPTER',chap,'STATUS=',s,'TITLE=',title,'URL=',f)
+              except Exception: pass
+
+          print('\n=== GOV.UK SEARCH ===')
+          for q in ['AI regulation pro innovation approach','artificial intelligence regulation','AI Opportunities Action Plan']:
+              u='https://www.gov.uk/api/search.json?'+urllib.parse.urlencode({'q':q,'count':20,'order':'-public_timestamp'})
+              try:
+                  s,f,ct,b=fetch(u)
+                  obj=json.loads(b.decode('utf-8','ignore'))
+                  print('QUERY=',q,'STATUS=',s,'TOTAL=',obj.get('total'))
+                  for r in obj.get('results',[])[:12]:
+                      print(json.dumps({'title':r.get('title'),'link':r.get('link'),'public_timestamp':r.get('public_timestamp'),'content_purpose_supergroup':r.get('content_purpose_supergroup')},ensure_ascii=False))
+              except Exception as e: print('SEARCH_ERROR=',q,type(e).__name__,str(e))
+
+          print('\n=== KNOWN POLICY / REGULATOR CANDIDATES ===')
+          candidates={
+            'AI_WHITE_PAPER':'https://www.gov.uk/government/publications/ai-regulation-a-pro-innovation-approach',
+            'AI_GOV_RESPONSE':'https://www.gov.uk/government/consultations/ai-regulation-a-pro-innovation-approach-policy-proposals/outcome/a-pro-innovation-approach-to-ai-regulation-government-response',
+            'AI_OPPORTUNITIES':'https://www.gov.uk/government/publications/ai-opportunities-action-plan',
+            'ICO_AI':'https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/',
+            'OFCOM_OS':'https://www.ofcom.org.uk/online-safety/',
+            'CMA_AI_FOUNDATION':'https://www.gov.uk/cma-cases/ai-foundation-models-initial-review',
+          }
+          for k,u in candidates.items():
+              try:
+                  s,f,ct,b=fetch(u)
+                  title,plain=clean_html(b)
+                  print(k,'STATUS=',s,'FINAL=',f,'CT=',ct,'BYTES=',len(b),'TITLE=',title)
+                  for marker in ['Published','Updated','Data (Use and Access) Act 2025','artificial intelligence','Online Safety Act 2023','foundation models']:
+                      if marker.lower() in plain.lower(): print('  MARKER=',marker)
+              except Exception as e: print(k,'ERROR=',type(e).__name__,str(e))
+          PY
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
