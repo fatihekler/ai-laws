@@ -1,0 +1,40 @@
+name: AI-LAWS R026 context finalize
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r026-context-finalize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconcile R026 context text
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md')
+          s=p.read_text(encoding='utf-8')
+          old='''AI-LAWS-R024 = COMPLETE_SUPPORT_SOURCE_VALIDATION\nAI-LAWS-R025 = COMPLETE_SUPPORT_SOURCE_VALIDATION\n```'''
+          new='''AI-LAWS-R024 = COMPLETE_SUPPORT_SOURCE_VALIDATION\nAI-LAWS-R025 = COMPLETE_SUPPORT_SOURCE_VALIDATION\nAI-LAWS-R026 = COMPLETE_SUPPORT_SOURCE_VALIDATION\n```'''
+          if old not in s: raise SystemExit('major-units block drifted')
+          s=s.replace(old,new,1)
+          s=s.replace('R024/R025 created no Markdown derivatives because', 'R024/R025/R026 created no Markdown derivatives because', 1)
+          s=s.replace('No subsequent source pack is auto-selected by R025.', 'No subsequent source pack is auto-selected by R026.', 1)
+          marker='''### NB07 current ingest state\n\n```text\nNB07_OFFICIAL_URL_SOURCE_SET = READY\nNB07_REPOSITORY_PDF_UPLOAD_SET = HOLD_FOR_LOCAL_BINARY_CONTENT_CHECK\n```\n'''
+          addition=marker+'''\n### NB04 current ingest state\n\n```text\nNB04_REPOSITORY_PDF_CONTENT_IDENTITY_VERIFIED = 8 / 8\nNB04_REPOSITORY_PDF_UPLOAD_SET = ELIGIBLE_AS_VERIFIED_SNAPSHOTS_WITH_DATE_STATE_LABELS\nNB04_OFFICIAL_LIVE_MEVZUAT_EXACT_BYTE_RECHECK = BLOCKED\nPRIMARY_SOURCE_RECHECK_REQUIRED_BEFORE_MATERIAL_LEGAL_CLAIM = YES\n```\n'''
+          if marker not in s: raise SystemExit('NB07 ingest marker drifted')
+          s=s.replace(marker,addition,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git commit -m 'control(r026): finalize NB04 validation context'
+          git push origin HEAD:main
