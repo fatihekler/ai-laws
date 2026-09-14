@@ -3,6 +3,7 @@ import hashlib
 import os
 import re
 import subprocess
+import time
 from pathlib import Path
 
 root = Path('.')
@@ -48,12 +49,29 @@ def run(cmd):
     return subprocess.check_output(cmd, text=True, errors='replace')
 
 def fetch(url, out):
-    subprocess.check_call([
-        'curl', '-L', '--silent', '--show-error', '--fail-with-body',
-        '--connect-timeout', '15', '--max-time', '90', '--retry', '1',
-        '-A', 'Mozilla/5.0 AI-LAWS source verification', '-o', str(out), url
-    ])
-    return out.read_bytes()
+    last_error = None
+    for attempt in range(1, 5):
+        try:
+            if out.exists():
+                out.unlink()
+            proc = subprocess.run([
+                'curl', '-L', '--silent', '--show-error', '--fail-with-body',
+                '--connect-timeout', '15', '--max-time', '90', '--retry', '2',
+                '--retry-all-errors', '--retry-delay', '2',
+                '-H', 'Accept: application/pdf',
+                '-A', 'Mozilla/5.0 AI-LAWS source verification',
+                '-o', str(out), '-w', '%{http_code}|%{content_type}|%{size_download}', url
+            ], text=True, capture_output=True, check=True)
+            b = out.read_bytes() if out.exists() else b''
+            print(f'FETCH|attempt={attempt}|url={url}|meta={proc.stdout.strip()}|bytes={len(b)}')
+            if len(b) > 0:
+                return b
+            last_error = RuntimeError(f'empty response attempt {attempt}: {proc.stdout.strip()}')
+        except Exception as exc:
+            last_error = exc
+            print(f'FETCH_RETRY|attempt={attempt}|url={url}|error={exc}')
+        time.sleep(attempt * 2)
+    raise RuntimeError(f'official PDF fetch failed after 4 attempts: {url}: {last_error}')
 
 reg_fields, reg_rows = read_csv(d / 'DOWNLOADS_REGISTRY.csv')
 reg = {r['manifest_source_id']: r for r in reg_rows if r['manifest_source_id'] in ids}
