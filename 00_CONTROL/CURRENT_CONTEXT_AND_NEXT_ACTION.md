@@ -274,7 +274,7 @@ Do not bulk-convert PDFs to Markdown.
 
 Derived Markdown is justified only for bad text extraction, scanned pages/OCR, difficult layout, controlled diffing or page-locator requirements. Every derivative must be explicitly `NONCANONICAL_DERIVATIVE` and preserve provenance/page markers.
 
-R024/R025/R026 created no Markdown derivatives because the repository PDF body/text-layer state cannot be established through the current GitHub connector and verified official URLs are available.
+R024/R025 created no Markdown derivatives because repository PDF body/text-layer state was not established in those units and verified official URLs are available. R026 also created no Markdown derivatives, but for a different reason: all eight NB04 repository PDFs have native searchable text layers and no extraction defect requiring a derivative was found.
 
 ## 6. Model and Notebook firewall
 
