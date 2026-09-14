@@ -1,0 +1,76 @@
+name: AI-LAWS R004 persist CETS 225 baseline
+
+on:
+  push:
+    paths:
+      - '.github/scripts/r004_persist.py'
+      - '.github/workflows/r004-persist.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fresh drift gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          echo "HEAD=$(git rev-parse HEAD)"
+          echo "ORIGIN_MAIN=$(git rev-parse origin/main)"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+      - name: Generate controlled R004 durable state
+        run: python3 .github/scripts/r004_persist.py
+
+      - name: Validate and commit R004 durable outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          git diff --check
+          test -f 20_JURISDICTIONS/COE/CETS_225_CURRENT_TREATY_STATUS_MAP_2026-09-14.md
+          test -f 20_JURISDICTIONS/COE/CETS_225_SIGNATURE_RATIFICATION_MATRIX.csv
+          test -f 20_JURISDICTIONS/COE/CETS_225_DECLARATIONS_RESERVATIONS_MATRIX.csv
+          test -f 20_JURISDICTIONS/COE/CETS_225_IMPLEMENTATION_STATUS_MATRIX.csv
+          test -f 95_RESEARCH/COE/AI-LAWS-R004_CLOSEOUT_2026-09-14.md
+          grep -q 'European Union,INTERNATIONAL_ORGANISATION,2024-09-05,2026-05-15' 20_JURISDICTIONS/COE/CETS_225_SIGNATURE_RATIFICATION_MATRIX.csv
+          grep -q 'CETS225_L1_L2_TREATY_STATUS_BASELINE_COMPLETE_DOMESTIC_EFFECT_OPEN' 20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv
+          grep -q 'AI-LAWS-R004,P0,Council of Europe' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          grep -q 'R004_CETS225_L1_L2_COMPLETE' 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          ! grep -q 'Türkiye,COE_MEMBER' 20_JURISDICTIONS/COE/CETS_225_SIGNATURE_RATIFICATION_MATRIX.csv
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md \
+            20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv \
+            20_JURISDICTIONS/COE/CETS_225_CURRENT_TREATY_STATUS_MAP_2026-09-14.md \
+            20_JURISDICTIONS/COE/CETS_225_SIGNATURE_RATIFICATION_MATRIX.csv \
+            20_JURISDICTIONS/COE/CETS_225_DECLARATIONS_RESERVATIONS_MATRIX.csv \
+            20_JURISDICTIONS/COE/CETS_225_IMPLEMENTATION_STATUS_MATRIX.csv \
+            86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv \
+            90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+            95_RESEARCH/COE/AI-LAWS-R004_CLOSEOUT_2026-09-14.md
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'NO_DURABLE_CHANGES'; exit 1; }
+          git status --short
+          git commit -m 'research(r004): establish CETS 225 treaty-status baseline'
+          git push origin HEAD:main
+
+      - name: Confirm controlled stop
+        run: |
+          echo 'R004_STATE=COMPLETE_RESEARCH_BASELINE_L1_L2'
+          echo 'DOMESTIC_IMPLEMENTATION=NOT_VERIFIED'
+          echo 'CASE_LAW=NOT_ATTEMPTED'
+          echo 'LIABILITY_CONCLUSION=NOT_ATTEMPTED'
+          echo 'NOTEBOOK_UPLOADS=0'
+          echo 'NEW_BINARY_DOWNLOADS=0'
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
+          echo 'AUTO_ADVANCE=NO'
