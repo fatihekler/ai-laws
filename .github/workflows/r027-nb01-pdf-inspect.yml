@@ -1,0 +1,101 @@
+name: AI-LAWS R027 NB01 PDF inspection
+
+on:
+  push:
+    paths:
+      - '.github/workflows/r027-nb01-pdf-inspect.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Inspect NB01 PDFs without artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v pdfinfo >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y poppler-utils; }
+
+          declare -A FILES
+          FILES[INT-001]='CETS No.225 treaty status page .pdf'
+          FILES[INT-002]='CETS No.225 Explanatory Report.pdf'
+          FILES[INT-003]='Recommendation on the Ethics of Artificial Intelligence (2021).pdf'
+          FILES[INT-004]='Recommendation on the Ethics of Neurotechnology (2025)  43rd General Conference resolutions source.pdf'
+          FILES[INT-005]='OECD AI Principles (updated 2024).pdf'
+          FILES[INT-006]='A RES 78 265 — Safe, secure and trustworthy AI systems for sustainable development.pdf'
+          FILES[INT-007]='Pact for the Future  Global Digital Compact — A RES 79 1 .pdf'
+          FILES[INT-008]='Governing AI for Humanity — UN Advisory Body final report.pdf'
+
+          for sid in INT-001 INT-002 INT-003 INT-004 INT-005 INT-006 INT-007 INT-008; do
+            file="86_NOTEBOOKLM/downloads/${FILES[$sid]}"
+            test -f "$file" || { echo "MISSING|$sid|$file"; exit 2; }
+            pages=$(pdfinfo "$file" | awk -F: '/^Pages:/ {gsub(/^ +| +$/,"",$2); print $2}')
+            pdfver=$(pdfinfo "$file" | awk -F: '/^PDF version:/ {gsub(/^ +| +$/,"",$2); print $2}')
+            producer=$(pdfinfo "$file" | awk -F: '/^Producer:/ {$1=""; sub(/^:?[[:space:]]*/,""); print; exit}')
+            titlemeta=$(pdfinfo "$file" | awk -F: '/^Title:/ {$1=""; sub(/^:?[[:space:]]*/,""); print; exit}')
+            sha=$(sha256sum "$file" | awk '{print $1}')
+            blob=$(git hash-object "$file")
+            size=$(stat -c %s "$file")
+            pdftotext -layout "$file" /tmp/full.txt
+            chars=$(wc -m < /tmp/full.txt | tr -d ' ')
+            last=$pages
+            pdftotext -f 1 -l 1 -layout "$file" /tmp/first.txt
+            pdftotext -f "$last" -l "$last" -layout "$file" /tmp/last.txt
+            first_sample=$(tr '\n' ' ' < /tmp/first.txt | tr -s ' ' | cut -c1-800)
+            last_sample=$(tr '\n' ' ' < /tmp/last.txt | tr -s ' ' | cut -c1-800)
+            echo "=== $sid ==="
+            echo "FILE=$file"
+            echo "GIT_BLOB=$blob"
+            echo "SHA256=$sha"
+            echo "BYTE_SIZE=$size"
+            echo "PAGES=$pages"
+            echo "PDF_VERSION=${pdfver:-UNKNOWN}"
+            echo "PRODUCER=${producer:-UNKNOWN}"
+            echo "TITLE_META=${titlemeta:-UNKNOWN}"
+            echo "TEXT_CHARS=$chars"
+            echo "FIRST_PAGE_SAMPLE=$first_sample"
+            echo "LAST_PAGE_SAMPLE=$last_sample"
+            case "$sid" in
+              INT-001)
+                grep -Eiq '225|Framework Convention|Artificial Intelligence' /tmp/full.txt && echo 'MARKER_CETS225=YES' || echo 'MARKER_CETS225=NO'
+                grep -Eiq 'ratif|signature|status|party|parties' /tmp/full.txt && echo 'MARKER_STATUS=YES' || echo 'MARKER_STATUS=NO'
+                ;;
+              INT-002)
+                grep -Eiq 'Explanatory Report' /tmp/full.txt && echo 'MARKER_EXPLANATORY=YES' || echo 'MARKER_EXPLANATORY=NO'
+                grep -Eiq 'CETS|225|Framework Convention' /tmp/full.txt && echo 'MARKER_CETS225=YES' || echo 'MARKER_CETS225=NO'
+                ;;
+              INT-003)
+                grep -Eiq 'Recommendation on the Ethics of Artificial Intelligence' /tmp/full.txt && echo 'MARKER_TITLE=YES' || echo 'MARKER_TITLE=NO'
+                grep -Eiq 'UNESCO|United Nations Educational' /tmp/full.txt && echo 'MARKER_UNESCO=YES' || echo 'MARKER_UNESCO=NO'
+                grep -Eiq '2021' /tmp/full.txt && echo 'MARKER_2021=YES' || echo 'MARKER_2021=NO'
+                ;;
+              INT-004)
+                grep -Eiq 'Recommendation on the Ethics of Neurotechnology|ethics of neurotechnology' /tmp/full.txt && echo 'MARKER_NEUROTECH=YES' || echo 'MARKER_NEUROTECH=NO'
+                grep -Eiq '43rd|General Conference|43 C' /tmp/full.txt && echo 'MARKER_43GC=YES' || echo 'MARKER_43GC=NO'
+                grep -Eiq '2025' /tmp/full.txt && echo 'MARKER_2025=YES' || echo 'MARKER_2025=NO'
+                ;;
+              INT-005)
+                grep -Eiq 'OECD AI Principles|Recommendation.*Artificial Intelligence|AI Principles' /tmp/full.txt && echo 'MARKER_OECD_AI=YES' || echo 'MARKER_OECD_AI=NO'
+                grep -Eiq '2024' /tmp/full.txt && echo 'MARKER_2024=YES' || echo 'MARKER_2024=NO'
+                ;;
+              INT-006)
+                grep -Fq 'A/RES/78/265' /tmp/full.txt && echo 'MARKER_DOCID=YES' || echo 'MARKER_DOCID=NO'
+                grep -Eiq 'safe, secure and trustworthy artificial intelligence|Seizing the opportunities' /tmp/full.txt && echo 'MARKER_TITLE=YES' || echo 'MARKER_TITLE=NO'
+                ;;
+              INT-007)
+                grep -Fq 'A/RES/79/1' /tmp/full.txt && echo 'MARKER_DOCID=YES' || echo 'MARKER_DOCID=NO'
+                grep -Eiq 'Pact for the Future|Global Digital Compact' /tmp/full.txt && echo 'MARKER_TITLE=YES' || echo 'MARKER_TITLE=NO'
+                ;;
+              INT-008)
+                grep -Eiq 'Governing AI for Humanity' /tmp/full.txt && echo 'MARKER_TITLE=YES' || echo 'MARKER_TITLE=NO'
+                grep -Eiq 'High-level Advisory Body|Advisory Body on Artificial Intelligence|United Nations' /tmp/full.txt && echo 'MARKER_UN=YES' || echo 'MARKER_UN=NO'
+                grep -Eiq '2024' /tmp/full.txt && echo 'MARKER_2024=YES' || echo 'MARKER_2024=NO'
+                ;;
+            esac
+            echo
+          done
