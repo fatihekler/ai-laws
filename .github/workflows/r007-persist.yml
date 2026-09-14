@@ -1,0 +1,87 @@
+name: AI-LAWS R007 persist US inventory architecture
+
+on:
+  push:
+    paths:
+      - '.github/scripts/r007_persist.py'
+      - '.github/workflows/r007-persist.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fresh drift gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+      - name: Generate controlled R007 durable state
+        run: python3 .github/scripts/r007_persist.py
+
+      - name: Normalize newly generated Markdown
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          for p in [
+            Path('20_JURISDICTIONS/US/US_AI_LAW_INVENTORY_ARCHITECTURE_2026-09-14.md'),
+            Path('20_JURISDICTIONS/US/UTAH_AIPA_CURRENT_CODIFICATION_2026-09-14.md'),
+            Path('95_RESEARCH/US/AI-LAWS-R007_CLOSEOUT_2026-09-14.md'),
+          ]:
+              s=p.read_text(encoding='utf-8')
+              p.write_text('\n'.join(line.rstrip() for line in s.splitlines())+'\n',encoding='utf-8')
+          PY
+
+      - name: Validate and commit R007 durable outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          git diff --check
+          test -f 20_JURISDICTIONS/US/US_AI_LAW_INVENTORY_ARCHITECTURE_2026-09-14.md
+          test -f 20_JURISDICTIONS/US/US_FEDERAL_AI_SOURCE_CLASSIFICATION_2026-09-14.csv
+          test -f 20_JURISDICTIONS/US/US_STATE_AI_LAW_RESEARCH_REGISTRY.csv
+          test -f 20_JURISDICTIONS/US/UTAH_AIPA_CURRENT_CODIFICATION_2026-09-14.md
+          test -f 95_RESEARCH/US/AI-LAWS-R007_CLOSEOUT_2026-09-14.md
+          test "$(tail -n +2 20_JURISDICTIONS/US/US_STATE_AI_LAW_RESEARCH_REGISTRY.csv | wc -l)" -eq 51
+          grep -q 'US-UT,Utah,SUBNATIONAL_STATE,CURRENT_AI_SPECIFIC_STATUTE_SOURCE_VERIFIED_L1' 20_JURISDICTIONS/US/US_STATE_AI_LAW_RESEARCH_REGISTRY.csv
+          grep -q 'Effective 5/6/2026' 20_JURISDICTIONS/US/UTAH_AIPA_CURRENT_CODIFICATION_2026-09-14.md
+          grep -q 'AI-LAWS-R007,P0,United States' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          grep -q 'COMPLETE_RESEARCH_ARCHITECTURE_L1_STATE_LAW_CONTENT_OPEN' 90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv
+          grep -q 'R007_US_INVENTORY_ARCHITECTURE_L1_COMPLETE' 00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            00_CONTROL/CURRENT_CONTEXT_AND_NEXT_ACTION.md \
+            20_JURISDICTIONS/JURISDICTION_RESEARCH_REGISTRY.csv \
+            20_JURISDICTIONS/US/US_AI_LAW_INVENTORY_ARCHITECTURE_2026-09-14.md \
+            20_JURISDICTIONS/US/US_FEDERAL_AI_SOURCE_CLASSIFICATION_2026-09-14.csv \
+            20_JURISDICTIONS/US/US_STATE_AI_LAW_RESEARCH_REGISTRY.csv \
+            20_JURISDICTIONS/US/UTAH_AIPA_CURRENT_CODIFICATION_2026-09-14.md \
+            86_NOTEBOOKLM/NOTEBOOKLM_SOURCE_ACQUISITION_MANIFEST.csv \
+            86_NOTEBOOKLM/NOTEBOOKLM_ACQUISITION_AND_VALIDATION_LEDGER.csv \
+            90_RESEARCH_QUEUE/INITIAL_RESEARCH_QUEUE.csv \
+            95_RESEARCH/US/AI-LAWS-R007_CLOSEOUT_2026-09-14.md
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'NO_DURABLE_CHANGES'; exit 1; }
+          git commit -m 'research(r007): establish US federal-state inventory architecture'
+          git push origin HEAD:main
+
+      - name: Confirm controlled stop
+        run: |
+          echo 'R007_STATE=COMPLETE_RESEARCH_ARCHITECTURE_L1_STATE_LAW_CONTENT_OPEN'
+          echo 'STATE_PLUS_DC_ENUMERATED=51'
+          echo 'US009_UTAH_CURRENT_SECTION101_VERIFIED=YES'
+          echo 'EXHAUSTIVE_50_STATE_SUBSTANTIVE_LAW_SURVEY=NO'
+          echo 'ZIP_OR_ARTIFACT_CREATED=NO'
+          echo 'AUTO_ADVANCE=NO'
