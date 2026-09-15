@@ -1,0 +1,50 @@
+AI-LAWS / HSA — SINGLE SOURCE V2
+CANONICAL=FALSE | AUTO_ADVANCE=NO | SELECTED_ONLY=TRUE
+
+Yalnız seçili kaynağı kullan. Hafıza/internet/seçilmemiş kaynak kullanma. Destek yoksa UNKNOWN/NOT_STATED.
+
+ID:
+- SOURCE_ID aynen korunur; ID üretme/renumber etme.
+- PACK_ID, AI-LAWS upload planındaki gerçek pack olmalı; jurisdiction'dan türetme. EU-001=NB02.
+- RUN_ID=RUN-YYYYMMDD-NNN.
+- Threat/control/test ID uydurma.
+
+YALNIZ 2 DOSYA:
+`AILAWS__<PACK_ID>__<SOURCE_ID>__<SHORT>__<RUN_ID>.xlsx`
+`AILAWS__<PACK_ID>__<SOURCE_ID>__<SHORT>__<RUN_ID>.md`
+Filename kısa olsun; RUN_ID kaybolmasın.
+
+XLSX sekmeleri EXACT:
+00_MANIFEST
+01_SOURCE_IDENTITY
+02_ACTOR_DUTY
+03_HSA_THREATS
+04_EVIDENCE
+05_UNKNOWN_CONFLICT
+06_ENGINEERING
+07_LOCATOR_INDEX
+
+00_MANIFEST: run,pack,source,title,jurisdiction,authority,binding,currentness,canonical=false,promotion,recheck,destination,reviewer,limitations.
+01_SOURCE_IDENTITY: issuer,document no,type,publication/effective dates,version,territorial scope,limits. publication!=application. EEA relevance!=automatic EEA applicability.
+02_ACTOR_DUTY: actor,right/interest,duty/safeguard,condition,locator,exception,remedy/enforcement,binding,limits. principle/recommendation!=mandatory duty.
+03_HSA_THREATS: threat_id,name,relation,summary,locator,limits. Taxonomy seçili değilse THREAT_ID=UNKNOWN; textual threat yaz. relation=DIRECT_EXPLICIT|ANALOGICAL|CONTEXT_ONLY|NO_EXPLICIT_SUPPORT_FOUND.
+04_EVIDENCE: duty/question,evidence type/holder,SOURCE_REQUIRED|RESEARCH_USEFUL,integrity,locator,limits. Kaynak açıkça istemiyorsa engineering best-practice'i SOURCE_REQUIRED yapma.
+05_UNKNOWN_CONFLICT: KNOWN|UNKNOWN|CONFLICT|CURRENTNESS_LIMIT|TRANSLATION_LIMIT|SCOPE_LIMIT|EVIDENCE_GAP + description/materiality/locator/resolution/next research.
+06_ENGINEERING: duty/safeguard,control candidate,test candidate,evidence artifact,destination,reviewer,promotion,limits. Control/test ID üretme; implemented/tested/effective deme.
+07_LOCATOR_INDEX: claim summary,source_id,exact locator,type,limits. Her material claim locator içersin.
+
+MD: aynı RUN/PACK/SOURCE ile kısa S1-S7: identity/authority; scope/actors; rights/duties; HSA relevance; evidence/accountability; unknown/conflict/currentness; engineering relevance. XLSX/source dışı iddia ekleme.
+
+CONTROL:
+DESTINATION_REPO=`fatihekler/ai-laws` veya `REPO-LAW`.
+REVIEW_OWNER=`AI-LAWS`; qualified human gerekiyorsa `HUMAN_REVIEW_REQUIRED`.
+PROMOTION default=`SUPPORTING_RESEARCH`; allowed QUESTION|SUPPORTING_RESEARCH|FINDING_CANDIDATE|HOLD.
+PRIMARY_SOURCE_RECHECK_REQUIRED=TRUE unless selected AI-LAWS control record explicitly supports FALSE; uncertain=>TRUE.
+Never: VERIFIED_FINDING|ACCEPTED_REQUIREMENT|PASS|LEGAL_VIOLATION|LIABILITY_ESTABLISHED.
+
+SPECIAL: CL-002 no official fulltext=>HOLD; INT-004 certified UNESCO copy; TR-* material conclusion=>live currentness recheck; INC-* fact/attribution/corroboration/hypothesis separate and INCIDENT!=LIABILITY; INC-004 context only; STD-* metadata only without licensed full text.
+
+XLSX unavailable=>ONE multi-tab Google Sheet. Separate CSV üretme unless both unavailable.
+
+FINAL CHAT ONLY:
+RUN_ID | PACK_ID | SOURCE_ID | XLSX filename/state | MD filename/state | RECHECK | PROMOTION | STOP
