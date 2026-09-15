@@ -1,0 +1,49 @@
+AI-LAWS / HSA — SINGLE SOURCE V2.3
+
+CANONICAL=FALSE | AUTO_ADVANCE=NO | SELECTED_ONLY=TRUE
+
+Yalnız seçili kaynağı kullan. Hafıza/internet/seçilmemiş kaynak içeriği kullanma. Başka bir kaynak/instrument seçili kaynakta anılıyorsa yalnız referans olarak kaydet; dış kaynağın kuralını içeri aktarma. Destek yoksa UNKNOWN/NOT_STATED/OUTSIDE_SELECTED_SOURCE.
+
+ID:
+SOURCE_ID aynen korunur. PACK_ID AI-LAWS upload planındaki exact pack. RUN_ID=RUN-YYYYMMDD-NNN. Threat/control/test/source ID uydurma.
+
+YALNIZ 2 DOSYA:
+AILAWS__<PACK_ID>__<SOURCE_ID>__<SHORT>__<RUN_ID>.xlsx
+AILAWS__<PACK_ID>__<SOURCE_ID>__<SHORT>__<RUN_ID>.md
+
+XLSX sekmeleri EXACT:
+00_MANIFEST | 01_SOURCE_IDENTITY | 02_ACTOR_DUTY | 03_HSA_THREATS | 04_EVIDENCE | 05_UNKNOWN_CONFLICT | 06_ENGINEERING | 07_LOCATOR_INDEX
+
+00: run/pack/source/title/jurisdiction/authority/binding/currentness/canonical=false/promotion/recheck/destination/reviewer/limits.
+01: issuer/document no/type/publication/effective/application dates/version/scope/limits. publication!=application. Kaynağın kendi metninin desteklemediği external legal status/currentness bilgisini ekleme.
+02: actor/right/duty/condition/locator/exception/remedy/binding/limits. principle/recommendation!=mandatory duty. Addressee/scope dışına duty genişletme.
+03: threat_id/name/relation/summary/locator/limits. HSA taxonomy seçili değilse THREAT_ID=UNKNOWN; THR-NNN üretme. Relation yalnız DIRECT_EXPLICIT|ANALOGICAL|CONTEXT_ONLY|NO_EXPLICIT_SUPPORT_FOUND.
+04: duty/question/evidence type+holder/SOURCE_REQUIRED|RESEARCH_USEFUL/integrity/locator/limits. SOURCE_REQUIRED yalnız kaynak explicit record/document/report/log/notice/assessment veya eşdeğer kanıt yükümlülüğü getiriyorsa; aksi RESEARCH_USEFUL.
+05: KNOWN|UNKNOWN|CONFLICT|CURRENTNESS_LIMIT|TRANSLATION_LIMIT|SCOPE_LIMIT|EVIDENCE_GAP + description/locator/resolution.
+06: duty/control candidate/test candidate/evidence artifact/destination/reviewer/promotion/limits. Engineering items CANDIDATE only; ID uydurma; implemented/tested/effective deme.
+07: claim/source/exact locator/type/limits. Her material claim locator içersin.
+
+MD aynı RUN/PACK/SOURCE ile kısa S1-S7: identity/authority; scope/actors; rights/duties; HSA relevance; evidence/accountability; unknown/conflict/currentness; engineering relevance. XLSX/source dışı substantive iddia ekleme.
+
+CONTROL:
+DESTINATION_REPO=fatihekler/ai-laws
+REVIEW_OWNER=AI-LAWS
+PRIMARY_SOURCE_RECHECK_REQUIRED=TRUE unless selected control record explicitly supports FALSE; uncertain=>TRUE.
+PROMOTION_STATE default=SUPPORTING_RESEARCH; allowed QUESTION|SUPPORTING_RESEARCH|FINDING_CANDIDATE|HOLD.
+Never: VERIFIED_FINDING|ACCEPTED_REQUIREMENT|PASS|LEGAL_VIOLATION|LIABILITY_ESTABLISHED.
+
+SOURCE-TYPE FIREWALLS:
+Directive text != national transposition.
+Treaty signature != ratification/in-force effect.
+Guidance/soft law/policy != binding law.
+Incident/attribution != liability/court finding.
+Metadata/reference != unseen standard clause.
+Court/case without official/authorized full text => HOLD for verified holding.
+Snapshot/currentness uncertainty => RECHECK_REQUIRED.
+
+BEFORE EXPORT check: invented ID? RUN/PACK/SOURCE mismatch? metadata missing? outside-source substantive claim? unsupported SOURCE_REQUIRED? scope/addressee overreach? missing locator? If YES, correct first.
+
+XLSX unavailable=>ONE multi-tab Sheet; separate CSV only if both unavailable.
+
+FINAL CHAT ONLY:
+RUN_ID | PACK_ID | SOURCE_ID | XLSX | MD | RECHECK | PROMOTION | STOP
