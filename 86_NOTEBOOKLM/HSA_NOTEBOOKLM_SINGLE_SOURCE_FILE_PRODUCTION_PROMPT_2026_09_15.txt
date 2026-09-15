@@ -1,0 +1,333 @@
+AI-LAWS / HSA — NOTEBOOKLM SINGLE-SOURCE FILE PRODUCTION PROMPT
+
+MODE = SINGLE_SOURCE
+CANONICAL = FALSE
+AUTO_ADVANCE = NO
+
+Yalnız şu anda seçili olan kaynak veya kaynakları kullan.
+
+Genel internet bilgisi, model hafızası veya seçilmemiş kaynaklarla boşluk doldurma.
+
+Bu görev yalnız analiz cevabı vermek için değildir. Sonuçları durable artifact/dosya olarak üretmeye çalış.
+
+==================================================
+A. RUN KİMLİĞİ VE DOSYA ADI
+==================================================
+
+Önce bu run için unique RUN_ID oluştur:
+
+RUN-YYYYMMDD-NNN
+
+Örnek:
+RUN-20260915-001
+
+Kaynağın AI-LAWS SOURCE_ID'sini aynen kullan. SOURCE_ID üretme veya yeniden numaralandırma.
+
+Dosya adı standardı:
+
+AI-LAWS__<PACK_ID>__<SOURCE_ID>__<SHORT_TITLE>__<ARTIFACT_TYPE>__<RUN_ID>.<ext>
+
+SHORT_TITLE insan-okunur olmalı.
+
+Kurallar:
+- mümkünse 2-8 anlamlı token;
+- boşluk yerine `-`;
+- SOURCE_ID'yi değiştirme;
+- başlıkta belgenin tanınmasını sağlayacak kelimeleri koru;
+- filesystem-reserved karakter kullanma.
+
+Örnek:
+
+AI-LAWS__NB02__EU-001__AI-ACT__SOURCE-IDENTITY-CARD__RUN-20260915-001.md
+AI-LAWS__NB02__EU-001__AI-ACT__ACTOR-DUTY-SAFEGUARD-MATRIX__RUN-20260915-001.csv
+
+==================================================
+B. ZORUNLU DOSYA/ARTIFACT SETİ
+==================================================
+
+Bu tek kaynak incelemesi için aşağıdaki artifact'ları üret:
+
+1. RUN-MANIFEST.csv
+2. SOURCE-IDENTITY-CARD.md
+3. SOURCE-ANALYSIS.md
+4. ACTOR-DUTY-SAFEGUARD-MATRIX.csv
+5. HSA-THREAT-CROSSWALK.csv
+6. EVIDENCE-ACCOUNTABILITY-MATRIX.csv
+7. UNKNOWN-CONFLICT-REGISTER.csv
+8. ENGINEERING-CANDIDATES.csv
+
+Kaynağın türü nedeniyle bir CSV gerçekten uygulanabilir değilse dosyayı uydurma. RUN-MANIFEST içinde:
+
+PRODUCTION_STATE = NOT_APPLICABLE
+NOT_APPLICABLE_REASON = <neden>
+
+yaz.
+
+==================================================
+C. FILE CREATION / EXPORT RULE
+==================================================
+
+Arayüzün downloadable dosya, report, table veya artifact yaratabiliyorsa yukarıdaki artifact'ları ayrı ayrı oluştur.
+
+Her artifact başlığı EXACT filename veya filename stem olmalıdır.
+
+Arayüz doğrudan `.csv` veya `.md` indirme desteklemiyorsa:
+
+- tek uzun sohbet cevabına geri dönme;
+- mümkün olan her artifact için ayrı report/table/artifact oluştur;
+- her artifact'ın ilk satırına:
+
+TARGET_FILENAME: <exact filename>
+
+koy;
+- RUN-MANIFEST içinde `EXPORT_REQUIRED_BY_WORK = YES` belirt;
+- CSV artifact'larında yalnız düzenli satır/sütun verisi üret;
+- Markdown artifact'larında yalnız Markdown içeriği üret;
+- chat-only kalmak zorundaysa her artifact'ı ayrı bölüm halinde ve exact TARGET_FILENAME ile ver.
+
+Normal başarı durumu:
+
+FILE_CREATED
+REPORT_CREATED_FOR_EXPORT
+TABLE_CREATED_FOR_EXPORT
+
+CHAT_ONLY_FALLBACK son çaredir.
+
+==================================================
+D. RUN MANIFEST
+==================================================
+
+İlk artifact RUN-MANIFEST olmalıdır.
+
+Minimum kolonlar:
+
+RUN_ID
+PACK_ID
+SOURCE_ID
+SHORT_TITLE
+ARTIFACT_TYPE
+EXPECTED_FILENAME
+FORMAT
+PRODUCTION_STATE
+NOT_APPLICABLE_REASON
+SOURCE_SELECTION_CONFIRMED
+CANONICAL
+PROMOTION_STATE
+EXPORT_REQUIRED_BY_WORK
+NOTES
+
+CANONICAL = FALSE
+
+PROMOTION_STATE yalnız:
+QUESTION
+SUPPORTING_RESEARCH
+FINDING_CANDIDATE
+HOLD
+
+olabilir.
+
+==================================================
+E. SOURCE IDENTITY CARD
+==================================================
+
+Şu alanları doldur:
+
+SOURCE_ID
+TITLE
+ISSUING_INSTITUTION
+JURISDICTION
+DOCUMENT_NUMBER
+AUTHORITY_CLASS
+BINDING_STATE
+PUBLICATION_DATE
+EFFECTIVE_OR_APPLICATION_DATE
+VERSION_OR_CURRENTNESS_VISIBLE
+SOURCE_LIMITATIONS
+
+SOURCE-IDENTITY-CARD.md içinde şu metadata header bulunmalı:
+
+project: AI-LAWS
+program: HSA
+run_id: <RUN_ID>
+notebook_pack: <PACK_ID>
+source_id: <SOURCE_ID>
+source_title: <TITLE>
+artifact_type: SOURCE-IDENTITY-CARD
+created_date: YYYY-MM-DD
+canonical: false
+promotion_state: SUPPORTING_RESEARCH
+primary_source_recheck_required: true|false
+selected_sources_only: true
+
+==================================================
+F. SOURCE ANALYSIS — S1-S7
+==================================================
+
+SOURCE-ANALYSIS.md dosyasında şu yedi aşamayı uygula:
+
+S1 — IDENTITY / AUTHORITY
+
+Belgenin tam hukuki/kurumsal kimliği nedir?
+Kaynak türü nedir?
+Binding mi, guidance mı, soft law mı, policy mi, incident evidence mı?
+Yayın tarihi ile yürürlük/application tarihini birbirine karıştırma.
+Amendment, repeal, transition, territorial veya scope sınırı varsa göster.
+Her maddi cevapta article/section/page/paragraph/heading locator ver.
+
+S2 — DEFINITIONS / SCOPE / ACTORS
+
+Hangi actor'lar tanımlanıyor veya düzenleniyor?
+Hangi system/product/service/data/conduct kapsama giriyor?
+Exclusion, exception, threshold, territorial veya sectoral sınırlar nelerdir?
+Kaynağın tanımlamadığı kavramları tanımlıyormuş gibi gösterme.
+
+S3 — RIGHTS / DUTIES / SAFEGUARDS
+
+Kaynağın açıkça belirttiği:
+- right
+- protection
+- duty
+- prohibition
+- documentation
+- transparency
+- human oversight
+- cybersecurity
+- appeal
+- remedy
+- enforcement
+unsurlarını çıkar.
+
+Recommendation veya principle'ı mandatory duty'ye dönüştürme.
+
+S4 — HSA THREAT RELEVANCE
+
+THR-001..THR-024 arasından yalnız bu kaynak tarafından gerçekten desteklenen threat ilişkilerini göster.
+
+Her ilişkiyi:
+DIRECT_EXPLICIT
+ANALOGICAL
+CONTEXT_ONLY
+NO_EXPLICIT_SUPPORT_FOUND
+şeklinde sınıflandır.
+
+S5 — EVIDENCE / ACCOUNTABILITY
+
+Compliance, breach, causation veya accountability araştırılırken gerekebilecek:
+- log
+- record
+- notice
+- assessment
+- audit
+- documentation
+- incident report
+- contract
+- consent record
+- technical evidence
+unsurlarını ayır.
+
+Kaynağın zorunlu tuttuğu evidence ile araştırmacının faydalı bulacağı evidence'ı birbirine karıştırma.
+
+S6 — UNKNOWN / CONFLICT
+
+KNOWN
+UNKNOWN
+CONFLICT
+CURRENTNESS_LIMIT
+TRANSLATION_LIMIT
+SCOPE_LIMIT
+EVIDENCE_GAP
+başlıklarıyla ayrı kayıtlar üret.
+
+Kaynağın cevaplamadığı şeyi tahmin etme.
+
+S7 — ENGINEERING RELEVANCE
+
+Kaynakla desteklenmiş duty/safeguard varsa olası:
+CONTROL_CANDIDATE
+TEST_CANDIDATE
+EVIDENCE_ARTIFACT
+öner.
+
+Implemented/tested/effective iddiası üretme.
+
+==================================================
+G. CSV ARTIFACT ŞEMALARI
+==================================================
+
+ACTOR-DUTY-SAFEGUARD-MATRIX.csv minimum kolonları:
+RUN_ID,SOURCE_ID,ACTOR,RIGHT_OR_INTEREST,DUTY_OR_SAFEGUARD,CONDITION,SOURCE_LOCATOR,EXCEPTION,REMEDY_OR_ENFORCEMENT,BINDING_STATE,LIMITATIONS
+
+HSA-THREAT-CROSSWALK.csv minimum kolonları:
+RUN_ID,SOURCE_ID,THREAT_ID,RELATIONSHIP_CLASS,SUPPORTING_TEXT_SUMMARY,SOURCE_LOCATOR,LIMITATIONS
+
+EVIDENCE-ACCOUNTABILITY-MATRIX.csv minimum kolonları:
+RUN_ID,SOURCE_ID,QUESTION_OR_DUTY,EVIDENCE_TYPE,EVIDENCE_HOLDER,SOURCE_REQUIRED_OR_RESEARCH_USEFUL,INTEGRITY_REQUIREMENT,SOURCE_LOCATOR,LIMITATIONS
+
+UNKNOWN-CONFLICT-REGISTER.csv minimum kolonları:
+RUN_ID,SOURCE_ID,ITEM_TYPE,DESCRIPTION,MATERIALITY,SOURCE_LOCATOR,CURRENTNESS_LIMIT,RESOLUTION_NEEDED,NEXT_RESEARCH
+
+ENGINEERING-CANDIDATES.csv minimum kolonları:
+RUN_ID,SOURCE_ID,THREAT_ID,DUTY_OR_SAFEGUARD,CONTROL_CANDIDATE,TEST_CANDIDATE,EVIDENCE_ARTIFACT,DESTINATION_REPO,REVIEW_OWNER,PROMOTION_STATE,LIMITATIONS
+
+==================================================
+H. FINAL CONTROL FIELDS
+==================================================
+
+Her artifact sonunda veya metadata içinde:
+
+PRIMARY_SOURCE_RECHECK_REQUIRED
+DESTINATION_REPO
+REVIEW_OWNER
+PROMOTION_STATE
+
+bulunsun.
+
+VERIFIED_FINDING
+ACCEPTED_REQUIREMENT
+PASS
+LEGAL_VIOLATION
+LIABILITY_ESTABLISHED
+
+üretme.
+
+==================================================
+I. SPECIAL SOURCE RULES
+==================================================
+
+CL-002:
+Official full text blocked; HOLD. Verified case-law artifact üretme.
+
+INT-004:
+Current UNESCO certified-copy source controls. Legacy 43GC PDF current primary değildir.
+
+TR-* snapshots:
+Material legal conclusion öncesi live official currentness recheck gerekir.
+
+INC-*:
+Observed fact, company/vendor attribution, independent corroboration ve hypothesis ayrı tutulmalıdır.
+Incident != liability.
+
+INC-004:
+Policy/context only; incident evidence değildir.
+
+STD-*:
+Licensed full text yoksa official metadata/reference ile sınırlı kal.
+
+==================================================
+J. COMPLETION CHECK
+==================================================
+
+Son mesajında yalnız kısa bir DELIVERY MANIFEST ver:
+
+RUN_ID =
+SOURCE_ID =
+PACK_ID =
+ARTIFACTS_EXPECTED =
+ARTIFACTS_CREATED =
+ARTIFACTS_FOR_EXPORT =
+ARTIFACTS_NOT_APPLICABLE =
+CHAT_ONLY_FALLBACK_COUNT =
+PRIMARY_SOURCE_RECHECK_REQUIRED =
+PROMOTION_STATE =
+
+Sonra STOP.

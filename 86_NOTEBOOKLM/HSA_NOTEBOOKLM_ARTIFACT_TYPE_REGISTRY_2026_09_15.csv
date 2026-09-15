@@ -1,0 +1,27 @@
+artifact_scope,artifact_type,extension,mandatory,primary_purpose,minimum_content,canonical_state
+SINGLE_SOURCE,RUN-MANIFEST,csv,YES,Enumerate expected and produced artifacts,RUN_ID+PACK_ID+SOURCE_ID+EXPECTED_FILENAME+PRODUCTION_STATE,NONCANONICAL
+SINGLE_SOURCE,SOURCE-IDENTITY-CARD,md,YES,Identify source authority and limits,identity+authority+dates+limitations,NONCANONICAL
+SINGLE_SOURCE,SOURCE-ANALYSIS,md,YES,Preserve S1-S7 narrative analysis,S1-S7 with exact locators,NONCANONICAL
+SINGLE_SOURCE,ACTOR-DUTY-SAFEGUARD-MATRIX,csv,CONDITIONAL,Structured rights duties safeguards,actor+duty+condition+locator+exception+remedy,NONCANONICAL
+SINGLE_SOURCE,HSA-THREAT-CROSSWALK,csv,YES,Map source to THR-001..024,threat_id+relationship_class+locator+limitations,NONCANONICAL
+SINGLE_SOURCE,EVIDENCE-ACCOUNTABILITY-MATRIX,csv,YES,Separate required evidence from useful research evidence,evidence_type+holder+basis+integrity+limitations,NONCANONICAL
+SINGLE_SOURCE,UNKNOWN-CONFLICT-REGISTER,csv,YES,Preserve unresolved issues,type+description+materiality+locator+next_research,NONCANONICAL
+SINGLE_SOURCE,ENGINEERING-CANDIDATES,csv,YES,Route possible controls/tests without promotion,control_candidate+test_candidate+evidence_artifact+destination_repo+promotion_state,NONCANONICAL
+PACK,PACK-RUN-MANIFEST,csv,YES,Enumerate pack outputs,run+sources+expected_files+production_states,NONCANONICAL
+PACK,SOURCE-AUTHORITY-MATRIX,csv,YES,Compare authority classes,source_id+authority+binding+date_state+currentness,NONCANONICAL
+PACK,ACTOR-DUTY-RIGHTS-MATRIX,csv,YES,Compare duties and rights,actor+source+duty_or_right+condition+exception+remedy+locator,NONCANONICAL
+PACK,HSA-THREAT-SOURCE-CROSSWALK,csv,YES,Compare threat support across sources,threat_id+source_id+support_class+locator,NONCANONICAL
+PACK,EVIDENCE-REQUIREMENT-MATRIX,csv,YES,Compare evidence needs,duty_or_question+evidence+holder+integrity+basis,NONCANONICAL
+PACK,EXCEPTION-DEFENCE-MATRIX,csv,YES,Preserve exceptions and defences,source+actor+exception_or_defence+condition+locator,NONCANONICAL
+PACK,CONFLICT-UNKNOWN-REGISTER,csv,YES,Track disagreement and gaps,item_type+sources+description+materiality+next_action,NONCANONICAL
+PACK,CONTROL-TEST-CANDIDATES,csv,YES,Engineering routing,source_or_finding+control+test+evidence+destination+promotion_state,NONCANONICAL
+PACK,RESEARCH-BACKLOG,csv,YES,Create bounded follow-up research,question+missing_source_type+jurisdiction+why_needed+priority,NONCANONICAL
+PACK,PACK-SYNTHESIS,md,YES,Human-readable source-grounded synthesis,authority+actors+duties+threats+unknowns+limits,NONCANONICAL
+CROSSPACK,GLOBAL-AUTHORITY-MAP,csv,YES,Global authority comparison,source+jurisdiction+authority+binding+currentness,NONCANONICAL
+CROSSPACK,GLOBAL-ACTOR-DUTY-CROSSWALK,csv,YES,Global actor/duty comparison,actor+jurisdiction+source+duty+exception+remedy,NONCANONICAL
+CROSSPACK,GLOBAL-HSA-THREAT-COVERAGE,csv,YES,Global threat coverage,threat+jurisdiction+source+support_class+gap_state,NONCANONICAL
+CROSSPACK,GLOBAL-EVIDENCE-GAP-MATRIX,csv,YES,Global evidence-gap map,question+evidence_required+source_support+gap+owner,NONCANONICAL
+CROSSPACK,GLOBAL-CONFLICT-UNKNOWN-REGISTER,csv,YES,Cross-pack conflicts and unknowns,type+packs+sources+description+materiality+next_action,NONCANONICAL
+CROSSPACK,GLOBAL-RESEARCH-BACKLOG,csv,YES,Future research routing,question+jurisdiction+source_type+destination_repo+priority,NONCANONICAL
+CROSSPACK,GLOBAL-CONTROL-TEST-CANDIDATES,csv,YES,Cross-pack engineering candidates,threat+finding_candidate+control+test+evidence+destination,NONCANONICAL
+CROSSPACK,GLOBAL-GAP-SYNTHESIS,md,YES,Human-readable final gap synthesis,coverage+gaps+conflicts+unknowns+next_research,NONCANONICAL

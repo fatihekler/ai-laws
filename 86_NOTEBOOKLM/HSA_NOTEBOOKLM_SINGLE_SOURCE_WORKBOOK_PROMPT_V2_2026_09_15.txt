@@ -1,0 +1,70 @@
+AI-LAWS / HSA — SINGLE SOURCE WORKBOOK V2
+CANONICAL=FALSE | AUTO_ADVANCE=NO | SELECTED_ONLY=TRUE
+
+Use only selected NotebookLM source(s). No memory/internet/unselected sources. Unsupported=UNKNOWN/NOT_STATED.
+
+IDENTITY RULES
+- Preserve existing AI-LAWS SOURCE_ID exactly.
+- PACK_ID MUST come from AI-LAWS NOTEBOOK_UPLOAD_SELECTION.csv; never infer from jurisdiction. Example EU-001 => NB02.
+- Create unique RUN_ID=RUN-YYYYMMDD-NNN.
+- Do not invent HSA threat/control/test/source IDs.
+
+CREATE ONLY 2 FILES
+1) AILAWS__<PACK_ID>__<SOURCE_ID>__<SHORT_TITLE>__<RUN_ID>.xlsx
+2) AILAWS__<PACK_ID>__<SOURCE_ID>__<SHORT_TITLE>__<RUN_ID>.md
+
+SHORT_TITLE=short, human-readable, filesystem-safe. Keep filenames short enough to avoid truncation.
+
+XLSX TABS EXACT
+00_MANIFEST
+01_SOURCE_IDENTITY
+02_ACTOR_DUTY
+03_HSA_THREATS
+04_EVIDENCE
+05_UNKNOWN_CONFLICT
+06_ENGINEERING
+07_LOCATOR_INDEX
+
+00_MANIFEST: RUN_ID,PACK_ID,SOURCE_ID,TITLE,JURISDICTION,AUTHORITY_CLASS,BINDING_STATE,CURRENTNESS,CANONICAL=false,PROMOTION_STATE,PRIMARY_SOURCE_RECHECK_REQUIRED,DESTINATION_REPO,REVIEW_OWNER,LIMITATIONS.
+
+01_SOURCE_IDENTITY: issuer,jurisdiction,document_number,source_type,binding_state,publication_date,effective/application_date,version/currentness,territorial_scope,limitations.
+Rule: publication!=application. “EEA relevance” != automatic direct applicability in all EEA states; do not claim EEA binding/applicability without selected EEA authority.
+
+02_ACTOR_DUTY: ACTOR,RIGHT_OR_INTEREST,DUTY_OR_SAFEGUARD,CONDITION,SOURCE_LOCATOR,EXCEPTION,REMEDY_OR_ENFORCEMENT,BINDING_STATE,LIMITATIONS.
+Rule: recommendation/principle!=mandatory duty.
+
+03_HSA_THREATS: THREAT_ID,THREAT_NAME,RELATIONSHIP_CLASS,SUMMARY,SOURCE_LOCATOR,LIMITATIONS.
+Never invent ID/name mapping. If selected sources do not include authoritative HSA taxonomy: THREAT_ID=UNKNOWN and use textual THREAT_NAME. RELATIONSHIP_CLASS only DIRECT_EXPLICIT|ANALOGICAL|CONTEXT_ONLY|NO_EXPLICIT_SUPPORT_FOUND.
+
+04_EVIDENCE: QUESTION_OR_DUTY,EVIDENCE_TYPE,EVIDENCE_HOLDER,SOURCE_REQUIRED_OR_RESEARCH_USEFUL,INTEGRITY_REQUIREMENT,SOURCE_LOCATOR,LIMITATIONS.
+Do not label an integrity feature (e.g. tamper-evident) SOURCE_REQUIRED unless source explicitly requires it; otherwise RESEARCH_USEFUL.
+
+05_UNKNOWN_CONFLICT: ITEM_TYPE,DESCRIPTION,MATERIALITY,SOURCE_LOCATOR,CURRENTNESS_LIMIT,RESOLUTION_NEEDED,NEXT_RESEARCH. ITEM_TYPE=KNOWN|UNKNOWN|CONFLICT|CURRENTNESS_LIMIT|TRANSLATION_LIMIT|SCOPE_LIMIT|EVIDENCE_GAP.
+
+06_ENGINEERING: THREAT_ID,DUTY_OR_SAFEGUARD,CONTROL_CANDIDATE,TEST_CANDIDATE,EVIDENCE_ARTIFACT,DESTINATION_REPO,REVIEW_OWNER,PROMOTION_STATE,LIMITATIONS.
+Candidates only. Do not invent CONTROL_ID/TEST_ID. Never mark implemented/tested/effective.
+DESTINATION_REPO for AI-LAWS source analysis = fatihekler/ai-laws (or REPO-LAW), not a fabricated sub-repository/lane.
+REVIEW_OWNER=AI-LAWS unless an explicitly selected source/control file assigns another owner; otherwise HUMAN_REVIEW_REQUIRED.
+
+07_LOCATOR_INDEX: CLAIM_ID,CLAIM_SUMMARY,SOURCE_ID,SOURCE_LOCATOR,LOCATOR_TYPE,LIMITATIONS.
+Every material claim needs article/section/page/paragraph/heading locator.
+
+MD REPORT
+Use same RUN_ID/PACK_ID/SOURCE_ID and summarize S1 identity/authority; S2 scope/actors; S3 rights/duties; S4 HSA relevance; S5 evidence/accountability; S6 unknown/conflict/currentness; S7 engineering relevance. Do not add claims absent from XLSX/source.
+
+PROMOTION
+Default=SUPPORTING_RESEARCH. Allowed QUESTION|SUPPORTING_RESEARCH|FINDING_CANDIDATE|HOLD.
+Notebook output never equals VERIFIED_FINDING, ACCEPTED_REQUIREMENT, PASS, LEGAL_VIOLATION or LIABILITY_ESTABLISHED.
+PRIMARY_SOURCE_RECHECK_REQUIRED=TRUE unless the selected AI-LAWS control/source record explicitly establishes current primary-source verification sufficient for this claim; if uncertain => TRUE.
+
+SPECIAL
+CL-002 official full text absent=>HOLD.
+INT-004 current UNESCO certified copy controls.
+TR-* material legal conclusion=>live official currentness recheck.
+INC-* separate observed fact/vendor attribution/independent corroboration/hypothesis; INCIDENT!=LIABILITY. INC-004=context only.
+STD-* metadata/reference only without licensed full text.
+
+If XLSX unavailable, create ONE multi-tab Google Sheet with the same tabs. Do NOT create separate CSV files unless XLSX and multi-tab Sheet are both unavailable.
+
+FINAL CHAT ONLY
+RUN_ID=<...> | PACK_ID=<...> | SOURCE_ID=<...> | XLSX=<filename/state> | MD=<filename/state> | RECHECK=<...> | PROMOTION=<...> | STOP
