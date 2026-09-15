@@ -1,0 +1,30 @@
+notebook_pack,source_id,qualified_source_id,run_disposition,override_instruction,reason
+NB01,INT-004,REPO-LAW::INT-004,USE_CERTIFIED_COPY_URL,"Use UNESCO certified-copy URL as primary; do not select legacy 43GC repository PDF as current primary.",Current primary identity corrected by R032/R035
+NB02,EU-001,REPO-LAW::EU-001,SELECT_AND_RECHECK_CURRENTNESS,"Use uploaded 2026-07-27 consolidated snapshot for analysis; flag every material current-law conclusion for live EUR-Lex currentness recheck.",Consolidated law can change
+NB03,US-001,REPO-LAW::US-001,USE_LIVE_URL_PRIMARY,"Use official White House live page as primary; repository webpage-print is supporting only. Do not call it an Act of Congress.",Authority-class boundary
+NB03,US-009,REPO-LAW::US-009,USE_LIVE_URL_SECTION_BY_SECTION,"Use current Utah chapter; section 101 current version verified but recheck each material section.",Whole-chapter section currentness remains open
+NB04,TR-001,REPO-LAW::TR-001,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research only; live official currentness recheck required before material legal conclusion.",R005 official live source/currentness limitation
+NB04,TR-002,REPO-LAW::TR-002,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research only; live official currentness recheck required before material legal conclusion.",R005 official live source/currentness limitation
+NB04,TR-003,REPO-LAW::TR-003,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research only; live official currentness recheck required before material legal conclusion.",R005 official live source/currentness limitation
+NB04,TR-004,REPO-LAW::TR-004,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research only; live official currentness recheck required before material legal conclusion.",R005 official live source/currentness limitation
+NB04,TR-005,REPO-LAW::TR-005,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research only; exact offense elements and live currentness required before criminal-law conclusion.",Criminal-law high-consequence boundary
+NB04,TR-006,REPO-LAW::TR-006,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research only; live official currentness recheck required before material legal conclusion.",R005 official live source/currentness limitation
+NB04,TR-007,REPO-LAW::TR-007,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research only; live official currentness recheck required before material legal conclusion.",R005 official live source/currentness limitation
+NB04,TR-008,REPO-LAW::TR-008,SELECT_WITH_CURRENTNESS_WARNING,"Use amended snapshot as research baseline; verify official consolidated text before material duty/enforcement conclusion.",2026 amendments/currentness
+NB04,TR-009,REPO-LAW::TR-009,USE_LIVE_URL_POLICY_ONLY,"Treat 2026-2030 AI Action Plan as policy/guidance, not binding law; exact official PDF body unresolved in GitHub runner.",Policy-vs-law boundary
+NB05,GB-009,REPO-LAW::GB-009,CONTEXT_POLICY_ONLY,"Treat AI Growth Lab as proposal/call for evidence, not current law.",Policy proposal
+NB05,JP-003,REPO-LAW::JP-003,CONTEXT_POLICY_ONLY,"Treat AI Basic Plan Phase II as policy plan, not statute.",Policy-vs-law boundary
+NB06,CL-002,REPO-LAW::CL-002,DO_NOT_RUN_HOLD,"Do not ask NotebookLM to extract holding/reasoning from secondary full text as verified law. Official full text remains blocked.",NO_OFFICIAL_FULL_TEXT
+NB06,INT-004,REPO-LAW::INT-004,USE_CERTIFIED_COPY_URL,"Use certified copy only; legacy 43GC PDF excluded as current primary.",Superseded source
+NB06,TR-001,REPO-LAW::TR-001,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research; current official constitutional text required before material conclusion.",Currentness requirement
+NB06,TR-002,REPO-LAW::TR-002,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research; current official KVKK text required before material conclusion.",Currentness requirement
+NB06,TR-004,REPO-LAW::TR-004,SELECT_WITH_CURRENTNESS_WARNING,"Use snapshot for research; current official Civil Code text required before material conclusion.",Currentness requirement
+NB07,EU-003,REPO-LAW::EU-003,SELECT_WITH_TRANSPOSITION_WARNING,"Map Directive text but do not infer uniform national implementation; transposition deadline/state must be checked.",Directive implementation dependency
+NB07,TR-003,REPO-LAW::TR-003,SELECT_WITH_CURRENTNESS_WARNING,"Liability research baseline only; live currentness and element-by-element legal review required.",Liability conclusion boundary
+NB07,TR-006,REPO-LAW::TR-006,SELECT_WITH_CURRENTNESS_WARNING,"Consumer-law research baseline only; live currentness and factual applicability required.",Liability/remedy boundary
+NB08,INC-001,REPO-LAW::INC-001,SELECT_OFFICIAL_COMPANY_INCIDENT,"Use exact-byte verified report; label all attributions as company statements unless independently corroborated.",Incident != liability
+NB08,INC-002,REPO-LAW::INC-002,SELECT_INDEPENDENT_REPORT,"Use as independent investigation; preserve access/method limits and compare with INC-001.",Corroboration source
+NB08,INC-003,REPO-LAW::INC-003,SELECT_OFFICIAL_COMPANY_INCIDENT,"Separate observed evidence from Anthropic/vendor attribution; no court/criminal finding inference.",Vendor attribution boundary
+NB08,INC-004,REPO-LAW::INC-004,OPTIONAL_CONTEXT_ONLY,"Use only for policy/forecast/context questions. Exclude from incident-fact evidence matrix.",Policy essay not incident evidence
+NB09,STD-001,REPO-LAW::STD-001,METADATA_ONLY_UNLESS_LICENSED,"Ask only metadata/scope/conformity questions unless licensed full text is lawfully available.",Commercial standard access boundary
+NB09,STD-002,REPO-LAW::STD-002,METADATA_ONLY_UNLESS_LICENSED,"Ask only metadata/scope/conformity questions unless licensed full text is lawfully available.",Commercial standard access boundary
