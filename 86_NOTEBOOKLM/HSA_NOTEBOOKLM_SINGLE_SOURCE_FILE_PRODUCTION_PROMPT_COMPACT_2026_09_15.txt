@@ -1,0 +1,101 @@
+AI-LAWS / HSA — SINGLE SOURCE INVESTIGATION + FILE PRODUCTION (COMPACT)
+
+MODE=SINGLE_SOURCE
+CANONICAL=FALSE
+AUTO_ADVANCE=NO
+SELECTED_SOURCES_ONLY=TRUE
+
+Use only the currently selected NotebookLM source(s). Do not fill gaps from memory, internet knowledge or unselected sources. If the source does not support a point, write UNKNOWN / NOT_STATED.
+
+1) RUN + NAMING
+Create unique RUN_ID: RUN-YYYYMMDD-NNN.
+Preserve existing AI-LAWS SOURCE_ID exactly; do not invent/renumber it.
+Filename format:
+AI-LAWS__<PACK_ID>__<SOURCE_ID>__<SHORT_TITLE>__<ARTIFACT_TYPE>__<RUN_ID>.<ext>
+SHORT_TITLE must be human-readable, 2–8 tokens, filesystem-safe, using hyphens.
+
+2) REQUIRED ARTIFACTS
+Attempt to create these 8 separate artifacts/files:
+A. RUN-MANIFEST.csv
+B. SOURCE-IDENTITY-CARD.md
+C. SOURCE-ANALYSIS.md
+D. ACTOR-DUTY-SAFEGUARD-MATRIX.csv
+E. HSA-THREAT-CROSSWALK.csv
+F. EVIDENCE-ACCOUNTABILITY-MATRIX.csv
+G. UNKNOWN-CONFLICT-REGISTER.csv
+H. ENGINEERING-CANDIDATES.csv
+
+If an artifact is genuinely not applicable, do not fabricate content. Record NOT_APPLICABLE and reason in RUN-MANIFEST.
+If downloadable files cannot be created, create separate report/table artifacts. First line of each must be:
+TARGET_FILENAME: <exact filename>
+If export is still required, set EXPORT_REQUIRED_BY_WORK=YES.
+CHAT_ONLY_FALLBACK is last resort only.
+
+3) RUN-MANIFEST COLUMNS
+RUN_ID,PACK_ID,SOURCE_ID,SHORT_TITLE,ARTIFACT_TYPE,EXPECTED_FILENAME,FORMAT,PRODUCTION_STATE,NOT_APPLICABLE_REASON,SOURCE_SELECTION_CONFIRMED,CANONICAL,PROMOTION_STATE,EXPORT_REQUIRED_BY_WORK,NOTES
+CANONICAL=FALSE.
+PROMOTION_STATE only: QUESTION | SUPPORTING_RESEARCH | FINDING_CANDIDATE | HOLD.
+
+4) SOURCE IDENTITY CARD
+Include:
+SOURCE_ID,TITLE,ISSUING_INSTITUTION,JURISDICTION,DOCUMENT_NUMBER,AUTHORITY_CLASS,BINDING_STATE,PUBLICATION_DATE,EFFECTIVE_OR_APPLICATION_DATE,VERSION_OR_CURRENTNESS_VISIBLE,SOURCE_LIMITATIONS.
+Metadata: project=AI-LAWS; program=HSA; run_id; notebook_pack; source_id; artifact_type=SOURCE-IDENTITY-CARD; created_date; canonical=false; promotion_state=SUPPORTING_RESEARCH; primary_source_recheck_required=true|false; selected_sources_only=true.
+
+5) SOURCE ANALYSIS S1–S7
+S1 IDENTITY/AUTHORITY: exact legal/institutional identity; source type; binding/guidance/soft-law/policy/incident; publication vs effective/application date; amendment/repeal/transition/territorial/scope limits. Give article/section/page/paragraph/heading locators for material claims.
+
+S2 DEFINITIONS/SCOPE/ACTORS: regulated/defined actors; covered systems/products/services/data/conduct; exclusions, exceptions, thresholds, territorial/sectoral limits. Do not invent definitions.
+
+S3 RIGHTS/DUTIES/SAFEGUARDS: extract explicit rights, protections, duties, prohibitions, documentation, transparency, human oversight, cybersecurity, appeal, remedy, enforcement. For each duty: ACTOR,DUTY,CONDITION,SOURCE_LOCATOR,EXCEPTION,REMEDY_OR_ENFORCEMENT. Principle/recommendation != mandatory duty.
+
+S4 HSA THREAT RELEVANCE: map only supported THR-001..THR-024 relations. Classify each as DIRECT_EXPLICIT | ANALOGICAL | CONTEXT_ONLY | NO_EXPLICIT_SUPPORT_FOUND.
+
+S5 EVIDENCE/ACCOUNTABILITY: identify relevant logs, records, notices, assessments, audits, documentation, incident reports, contracts, consent records, technical evidence. Distinguish SOURCE_REQUIRED from RESEARCH_USEFUL evidence.
+
+S6 UNKNOWN/CONFLICT: produce separate KNOWN,UNKNOWN,CONFLICT,CURRENTNESS_LIMIT,TRANSLATION_LIMIT,SCOPE_LIMIT,EVIDENCE_GAP items. Never guess missing facts.
+
+S7 ENGINEERING RELEVANCE: where source-supported duties/safeguards exist, propose CONTROL_CANDIDATE,TEST_CANDIDATE,EVIDENCE_ARTIFACT. Never label implemented/tested/effective.
+
+6) CSV SCHEMAS
+ACTOR-DUTY-SAFEGUARD-MATRIX.csv:
+RUN_ID,SOURCE_ID,ACTOR,RIGHT_OR_INTEREST,DUTY_OR_SAFEGUARD,CONDITION,SOURCE_LOCATOR,EXCEPTION,REMEDY_OR_ENFORCEMENT,BINDING_STATE,LIMITATIONS
+
+HSA-THREAT-CROSSWALK.csv:
+RUN_ID,SOURCE_ID,THREAT_ID,RELATIONSHIP_CLASS,SUPPORTING_TEXT_SUMMARY,SOURCE_LOCATOR,LIMITATIONS
+
+EVIDENCE-ACCOUNTABILITY-MATRIX.csv:
+RUN_ID,SOURCE_ID,QUESTION_OR_DUTY,EVIDENCE_TYPE,EVIDENCE_HOLDER,SOURCE_REQUIRED_OR_RESEARCH_USEFUL,INTEGRITY_REQUIREMENT,SOURCE_LOCATOR,LIMITATIONS
+
+UNKNOWN-CONFLICT-REGISTER.csv:
+RUN_ID,SOURCE_ID,ITEM_TYPE,DESCRIPTION,MATERIALITY,SOURCE_LOCATOR,CURRENTNESS_LIMIT,RESOLUTION_NEEDED,NEXT_RESEARCH
+
+ENGINEERING-CANDIDATES.csv:
+RUN_ID,SOURCE_ID,THREAT_ID,DUTY_OR_SAFEGUARD,CONTROL_CANDIDATE,TEST_CANDIDATE,EVIDENCE_ARTIFACT,DESTINATION_REPO,REVIEW_OWNER,PROMOTION_STATE,LIMITATIONS
+
+7) CONTROL FIELDS
+Every artifact must include or reference:
+PRIMARY_SOURCE_RECHECK_REQUIRED,DESTINATION_REPO,REVIEW_OWNER,PROMOTION_STATE.
+Never output/promote: VERIFIED_FINDING,ACCEPTED_REQUIREMENT,PASS,LEGAL_VIOLATION,LIABILITY_ESTABLISHED.
+
+8) SPECIAL RULES
+CL-002: if official full text unavailable => HOLD; no verified case-law artifact.
+INT-004: current UNESCO certified copy controls; legacy 43GC PDF is not current primary.
+TR-* snapshots: material legal conclusions require live official currentness recheck.
+INC-*: separate observed fact, company/vendor attribution, independent corroboration, hypothesis. INCIDENT != LIABILITY.
+INC-004: policy/context only, not incident evidence.
+STD-*: if licensed full text unavailable, stay at official metadata/reference level.
+
+9) FINAL RESPONSE
+Do not repeat the full analysis in chat. Return only:
+DELIVERY MANIFEST
+RUN_ID=
+SOURCE_ID=
+PACK_ID=
+ARTIFACTS_EXPECTED=8
+ARTIFACTS_CREATED=
+ARTIFACTS_FOR_EXPORT=
+ARTIFACTS_NOT_APPLICABLE=
+CHAT_ONLY_FALLBACK_COUNT=
+PRIMARY_SOURCE_RECHECK_REQUIRED=
+PROMOTION_STATE=
+Then STOP.
