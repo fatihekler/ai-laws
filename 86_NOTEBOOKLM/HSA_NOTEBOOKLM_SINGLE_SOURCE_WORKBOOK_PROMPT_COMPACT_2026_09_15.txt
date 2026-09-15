@@ -1,0 +1,48 @@
+AI-LAWS / HSA — SINGLE SOURCE WORKBOOK
+CANONICAL=FALSE | AUTO_ADVANCE=NO | SELECTED_ONLY=TRUE
+
+Use only selected NotebookLM sources. No memory/internet/unselected sources. Unsupported = UNKNOWN/NOT_STATED.
+
+RUN_ID=RUN-YYYYMMDD-NNN. Preserve existing AI-LAWS SOURCE_ID; never create/renumber it.
+
+Create ONLY TWO deliverables:
+
+1) XLSX workbook:
+AI-LAWS__<PACK>__<SOURCE_ID>__<SHORT_TITLE>__HSA-INVESTIGATION__<RUN_ID>.xlsx
+
+Required tabs:
+00_MANIFEST
+01_SOURCE_IDENTITY
+02_ACTOR_DUTY
+03_HSA_THREATS
+04_EVIDENCE
+05_UNKNOWN_CONFLICT
+06_ENGINEERING
+07_LOCATOR_INDEX
+
+2) Markdown report:
+AI-LAWS__<PACK>__<SOURCE_ID>__<SHORT_TITLE>__SOURCE-ANALYSIS__<RUN_ID>.md
+
+XLSX TAB CONTENT
+00_MANIFEST: RUN_ID,PACK_ID,SOURCE_ID,TITLE,AUTHORITY_CLASS,BINDING_STATE,CURRENTNESS,CANONICAL=false,PROMOTION_STATE,PRIMARY_SOURCE_RECHECK_REQUIRED,NOTES.
+01_SOURCE_IDENTITY: title,issuer,jurisdiction,document_number,source_type,binding_state,publication_date,effective/application_date,version/currentness,limitations.
+02_ACTOR_DUTY columns: ACTOR,RIGHT_OR_INTEREST,DUTY_OR_SAFEGUARD,CONDITION,SOURCE_LOCATOR,EXCEPTION,REMEDY_OR_ENFORCEMENT,BINDING_STATE,LIMITATIONS.
+03_HSA_THREATS columns: THREAT_ID,THREAT_NAME,RELATIONSHIP_CLASS,SUMMARY,SOURCE_LOCATOR,LIMITATIONS. Never invent THREAT_ID/name mapping; if the selected sources do not contain the HSA taxonomy, set THREAT_ID=UNKNOWN and describe the threat textually. RELATIONSHIP_CLASS only DIRECT_EXPLICIT|ANALOGICAL|CONTEXT_ONLY|NO_EXPLICIT_SUPPORT_FOUND.
+04_EVIDENCE columns: QUESTION_OR_DUTY,EVIDENCE_TYPE,EVIDENCE_HOLDER,SOURCE_REQUIRED_OR_RESEARCH_USEFUL,INTEGRITY_REQUIREMENT,SOURCE_LOCATOR,LIMITATIONS.
+05_UNKNOWN_CONFLICT columns: ITEM_TYPE,DESCRIPTION,MATERIALITY,SOURCE_LOCATOR,CURRENTNESS_LIMIT,RESOLUTION_NEEDED,NEXT_RESEARCH. ITEM_TYPE: KNOWN|UNKNOWN|CONFLICT|CURRENTNESS_LIMIT|TRANSLATION_LIMIT|SCOPE_LIMIT|EVIDENCE_GAP.
+06_ENGINEERING columns: THREAT_ID,DUTY_OR_SAFEGUARD,CONTROL_CANDIDATE,TEST_CANDIDATE,EVIDENCE_ARTIFACT,DESTINATION_REPO,REVIEW_OWNER,PROMOTION_STATE,LIMITATIONS. Candidates only; never implemented/tested/effective.
+07_LOCATOR_INDEX: CLAIM_ID,CLAIM_SUMMARY,SOURCE_ID,SOURCE_LOCATOR,LOCATOR_TYPE,LIMITATIONS.
+
+MD REPORT S1–S7:
+S1 identity/authority; S2 scope/actors; S3 rights/duties/safeguards; S4 HSA relevance; S5 evidence/accountability; S6 unknown/conflict/currentness; S7 engineering relevance. Every material claim needs article/section/page/paragraph/heading locator.
+
+Keep publication date != effective/application date. recommendation/principle != mandatory duty. incident != liability. unknown != safe.
+
+PROMOTION_STATE only QUESTION|SUPPORTING_RESEARCH|FINDING_CANDIDATE|HOLD. Never output VERIFIED_FINDING, ACCEPTED_REQUIREMENT, PASS, LEGAL_VIOLATION, LIABILITY_ESTABLISHED.
+
+Special: CL-002 official full text absent => HOLD. INT-004 current UNESCO certified copy controls. TR-* material legal conclusion => live official currentness recheck. INC-* separate fact/vendor attribution/independent corroboration/hypothesis; INC-004 context only. STD-* metadata/reference only without licensed full text.
+
+If XLSX generation is unavailable, create one Google Sheets/Data Table export with these exact tab names. Do NOT create 6-8 separate CSV files unless both XLSX and multi-tab Sheets are unavailable.
+
+FINAL CHAT RESPONSE ONLY:
+RUN_ID=<...> | SOURCE_ID=<...> | XLSX=<filename/state> | MD=<filename/state> | PRIMARY_SOURCE_RECHECK_REQUIRED=<...> | PROMOTION_STATE=<...> | STOP
